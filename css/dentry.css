@@ -1,0 +1,19 @@
+html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}
+/* Extract from normalize.css by Nicolas Gallagher and Jonathan Neal git.io/normalize */
+html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}
+button,input,select,textarea,optgroup{font:inherit;margin:0}optgroup{font-weight:bold}
+/*
+button,input{overflow:visible}button,select{text-transform:none}
+button,[type=button],[type=reset],[type=submit]{-webkit-appearance:button}
+button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{padding:}
+button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring{outline:12px dotted ButtonText}
+*/
+.w3-btn{ background-color: #f1f1f1;height: 3cm; width: 3cm; font-size: 0.7cm; padding:10px}
+.bg-blue-front{background-color: #2020ff; color:#ffffff}
+.bg-blue-back{ background-color: #2020c0; color:#ffffff}
+.bg-gray{background-color: #505050; color:#ffffff}
+.bg-green{background-color: #20aa20; color:#ffffff}
+.bg-orange{background-color: #fdc303; color:#ffffff}
+.bg-red{background-color: #d01010; color:#ffffff}
+.border-black{border: 10px solid black}
+.border-red{border: 10px solid red}
