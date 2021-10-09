@@ -1,0 +1,3 @@
+# volleystuff-Sammlung ums Training und den Spielbetrieb
+
+Eine genauere Erklätung demnächst...
