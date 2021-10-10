@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <title>Ansagehorst für Reaktionsspiele</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <form class="selTracks" id="selTracks" >
+            <fieldset>
+                <legend>
+                    Zahlen
+                    <div onclick="twiggle(0, 12, true)">Alle</div>
+                    <div onclick="twiggle(0, 12, false)">Keine</div>
+                </legend>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" id="cb01" name="tracks[]" /><label for="cb01">Eins</label></td>
+                        <td><input type="checkbox" id="cb02" name="tracks[]" /><label for="cb02">Zwei</label></td>
+                        <td><input type="checkbox" id="cb03" name="tracks[]" /><label for="cb03">Drei</label></td>
+                        <td><input type="checkbox" id="cb04" name="tracks[]" /><label for="cb04">Vier</label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="cb05" name="tracks[]" /><label for="cb05">Fünf</label></td>
+                        <td><input type="checkbox" id="cb06" name="tracks[]" /><label for="cb06">Sechs</label></td>
+                        <td><input type="checkbox" id="cb07" name="tracks[]" /><label for="cb07">Sieben</label></td>
+                        <td><input type="checkbox" id="cb08" name="tracks[]" /><label for="cb08">Acht</label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="cb09" name="tracks[]" /><label for="cb09">Neun</label></td>
+                        <td><input type="checkbox" id="cb10" name="tracks[]" /><label for="cb10">Zehn</label></td>
+                        <td><input type="checkbox" id="cb11" name="tracks[]" /><label for="cb11">Elf</label></td>
+                        <td><input type="checkbox" id="cb12" name="tracks[]" value="zwölf" /><label for="cb12">Zwölf</label>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    L/R
+                    <div onclick="twiggle(12, 14, true)">Alle</div>
+                    <div onclick="twiggle(12, 14, false)">Keine</div>
+                </legend>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" id="cb13" name="tracks[]" checked="false" /><label for="cb13">Links</label></td>
+                        <td><input type="checkbox" id="cb14" name="tracks[]" /><label for="cb14">Rechts</label></td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    Farben
+                    <div onclick="twiggle(14, 22, true)">Alle</div>
+                    <div onclick="twiggle(14, 22, false)">Keine</div>
+                </legend>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" id="cb15" name="tracks[]" /><label for="cb15">Rot</label></td>
+                        <td><input type="checkbox" id="cb16" name="tracks[]" /><label for="cb16">Blau</label></td>
+                        <td><input type="checkbox" id="cb17" name="tracks[]" /><label for="cb17">Gelb</label></td>
+                        <td><input type="checkbox" id="cb18" name="tracks[]" /><label for="cb18">Grün</label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="cb19" name="tracks[]" /><label for="cb19">Braun</label></td>
+                        <td><input type="checkbox" id="cb20" name="tracks[]" /><label for="cb20">Orange</label></td>
+                        <td><input type="checkbox" id="cb21" name="tracks[]" /><label for="cb21">Türkis</label></td>
+                        <td><input type="checkbox" id="cb22" name="tracks[]" /><label for="cb22">Lila</label></td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    Städte
+                    <div onclick="twiggle(22, 30, true)">Alle</div>
+                    <div onclick="twiggle(22, 30, false)">Keine</div>
+                </legend>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" id="cb23" name="tracks[]" /><label for="cb23">Berlin</label></td>
+                        <td><input type="checkbox" id="cb24" name="tracks[]" /><label for="cb24">London</label></td>
+                        <td><input type="checkbox" id="cb25" name="tracks[]" /><label for="cb25">Madrid</label></td>
+                        <td><input type="checkbox" id="cb26" name="tracks[]" /><label for="cb26">Paris</label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="cb27" name="tracks[]" /><label for="cb27">Moskau</label></td>
+                        <td><input type="checkbox" id="cb28" name="tracks[]" /><label for="cb28">New York</label></td>
+                        <td><input type="checkbox" id="cb29" name="tracks[]" /><label for="cb29">Peking</label></td>
+                        <td><input type="checkbox" id="cb30" name="tracks[]" /><label for="cb30">Sidney</label></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </form>
+        <p/>
+
+        <button type="button" onclick="startStop(this)">Start</button>
+        <label for="interval">Intervall:</label>
+        <input type="number" id="interval" name="interval" min="500" max="10000" step="1000" value="3000" />
+        
+        <script>
+         var Running = false;
+         var cBoxes =  document.forms["selTracks"].elements['tracks[]'];
+         for(j=0; j<cBoxes.length; j++){
+             cBoxes[j].onchange = prepareList;
+         }
+         
+         var trks = new Array();  // All audio tracks
+         var plArr = new Array(); // The array we actually play from
+         trks[ 0] = new Audio('media/01.ogg');
+         trks[ 1] = new Audio('media/02.ogg');
+         trks[ 2] = new Audio('media/03.ogg');
+         trks[ 3] = new Audio('media/04.ogg');
+         trks[ 4] = new Audio('media/05.ogg');
+         trks[ 5] = new Audio('media/06.ogg');
+         trks[ 6] = new Audio('media/07.ogg');
+         trks[ 7] = new Audio('media/08.ogg');
+         trks[ 8] = new Audio('media/09.ogg');
+         trks[ 9] = new Audio('media/10.ogg');
+         trks[10] = new Audio('media/11.ogg');
+         trks[11] = new Audio('media/12.ogg');
+         
+         trks[12] = new Audio('media/13-links.ogg');
+         trks[13] = new Audio('media/14-rechts.ogg');
+
+         trks[14] = new Audio('media/15-rot.ogg');
+         trks[15] = new Audio('media/16-blau.ogg');
+         trks[16] = new Audio('media/17-gelb.ogg');
+         trks[17] = new Audio('media/18-grün.ogg');
+         trks[18] = new Audio('media/19-braun.ogg');
+         trks[19] = new Audio('media/20-orange.ogg');
+         trks[20] = new Audio('media/21-türkis.ogg');
+         trks[21] = new Audio('media/22-lila.ogg');
+
+         trks[22] = new Audio('media/23-Berlin.ogg');
+         trks[23] = new Audio('media/24-London.ogg');
+         trks[24] = new Audio('media/25-Madrid.ogg');
+         trks[25] = new Audio('media/26-Paris.ogg');
+         trks[26] = new Audio('media/27-Moskau.ogg');
+         trks[27] = new Audio('media/28-New_York.ogg');
+         trks[28] = new Audio('media/29-Peking.ogg');
+         trks[29] = new Audio('media/30-Sidney.ogg');
+         
+         
+         function prepareList(){
+             plArr = [];
+             cBoxes.forEach(function(box, idx){ if(box.checked) plArr.push(idx)});
+         }
+         function twiggle(frm, to, setting){
+             for(j=frm; j<to; j++){ cBoxes[j].checked = setting; }
+             prepareList();
+         }
+         function getNumber(low, high){
+             return Math.floor(Math.random() * (high - low+1))+low;
+         }
+         function startTime() {
+             var gogo = getNumber(0,plArr.length-1);
+             trks[plArr[gogo]].play();
+             if (Running){
+                 var myElement = document.getElementById("interval");
+                 var value = myElement.value
+                 // console.log("Value: ", myElement.value);
+                 var t = setTimeout(startTime, value);
+             }
+         }
+         function reportState(){
+             //prepareList();
+             console.log(plArr);
+             console.log(plArr.length);
+             Running = !Running;
+             if( Running ) { startTime(); }
+         }
+         function startStop(button){
+             console.log("in StartStop");
+             Running = !Running;
+             if(Running){
+                 prepareList();
+                 button.innerHTML = "Stop";
+                 startTime();
+             }
+             else{
+                 button.innerHTML = "Start";
+             }
+         }
+         
+        </script>
+
+    </body>
+</html>
