@@ -3,15 +3,23 @@
     <head>
         <title>Ansagehorst für Reaktionsspiele</title>
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+        <style>
+         .bkg-red{background: #f00;}
+         .bkg-grn{background: #0e0;}
+         .bkg-blu{background: #22f;}
+         .brd-blk{border-color: #000;}
+         .btn-like{border: solid; border-width: 0.5px; background:#d0d0d0; margin:2pt;}
+         label{margin-left: 2px;}
+        </style>
     </head>
     <body>
         <form class="selTracks" id="selTracks" >
-            <fieldset>
+            <div><fieldset style="display:inline-block;">
                 <legend>
                     Zahlen
-                    <div onclick="twiggle(0, 12, true)">Alle</div>
-                    <div onclick="twiggle(0, 12, false)">Keine</div>
+                    <div class="btn-like" onclick="twiggle(0, 12, true)">Alle</div>
+                    <div class="btn-like" onclick="twiggle(0, 12, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -34,12 +42,12 @@
                         </td>
                     </tr>
                 </table>
-            </fieldset>
-            <fieldset>
+            </fieldset></div>
+            <div> <fieldset style="display:inline-block;">
                 <legend>
                     L/R
-                    <div onclick="twiggle(12, 14, true)">Alle</div>
-                    <div onclick="twiggle(12, 14, false)">Keine</div>
+                    <div class="btn-like" onclick="twiggle(12, 14, true)">Alle</div>
+                    <div class="btn-like" onclick="twiggle(12, 14, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -47,12 +55,12 @@
                         <td><input type="checkbox" id="cb14" name="tracks[]" /><label for="cb14">Rechts</label></td>
                     </tr>
                 </table>
-            </fieldset>
-            <fieldset>
+           </fieldset></div>
+            <div><fieldset style="display:inline-block;">
                 <legend>
                     Farben
-                    <div onclick="twiggle(14, 22, true)">Alle</div>
-                    <div onclick="twiggle(14, 22, false)">Keine</div>
+                    <div class="btn-like" onclick="twiggle(14, 22, true)">Alle</div>
+                    <div class="btn-like" onclick="twiggle(14, 22, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -68,12 +76,12 @@
                         <td><input type="checkbox" id="cb22" name="tracks[]" /><label for="cb22">Lila</label></td>
                     </tr>
                 </table>
-            </fieldset>
-            <fieldset>
+            </fieldset></div>
+            <div><fieldset style="display:inline-block;">
                 <legend>
                     Städte
-                    <div onclick="twiggle(22, 30, true)">Alle</div>
-                    <div onclick="twiggle(22, 30, false)">Keine</div>
+                    <div class="btn-like" onclick="twiggle(22, 30, true)">Alle</div>
+                    <div class="btn-like" onclick="twiggle(22, 30, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -89,21 +97,21 @@
                         <td><input type="checkbox" id="cb30" name="tracks[]" /><label for="cb30">Sidney</label></td>
                     </tr>
                 </table>
-            </fieldset>
+            </fieldset></div>
         </form>
         <p/>
 
         <button type="button" onclick="startStop(this)">Start</button>
         <label for="interval">Intervall:</label>
         <input type="number" id="interval" name="interval" min="500" max="10000" step="1000" value="3000" />
-        
+
         <script>
          var Running = false;
          var cBoxes =  document.forms["selTracks"].elements['tracks[]'];
          for(j=0; j<cBoxes.length; j++){
              cBoxes[j].onchange = prepareList;
          }
-         
+
          var trks = new Array();  // All audio tracks
          var plArr = new Array(); // The array we actually play from
          trks[ 0] = new Audio('media/01.ogg');
@@ -118,7 +126,7 @@
          trks[ 9] = new Audio('media/10.ogg');
          trks[10] = new Audio('media/11.ogg');
          trks[11] = new Audio('media/12.ogg');
-         
+
          trks[12] = new Audio('media/13-links.ogg');
          trks[13] = new Audio('media/14-rechts.ogg');
 
@@ -139,8 +147,8 @@
          trks[27] = new Audio('media/28-New_York.ogg');
          trks[28] = new Audio('media/29-Peking.ogg');
          trks[29] = new Audio('media/30-Sidney.ogg');
-         
-         
+
+
          function prepareList(){
              plArr = [];
              cBoxes.forEach(function(box, idx){ if(box.checked) plArr.push(idx)});
@@ -181,7 +189,7 @@
                  button.innerHTML = "Start";
              }
          }
-         
+
         </script>
 
     </body>
