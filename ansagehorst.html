@@ -11,15 +11,16 @@
          .brd-blk{border-color: #000;}
          .btn-like{border: solid; border-width: 0.5px; background:#d0d0d0; margin:2pt;}
          label{margin-left: 2px;}
+         fieldset{display:inline-block;width:30em}
         </style>
     </head>
     <body>
         <form class="selTracks" id="selTracks" >
-            <div><fieldset style="display:inline-block;">
+            <div><fieldset>
                 <legend>
                     Zahlen
-                    <div class="btn-like" onclick="twiggle(0, 12, true)">Alle</div>
-                    <div class="btn-like" onclick="twiggle(0, 12, false)">Keine</div>
+                    <div class="btn-like" onclick="makeListFromUI(0, 12, true)">Alle</div>
+                    <div class="btn-like" onclick="makeListFromUI(0, 12, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -43,11 +44,11 @@
                     </tr>
                 </table>
             </fieldset></div>
-            <div> <fieldset style="display:inline-block;">
+            <div> <fieldset>
                 <legend>
                     L/R
-                    <div class="btn-like" onclick="twiggle(12, 14, true)">Alle</div>
-                    <div class="btn-like" onclick="twiggle(12, 14, false)">Keine</div>
+                    <div class="btn-like" onclick="makeListFromUI(12, 14, true)">Alle</div>
+                    <div class="btn-like" onclick="makeListFromUI(12, 14, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -55,12 +56,12 @@
                         <td><input type="checkbox" id="cb14" name="tracks[]" /><label for="cb14">Rechts</label></td>
                     </tr>
                 </table>
-           </fieldset></div>
-            <div><fieldset style="display:inline-block;">
+            </fieldset></div>
+            <div><fieldset>
                 <legend>
                     Farben
-                    <div class="btn-like" onclick="twiggle(14, 22, true)">Alle</div>
-                    <div class="btn-like" onclick="twiggle(14, 22, false)">Keine</div>
+                    <div class="btn-like" onclick="makeListFromUI(14, 22, true)">Alle</div>
+                    <div class="btn-like" onclick="makeListFromUI(14, 22, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -77,11 +78,11 @@
                     </tr>
                 </table>
             </fieldset></div>
-            <div><fieldset style="display:inline-block;">
+            <div><fieldset>
                 <legend>
                     Städte
-                    <div class="btn-like" onclick="twiggle(22, 30, true)">Alle</div>
-                    <div class="btn-like" onclick="twiggle(22, 30, false)">Keine</div>
+                    <div class="btn-like" onclick="makeListFromUI(22, 30, true)">Alle</div>
+                    <div class="btn-like" onclick="makeListFromUI(22, 30, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -153,7 +154,7 @@
              plArr = [];
              cBoxes.forEach(function(box, idx){ if(box.checked) plArr.push(idx)});
          }
-         function twiggle(frm, to, setting){
+         function makeListFromUI(frm, to, setting){
              for(j=frm; j<to; j++){ cBoxes[j].checked = setting; }
              prepareList();
          }
