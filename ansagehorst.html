@@ -81,8 +81,8 @@
             <div><fieldset>
                 <legend>
                     Städte
-                    <div class="btn-like" onclick="makeListFromUI(22, 30, true)">Alle</div>
-                    <div class="btn-like" onclick="makeListFromUI(22, 30, false)">Keine</div>
+                    <div class="btn-like" onclick="makeListFromUI(22, 34, true)">Alle</div>
+                    <div class="btn-like" onclick="makeListFromUI(22, 34, false)">Keine</div>
                 </legend>
                 <table>
                     <tr>
@@ -93,9 +93,15 @@
                     </tr>
                     <tr>
                         <td><input type="checkbox" id="cb27" name="tracks[]" /><label for="cb27">Moskau</label></td>
-                        <td><input type="checkbox" id="cb28" name="tracks[]" /><label for="cb28">New York</label></td>
+                        <td><input type="checkbox" id="cb28" name="tracks[]" /><label for="cb28">Rio</label></td>
                         <td><input type="checkbox" id="cb29" name="tracks[]" /><label for="cb29">Peking</label></td>
                         <td><input type="checkbox" id="cb30" name="tracks[]" /><label for="cb30">Sidney</label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="cb31" name="tracks[]" /><label for="cb31">Nairobi</label></td>
+                        <td><input type="checkbox" id="cb32" name="tracks[]" /><label for="cb32">Helsinki</label></td>
+                        <td><input type="checkbox" id="cb33" name="tracks[]" /><label for="cb33">Denver</label></td>
+                        <td><input type="checkbox" id="cb34" name="tracks[]" /><label for="cb34">Prag</label></td>
                     </tr>
                 </table>
             </fieldset></div>
@@ -145,9 +151,13 @@
          trks[24] = new Audio('media/25-Madrid.ogg');
          trks[25] = new Audio('media/26-Paris.ogg');
          trks[26] = new Audio('media/27-Moskau.ogg');
-         trks[27] = new Audio('media/28-New_York.ogg');
+         trks[27] = new Audio('media/28-Rio.ogg');
          trks[28] = new Audio('media/29-Peking.ogg');
          trks[29] = new Audio('media/30-Sidney.ogg');
+         trks[30] = new Audio('media/31-Nairobi.ogg');
+         trks[31] = new Audio('media/32-Helsinki.ogg');
+         trks[32] = new Audio('media/33-Denver.ogg');
+         trks[33] = new Audio('media/34-Prag.ogg');
 
 
          function prepareList(){
