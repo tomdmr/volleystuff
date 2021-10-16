@@ -25,7 +25,7 @@ function initDentry(){
             document.getElementById('bt04'),
             document.getElementById('bt05'),
             document.getElementById('bt06'),
-            document.getElementById('bt07'),
+            //document.getElementById('bt07'),
         ],
         [
             document.getElementById('bt10'),
@@ -116,11 +116,30 @@ function onPlayer(team, player){
     isChain = false;
     sctBox.value += rsp + player;
 }
+/**
+* Trigered, when one of the skills is pressed
+*/
 function onSkill  (skill){
-    console.log(skill);
+    if(     skill ==='r' ){
+    }
+    else if(skill ==='a'){
+    }
+    else if(skill ==='b'){
+    }
+    else if(skill ==='d'){
+    }
+    else if(skill ==='e'){
+    }
+    else if(skill ==='f'){
+    }
+    else{
+        console.log('Unknown skill: '+skill);
+    }
     sctBox.value += skill;
     window.navigator.vibrate(1000);
     window.navigator.vibrate(0);
+    changeStateButtonCol(0, true);
+    changeStateButtonCol(1, true);
 }
 function onType   (type){
     //let std = ['H', 'M', 'Q', 'T', 'U', 'F', 'O'];
@@ -138,7 +157,6 @@ function onChain(){
     isChain = true;
 }
 function setServ(team){
-    let eve=['Standing','Jmp Flt', 'Jmp Rot', 'T', 'U', 'F', 'Other'];
     plrBt.forEach(function(x,t){
         x.forEach(function(item,idx){
             let cl = (idx>0) && (idx<4) ? 'bg-blue-front': 'bg-blue-back';
@@ -152,8 +170,11 @@ function setServ(team){
     ['Standing','Jmp Flt', 'Jmp Rot', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
         btnArray[3][idx].value = val;
     })
-
 }
+/**
+ * Wird ausgelöst, wenn eine Ralley abgeschlossen ist und ein Punkt
+ * zugeordnet wird.
+ */
 function onPoint(team){
     // Analyze Scouting String
     document.getElementById('sctHist').value += (sctBox.value + '\n');
@@ -181,6 +202,23 @@ function onPoint(team){
     }
     ptsT[team].value = 1 + Number(ptsT[team].value);
     sctBox.value = (srvT==0?'*':'a')+plrBt[team][rotT[team]].value + 's';
+    // Disable this team
+    changeStateButtonCol(team,  false);
+    // Enable other team
+    changeStateButtonCol(1-team, true);
+    ['Standing','Jmp Flt', 'Jmp Rot', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
+        btnArray[3][idx].value = val;
+    })
+}
+/**
+ * 
+ */
+function changeStateButtonCol(col, enabled){
+    console.log('changeState '+col+' to '+enabled);
+    console.log(btnArray[col]);
+    btnArray[col].forEach(function(item){
+        item.enabled = enabled;
+    });    
 }
 function transferT0(){
     for(i=0; i<12; i++){
