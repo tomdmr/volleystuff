@@ -11,6 +11,7 @@ let plrBt = [];
 let rotT = [0,0];
 let srvT = 0;
 let ptsT = [];
+let btnStyle = [];
 
 let btnArray = [];
 
@@ -61,7 +62,19 @@ function initDentry(){
             document.getElementById('bt44'),
             document.getElementById('bt45'),
             document.getElementById('bt46'),
-        ]
+        ],
+        [
+            document.getElementById('bt50'),
+            document.getElementById('bt60'),
+            document.getElementById('bt70'),
+            document.getElementById('bt51'),
+            document.getElementById('bt61'),
+            document.getElementById('bt71'),
+            document.getElementById('bt52'),
+            document.getElementById('bt62'),
+            document.getElementById('bt72'),
+        ],
+        [],
     ];
     sctBox = document.getElementById('sctBox');
     plrBtT0 = [
@@ -108,6 +121,11 @@ function initDentry(){
             else
                 document.getElementById('pb'+idx).value = '';
         });
+    btnStyle[2]= {true: "btn-gry-act", false: 'btn-gry-pas'};
+    btnStyle[3]= {true: "btn-gry-act", false: 'btn-gry-pas'};
+    btnStyle[4]= {true: "btn-grn-act", false: 'btn-grn-pas'};
+    btnStyle[5]= {true: "btn-yel-act", false: 'btn-yel-pas'};
+    btnStyle[6]= {true: "btn-yel-act", false: 'btn-yel-pas'};
 }
 function onPlayer(team, player){
     let rsp= (isChain ? '': ' ');
@@ -115,22 +133,36 @@ function onPlayer(team, player){
     console.log(rsp);
     isChain = false;
     sctBox.value += rsp + player;
+    changeStateButtonCol(2, true );
 }
 /**
 * Trigered, when one of the skills is pressed
+* Which skill requires/allows type?
 */
 function onSkill  (skill){
     if(     skill ==='r' ){
+        changeStateButtonCol(3, false);
+        changeStateButtonCol(4, true );
     }
     else if(skill ==='a'){
+        changeStateButtonCol(3, true );
+        changeStateButtonCol(4, true );
     }
     else if(skill ==='b'){
+        changeStateButtonCol(3, false);
+        changeStateButtonCol(4, true );
     }
     else if(skill ==='d'){
+        changeStateButtonCol(3, false);
+        changeStateButtonCol(4, true );
     }
     else if(skill ==='e'){
+        changeStateButtonCol(3, true );
+        changeStateButtonCol(4, true );
     }
     else if(skill ==='f'){
+        changeStateButtonCol(3, false);
+        changeStateButtonCol(4, true );
     }
     else{
         console.log('Unknown skill: '+skill);
@@ -138,24 +170,58 @@ function onSkill  (skill){
     sctBox.value += skill;
     window.navigator.vibrate(1000);
     window.navigator.vibrate(0);
-    changeStateButtonCol(0, true);
-    changeStateButtonCol(1, true);
+    console.log('Disable skill, enable quality');
+    changeStateButtonCol(2, false);
 }
 function onType   (type){
-    //let std = ['H', 'M', 'Q', 'T', 'U', 'F', 'O'];
-    console.log(type);
+    if(     type === 'h'){}
+    else if(type === 'm'){}
+    else if(type === 'q'){}
+    else if(type === 't'){}
+    else if(type === 'u'){}
+    else if(type === 'f'){}
+    else if(type === 'o'){}
+    else{
+        console.log('Unknown play-type '+type);
+    }
     sctBox.value += type;
     ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
         btnArray[3][idx].value = val;
     })
+    changeStateButtonCol(3, false);
+    changeStateButtonCol(4, true);
+    console.log('Number 5 alive');
+    changeStateButtonCol(5, true);
 }
 function onQuality(qual){
+    if(     qual === '#'){}
+    else if(qual === '+'){}
+    else if(qual === '!'){}
+    else if(qual === '-'){}
+    else if(qual === '/'){}
+    else if(qual === '='){}
+    else{
+        console.log('Unknown quality '+ qual);
+    }
     sctBox.value += qual;
+    changeStateButtonCol(4, false);
 }
 function onChain(){
     sctBox.value += '.';
     isChain = true;
+    changeStateButtonCol(4, false);
+    //changeStateButtonCol(2, true);
 }
+function onHomeField(btn){
+    changeStateButtonCol(5, false);
+    changeStateButtonCol(6, true );
+    sctBox.value += this.value;
+}
+function onGuestField(btn){
+    changeStateButtonCol(6, false);
+    sctBox.value += this.value;
+}
+
 function setServ(team){
     plrBt.forEach(function(x,t){
         x.forEach(function(item,idx){
@@ -170,6 +236,8 @@ function setServ(team){
     ['Standing','Jmp Flt', 'Jmp Rot', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
         btnArray[3][idx].value = val;
     })
+    changeStateButtonCol(2, false);
+    changeStateButtonCol(3, true);
 }
 /**
  * Wird ausgelöst, wenn eine Ralley abgeschlossen ist und ein Punkt
@@ -214,11 +282,14 @@ function onPoint(team){
  * 
  */
 function changeStateButtonCol(col, enabled){
-    console.log('changeState '+col+' to '+enabled);
-    console.log(btnArray[col]);
+    //console.log('changeState '+col+' to '+enabled);
+    //console.log(btnArray[col][0]);
+    //console.log(btnStyle[col][enabled]);
     btnArray[col].forEach(function(item){
-        item.enabled = enabled;
-    });    
+        item.disabled = !enabled;
+        item.classList = 'w3-btn '+ btnStyle[col][enabled];
+    });
+    console.log(btnArray[col][0]);
 }
 function transferT0(){
     for(i=0; i<12; i++){
