@@ -277,6 +277,8 @@ function onPoint(team){
     ['Standing','Jmp Flt', 'Jmp Rot', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
         btnArray[3][idx].value = val;
     })
+    changeStateButtonCol(2, false);
+    changeStateButtonCol(3, true);
 }
 /**
  * 
