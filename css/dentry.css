@@ -17,3 +17,10 @@ button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[
 .bg-red{background-color: #d01010; color:#ffffff}
 .border-black{border: 10px solid black}
 .border-red{border: 10px solid red}
+
+.btn-gry-pas{background-color: #404040; color:#a0a0a0}
+.btn-gry-act{background-color: #c0c0c0; color:#000000}
+.btn-grn-act{background-color: #15cc15; color:#000000}
+.btn-grn-pas{background-color: #105510; color:#a0a0a0}
+.btn-yel-act{background-color: #fdc300; color:#000000}
+.btn-yel-pas{background-color: #7e6110; color:#a0a0a0}
