@@ -9,8 +9,8 @@
         <title>Data-Volley Entry</title>
         <style>
          button{
-             width: 500px;
-             height: 500px;
+             width:  2.5vw; /*500px;*/
+             height: 2.5vw;/*500px;*/
          }
         </style>
     </head>
@@ -135,71 +135,71 @@
                 </thead>
                 <tbdody>
                     <tr>
-                        <td><input type="button" id="bt00" value="1"  onclick="onPlayer(0,this.value)"></td>
-                        <td><input type="button" id="bt10" value="1"  onclick="onPlayer(1,this.value)"></td>
-                        <td><input type="button" id="bt21" value="Receive" class="w3-btn bg-gray" onclick="onSkill('r')"></td>
-                        <td><input type="button" id="bt30" value="H"     class="w3-btn bg-gray" onclick="onType ('h')"></td>
-                        <td><input type="button" id="bt40" value="#"     class="w3-btn bg-green" onclick="onQuality(this.value)"></td>
-                        <td><input type="button" id="bt50" value="1"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt60" value="6"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt70" value="5"     class="w3-btn bg-orange" onclick=""></td>
+                        <td><input type="button" id="bt00" value="1"     onclick="onPlayer(0,this.value)"></td>
+                        <td><input type="button" id="bt10" value="1"     onclick="onPlayer(1,this.value)"></td>
+                        <td><input type="button" id="bt20" class="w3-btn btn-gry-pas" disabled="true" value="Receive" onclick="onSkill('r')"></td>
+                        <td><input type="button" id="bt30" class="w3-btn btn-gry-pas" disabled="true" value="H"       onclick="onType ('h')"></td>
+                        <td><input type="button" id="bt40" class="w3-btn btn-grn-pas" disabled="true" value="#"       onclick="onQuality(this.value)"></td>
+                        <td><input type="button" id="bt50" class="w3-btn btn-yel-pas" disabled="true" value="1"       onclick="onHomeField(this)"></td>
+                        <td><input type="button" id="bt60" class="w3-btn btn-yel-pas" disabled="true" value="6"       onclick="onHomeField(this)"></td>
+                        <td><input type="button" id="bt70" class="w3-btn btn-yel-pas" disabled="true" value="5"       onclick="onHomeField(this)"></td>
                     </tr>
                     <tr>
                         <td><input type="button" id="bt01" value="2" onclick="onPlayer(0,this.value)"></td>
                         <td><input type="button" id="bt11" value="2" onclick="onPlayer(1,this.value)"></td>
-                        <td><input type="button" id="bt22" value="Attack" class="w3-btn bg-gray" onclick="onSkill('a')"></td>
-                        <td><input type="button" id="bt31" value="M"     class="w3-btn bg-gray"   onclick="onType ('m')"></td>
-                        <td><input type="button" id="bt41" value="+"     class="w3-btn bg-green" onclick="onQuality(this.value)"></td>
-                        <td><input type="button" id="bt51" value="9"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt61" value="8"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt71" value="7"     class="w3-btn bg-orange" onclick=""></td>
+                        <td><input type="button" id="bt21" class="w3-btn btn-gry-pas" value="Attack" onclick="onSkill('a')"></td>
+                        <td><input type="button" id="bt31" class="w3-btn btn-gry-pas" value="M"      onclick="onType ('m')"></td>
+                        <td><input type="button" id="bt41" class="w3-btn btn-grn-pas" value="+"      onclick="onQuality(this.value)"></td>
+                        <td><input type="button" id="bt51" class="w3-btn btn-yel-pas" value="9"      onclick="onHomeField(this)"></td>
+                        <td><input type="button" id="bt61" class="w3-btn btn-yel-pas" value="8"      onclick="onHomeField(this)"></td>
+                        <td><input type="button" id="bt71" class="w3-btn btn-yel-pas" value="7"      onclick="onHomeField(this)"></td>
                     </tr>
                     <tr>
                         <td><input type="button" id="bt02" value="3" onclick="onPlayer(0,this.value)"></td>
                         <td><input type="button" id="bt12" value="3" onclick="onPlayer(1,this.value)"></td>
-                        <td><input type="button" id="bt23" value="Block" class="w3-btn bg-gray" onclick="onSkill('b')"></td>
-                        <td><input type="button" id="bt32" value="Q"     class="w3-btn bg-gray"  onclick="onType ('q')"></td>
-                        <td><input type="button" id="bt42" value="!"     class="w3-btn bg-green" onclick="onQuality(this.value)"></td>
-                        <td><input type="button" id="bt52" value="2"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt62" value="3"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt72" value="4"     class="w3-btn bg-orange" onclick=""></td>
+                        <td><input type="button" id="bt22" class="w3-btn btn-gry-pas" value="Block"  onclick="onSkill('b')"></td>
+                        <td><input type="button" id="bt32" class="w3-btn btn-gry-pas" value="Q"      onclick="onType ('q')"></td>
+                        <td><input type="button" id="bt42" class="w3-btn btn-grn-pas" value="!"      onclick="onQuality(this.value)"></td>
+                        <td><input type="button" id="bt52" class="w3-btn btn-yel-pas" value="2"      onclick="onHomeField(this)"></td>
+                        <td><input type="button" id="bt62" class="w3-btn btn-yel-pas" value="3"      onclick="onHomeField(this)"></td>
+                        <td><input type="button" id="bt72" class="w3-btn btn-yel-pas" value="4"      onclick="onHomeField(this)"></td>
                     </tr>
                     <tr>
                         <td><input type="button" id="bt03" value="4" onclick="onPlayer(0,this.value)"></td>
                         <td><input type="button" id="bt13" value="4" onclick="onPlayer(1,this.value)"></td>
-                        <td><input type="button" id="bt24" value="Dig" class="w3-btn bg-gray"     onclick="onSkill('d')"></td>
-                        <td><input type="button" id="bt33" value="T"    class="w3-btn bg-gray"  onclick="onType ('t')"></td>
-                        <td><input type="button" id="bt43" value="-"     class="w3-btn bg-green" onclick="onQuality(this.value)"></td>
+                        <td><input type="button" id="bt23" class="w3-btn btn-gry-pas" value="Dig"    onclick="onSkill('d')"></td>
+                        <td><input type="button" id="bt33" class="w3-btn btn-gry-pas" value="T"      onclick="onType ('t')"></td>
+                        <td><input type="button" id="bt43" class="w3-btn btn-grn-pas" value="-"      onclick="onQuality(this.value)"></td>
                     </tr>
                     <tr>
                         <td><input type="button" id="bt04" value="5" onclick="onPlayer(0,this.value)"></td>
                         <td><input type="button" id="bt14" value="5" onclick="onPlayer(1,this.value)"></td>
-                        <td><input type="button" id="bt25" value="Set" class="w3-btn bg-gray"     onclick="onSkill('e')"></td>
-                        <td><input type="button" id="bt34" value="U"    class="w3-btn bg-gray"    onclick="onType ('u')"></td>
-                        <td><input type="button" id="bt44" value="/"     class="w3-btn bg-green"  onclick="onQuality(this.value)"></td>
-                        <td><input type="button" id="bt54" value="4"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt64" value="3"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt74" value="2"     class="w3-btn bg-orange" onclick=""></td>
+                        <td><input type="button" id="bt24" class="w3-btn btn-gry-pas" value="Set"    onclick="onSkill('e')" ></td>
+                        <td><input type="button" id="bt34" class="w3-btn btn-gry-pas" value="U"      onclick="onType ('u')" ></td>
+                        <td><input type="button" id="bt44" class="w3-btn btn-grn-pas" value="/"      onclick="onQuality(this.value)"></td>
+                        <td><input type="button" id="bt54" class="w3-btn btn-yel-pas" value="4"      onclick="onGuestField(this)"></td>
+                        <td><input type="button" id="bt64" class="w3-btn btn-yel-pas" value="3"      onclick="onGuestField(this)"></td>
+                        <td><input type="button" id="bt74" class="w3-btn btn-yel-pas" value="2"      onclick="onGuestField(this)"></td>
                     </tr>
                     <tr>
                         <td><input type="button" id="bt05" value="6" onclick="onPlayer(0,this.value)"></td>
                         <td><input type="button" id="bt15" value="6" onclick="onPlayer(1,this.value)"></td>
-                        <td><input type="button" id="bt26" value="Freeb." class="w3-btn bg-gray"  onclick="onSkill('f')"></td>
-                        <td><input type="button" id="bt35" value="F"    class="w3-btn bg-gray"    onclick="onType ('f')"></td>
-                        <td><input type="button" id="bt45" value="="     class="w3-btn bg-green" onclick="onQuality(this.value)"></td>
-                        <td><input type="button" id="bt55" value="7"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt65" value="8"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt75" value="9"     class="w3-btn bg-orange" onclick=""></td>
+                        <td><input type="button" id="bt25" class="w3-btn btn-gry-pas" value="Freeb." onclick="onSkill('f')"></td>
+                        <td><input type="button" id="bt35" class="w3-btn btn-gry-pas" value="F"      onclick="onType ('f')"></td>
+                        <td><input type="button" id="bt45" class="w3-btn btn-grn-pas" value="="      onclick="onQuality(this.value)"></td>
+                        <td><input type="button" id="bt55" class="w3-btn btn-yel-pas" value="7"      onclick="onGuestField(this)"></td>
+                        <td><input type="button" id="bt65" class="w3-btn btn-yel-pas" value="8"      onclick="onGuestField(this)"></td>
+                        <td><input type="button" id="bt75" class="w3-btn btn-yel-pas" value="9"      onclick="onGuestField(this)"></td>
                     </tr>
                     <tr>
                         <td><input type="button" id="bt06" value="BT00" class="w3-btn bg-blue" onclick=""></td>
                         <td><input type="button" id="bt16" value="BTx1" class="w3-btn bg-blue" onclick=""></td>
                         <td></td>
-                        <td><input type="button" id="bt36" value="O"    class="w3-btn bg-gray"    onclick="onType ('O')"></td>
-                        <td><input type="button" id="bt46" value="."     class="w3-btn bg-green" onclick="onChain()"></td>
-                        <td><input type="button" id="bt56" value="5"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt66" value="6"     class="w3-btn bg-orange" onclick=""></td>
-                        <td><input type="button" id="bt76" value="1"     class="w3-btn bg-orange" onclick=""></td>
+                        <td><input type="button" id="bt36" class="w3-btn btn-gry-pas" value="O"      onclick="onType ('O')"></td>
+                        <td><input type="button" id="bt46" class="w3-btn btn-grn-pas" value="."      onclick="onChain()"></td>
+                        <td><input type="button" id="bt56" class="w3-btn btn-yel-pas" value="5"      onclick="onGuestField(this)"></td>
+                        <td><input type="button" id="bt66" class="w3-btn btn-yel-pas" value="6"      onclick="onGuestField(this)"></td>
+                        <td><input type="button" id="bt76" class="w3-btn btn-yel-pas" value="1"      onclick="onGuestField(this)"></td>
                     </tr>
                     <tr>
                         <td><input type="button" class="w3-btn" value="Pt A" onclick="onPoint(0)"></td>
