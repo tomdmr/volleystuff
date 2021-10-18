@@ -5,100 +5,7 @@
         <title>Data-Volley Input</title>
     </head>
     <body>
-        <!--
-             <h2>Teams</h2>
-             <table>
-             <thead>
-             </thead>
-             <tbody>
-             <tr>
-             <td> 1</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 2</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 3</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 4</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 5</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 6</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 7</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 8</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td> 9</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td>10</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td>11</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             <tr>
-             <td>12</td>
-             <td><input type="number" id="playerNumber000" value="1"></td>
-             <td><input type="text"     id="playerName000" value=""></td>
-             <td><input type="text"     id="playerName100" value=""></td>
-             <td><input type="number" id="playerNumber100" value="1"></td>
-             </tr>
-             </tbody>
-             </table>
-        -->
-        <h2>DV-Strings</h2>
+        <h2>Parsing DV-Strings</h2>
         <textarea id="tdata" rows="8" cols="60">
         </textarea>
         <p>
@@ -109,148 +16,159 @@
             <thead>
                 <th>Serve</th>
                 <th>Receive</th>
-                <th>Attack</th>
-                <th>Dig</th>
             </thead>
             <tbody>
                 <tr>
-                    <td><textarea id="sdata" rows="16" cols="30"></textarea></td>
-                    <td><textarea id="rdata" rows="16" cols="30"></textarea></td>
-                    <td><textarea id="adata" rows="16" cols="30"></textarea></td>
-                    <td><textarea id="ddata" rows="16" cols="30"></textarea></td>
+                    <td><textarea id="sdata" rows="16" cols="80"></textarea></td>
+                    <td><textarea id="rdata" rows="16" cols="80"></textarea></td>
+                </tr>
+                <tr>
+                    <th>Attack</th>
+                    <th>Dig</th>
+                </tr>
+                <tr>
+                    <td><textarea id="adata" rows="16" cols="80"></textarea></td>
+                    <td><textarea id="ddata" rows="16" cols="80"></textarea></td>
                 </tr>
             </tbody>
         </table>
     </body>
     <script>
-     /*
-        bin = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 }
-        
-      */
      function makeZap(name){
          obj = new Object();
          obj.name = name;
-         obj.S = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 };
-         obj.R = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 };
-         obj.A = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 };
-         obj.B = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 };
-         obj.D = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 };
-         obj.E = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 };
-         obj.F = {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0 };
+         obj.data = {
+             S : {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0, cnt: 0 },
+             R : {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0, cnt: 0 },
+             A : {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0, cnt: 0 },
+             B : {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0, cnt: 0 },
+             D : {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0, cnt: 0 },
+             E : {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0, cnt: 0 },
+             F : {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 0, '#' :0, cnt: 0 },
+         };
          return obj;
      }
 
-     let myZap = new Object();
-     myZap['ANH'] = makeZap('Anna');
-     myZap['CAB'] = makeZap('Cathi');
-
-     myZap['ANH'].S['='] += 2;
-     myZap['CAB'].S['='] += 1;
-     console.log(myZap);
-
-     
      // http://www.vbl-wiki.de/wiki/Hauptseite
+     /*
+        let skillWeights = {
+        S: {'=':  0, '/': 8, '-': 4, '!': 5, '+' : 7, '#' :10 },
+        R: {'=': -3, '/':-3, '-':-2, '!':-1, '+' : 7, '#' :10 },
+        A: {'=':  0, '/': 0, '-': 5, '!': 7, '+' : 7, '#' :10 },
+        B: {'=':  0, '/': 0, '-': 0, '!': 5, '+' : 5, '#' :10 },
+        D: {'=':  0, '/':10, '-': 2, '!': 3, '+' : 5, '#' :10 },
+        E: {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 7, '#' :10 },
+        F: {'=':  0, '/':10, '-': 2, '!': 5, '+' : 5, '#' :10 },
+        };
+      */
      let skillWeights = {
-         S: {'=':  0, '/': 8, '-': 4, '!': 5, '+' : 7, '#' :10 },
-         R: {'=': -3, '/':-3, '-':-2, '!':-1, '+' : 7, '#' :10 },
-         A: {'=':  0, '/': 0, '-': 5, '!': 7, '+' : 7, '#' :10 },
-         B: {'=':  0, '/': 0, '-': 0, '!': 5, '+' : 5, '#' :10 },
-         D: {'=':  0, '/':10, '-': 2, '!': 3, '+' : 5, '#' :10 },
-         E: {'=':  0, '/': 0, '-': 0, '!': 0, '+' : 7, '#' :10 },
-         F: {'=':  0, '/':10, '-': 2, '!': 5, '+' : 5, '#' :10 },
+         S: {'=':  0, '/': 0.5, '-': 1, '!': 2, '+' : 3, '#' :4 },
+         R: {'=':  0, '/': 0.5, '-': 1, '!':-9, '+' : 2, '#' :3 },
+         A: {'=':  0, '/':   0, '-': 5, '!': 7, '+' : 7, '#' :10 },
+         B: {'=':  0, '/':   0, '-': 0, '!': 5, '+' : 5, '#' :10 },
+         D: {'=':  0, '/':  10, '-': 2, '!': 3, '+' : 5, '#' :10 },
+         E: {'=':  0, '/':   0, '-': 0, '!': 0, '+' : 7, '#' :10 },
+         F: {'=':  0, '/':  10, '-': 2, '!': 5, '+' : 5, '#' :10 },
      };
-     
-     let myMap = new Map();
-     let defaultObj = {
-         name: 'NONEEDFORANAME',
-         S: { pts: 0, cnt: 0, ace: 0},
-         R: { pts: 0, cnt: 0, ace: 0},
-         A: { pts: 0, cnt: 0        },
-         D: { pts: 0, cnt: 0},
-     };
-     myMap.set('ANH', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Anna')));
-     myMap.set('CAB', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Cathi')));
-     myMap.set('EMD', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Emily')));
-     myMap.set('FAJ', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Fati')));
-     myMap.set('LEB', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Lena')));
-     myMap.set('MAH', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Marie')));
-     myMap.set('MIK', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Milena')));
-     myMap.set('PAD', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Paula D')));
-     myMap.set('PAE', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Paula E')));
-     myMap.set('PID', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Pia')));
-     myMap.set('REZ', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Becci')));
-     myMap.set('TAS', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Tami')));
-
-     myMap.set('LAK', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Lasse')));
-     myMap.set('JUM', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Julian')));
-     myMap.set('JUK', JSON.parse(JSON.stringify(defaultObj).replace('NONEEDFORANAME', 'Julius')));
+     // Map new skill value to  new value
+     let btValMap = {
+         R: {os:'S', '/':'/', '#':'-', '+':'!', '-':'+', '=':'#' },
+     }
 
      function analyze(){
-         // Zap old
-         myMap.forEach(function(value, key){
-             value.S.pts = value.S.cnt = value.S.ace = 0;
-             value.R.pts = value.R.cnt = value.R.ace = 0;
-         });
+         let myZap = new Object();
+
+         myZap['ANH'] = makeZap('Anna');
+         myZap['CAB'] = makeZap('Cathi');
+         myZap['EMD'] = makeZap('Emily');
+         myZap['FAJ'] = makeZap('Fati');
+         myZap['LEB'] = makeZap('Lena');
+         myZap['MAH'] = makeZap('Marie');
+         myZap['MIK'] = makeZap('Milena');
+         myZap['PAD'] = makeZap('Paula D');
+         myZap['PAE'] = makeZap('Paula E');
+         myZap['PID'] = makeZap('Pia');
+         myZap['REZ'] = makeZap('Becci');
+         myZap['TAS'] = makeZap('Tami');
+
+         myZap['LAK'] = makeZap('Lasse');
+         myZap['JUM'] = makeZap('Julian');
+         myZap['JUK'] = makeZap('Julius');
+         myZap['XXX'] = makeZap('XXX');
+
          //
-         let lines = document.getElementById('tdata').value.trim().split('\n');
-         console.log('************************');
          document.getElementById('sdata').value = '';
          document.getElementById('rdata').value = '';
+         let lines = document.getElementById('tdata').value.trim().split('\n');
+         console.log('************************');
          lines.forEach(function(line){
              let results = [];
              let re = /(a|\*)*([A-Z]{3}|\d{1,2})([srabdef])([hmqtufo])*([-+!=#.\/])/;
-             let doBacktrack = false;
+             let doBT = false;
              while ( match = re.exec(line) ){
-                 let value = 0;
+                 let value     = 0;
                  let team      = match[1] === undefined ? '*' : 'a';
                  let playerTag = match[2];
                  let skill     = match[3].toUpperCase();
                  let speed     = match[4] === undefined ? undefined : match[4].toUpperCase();
                  let valchr    = match[5];
-
-                 if      ( valchr === '=') value = 0;
-                 else if ( valchr === '/') value = 0.5;
-                 else if ( valchr === '-') value = 1;
-                 else if ( valchr === '+') value = 2;
-                 else if ( valchr === '#') value =3;
-                 if(doBacktrack){
-                     // Add evaluation of last player
-                     let i = results.length;
-                     if     ( value == 0  ) results[i-1].Value = 4;
-                     else if( value == 0.5) results[i-1].Value = 0.5;
-                     else if( value == 1  ) results[i-1].Value = 3;
-                     else if( value == 2  ) results[i-1].Value = 2;
-                     else if( value == 3  ) results[i-1].Value = 1;
-                     doBacktrack = false;
-                     results[i-1].isAce = (value==0);
+                 if( valchr === '.' ){
+                     doBT    = true;
+                     btPT    = playerTag;
+                     btSkill = skill;
                  }
-                 doBacktrack = valchr === '.' ? true : false;
-                 let result = { 'Tag': playerTag, 'Skill' : skill, 'Speed': speed, 'Value': value,
-                                isAce: (skill==='R') && (value == 0)
-                 };
-                 results.push(result);
+                 else{
+                     if(doBT){
+                         // Map new value to old Value
+                         myZap[btPT].data[btSkill][btValMap[skill][valchr]] += 1;
+                         myZap[btPT].data[btSkill].cnt += 1;
+                         doBT = false;
+                     }
+                     myZap[playerTag].data[skill][valchr] += 1;
+                     myZap[playerTag].data[skill].cnt += 1;
+                 }
                  line = line.substring(match[0].length);
              }
-             results.forEach(function(result){
-                 let foo = myMap.get(result.Tag);
-                 foo[result.Skill].cnt += 1;
-                 foo[result.Skill].pts += result.Value;
-                 foo[result.Skill].ace += result.isAce ? 1 : 0;
-                 myMap.set(result.Tag, foo);
-             });
          });
          console.log('Done lines');
-         myMap.forEach(function(value, key){
+
+         Object.entries(myZap).forEach(([key, obj])=>{
+             let pts = obj.data.S['=']*0
+                     + obj.data.S['/']*0.5
+                     + obj.data.S['-']*1
+                     + obj.data.S['!']*2
+                     + obj.data.S['+']*3
+                     + obj.data.S['#']*4;
              document.getElementById('sdata')
-                     .value += value.name  + '\t'
-                             + value.S.ace + '\t'
-                             + value.S.pts + '\t'
-                             + value.S.cnt + '\n';
+                     .value += obj.name
+                             + '\t' + obj.data.S['#']
+                             + '\t' + pts
+                             + '\t' + obj.data.S.cnt
+                             + '\t' + obj.data.S['=']
+                             + '\t' + obj.data.S['/']
+                             + '\t' + obj.data.S['+']
+                             + '\t' + obj.data.S['!']
+                             + '\t' + obj.data.S['-']
+                             + '\t' + obj.data.S['#']
+                             + '\n';
+             pts = obj.data.R['=']*0
+                 + obj.data.R['/']*0.5
+                 + obj.data.R['-']*1
+                 + obj.data.R['!']*2000
+                 + obj.data.R['+']*2
+                 + obj.data.R['#']*3;
              document.getElementById('rdata')
-                     .value += value.name  + '\t'
-                             + value.R.ace + '\t'
-                             + value.R.pts + '\t'
-                             + value.R.cnt + '\n';
+                     .value += obj.name
+                             + '\t' + obj.data.R['=']
+                             + '\t' + pts
+                             + '\t' + obj.data.R.cnt
+                             + '\t' + obj.data.R['=']
+                             + '\t' + obj.data.R['/']
+                             + '\t' + obj.data.R['+']
+                             + '\t' + obj.data.R['!']
+                             + '\t' + obj.data.R['-']
+                             + '\t' + obj.data.R['#']
+                             + '\n';
          });
      }
     </script>
