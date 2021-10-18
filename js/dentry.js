@@ -15,6 +15,7 @@ let btnStyle = [];
 
 let btnArray = [];
 
+let setEnd = 25;
 function initDentry(){
     console.log('Into DEntry()');
     btnArray = [
@@ -136,9 +137,9 @@ function onPlayer(team, player){
     changeStateButtonCol(2, true );
 }
 /**
-* Trigered, when one of the skills is pressed
-* Which skill requires/allows type?
-*/
+ * Trigered, when one of the skills is pressed
+ * Which skill requires/allows type?
+ */
 function onSkill  (skill){
     if(     skill ==='r' ){
         changeStateButtonCol(3, false);
@@ -190,7 +191,6 @@ function onType   (type){
     })
     changeStateButtonCol(3, false);
     changeStateButtonCol(4, true);
-    console.log('Number 5 alive');
     changeStateButtonCol(5, true);
 }
 function onQuality(qual){
@@ -239,6 +239,7 @@ function setServ(team){
     changeStateButtonCol(2, false);
     changeStateButtonCol(3, true);
 }
+
 /**
  * Wird ausgelöst, wenn eine Ralley abgeschlossen ist und ein Punkt
  * zugeordnet wird.
@@ -270,10 +271,23 @@ function onPoint(team){
     }
     ptsT[team].value = 1 + Number(ptsT[team].value);
     sctBox.value = (srvT==0?'*':'a')+plrBt[team][rotT[team]].value + 's';
-    // Disable this team
-    changeStateButtonCol(team,  false);
-    // Enable other team
-    changeStateButtonCol(1-team, true);
+
+    let aTeam = team;
+    let bTeam = 1-team;
+    let ptsA = ptsT[aTeam].value;
+    let ptsB = ptsT[bTeam].value;
+    if(ptsA >= setEnd && ptsA-ptsB > 1){
+        console.log('Team '+team+' hat Satz gewonnen');
+        let setA = Number(document.getElementById('set'+aTeam).innerHTML);
+        let setB = Number(document.getElementById('set'+bTeam).innerHTML);
+        setA += 1;
+        document.getElementById('set'+aTeam).innerHTML = setA;
+        ptsT[0].value = ptsT[1].value = rotT[0] = rotT[1] = 0;
+        // FIXME: 0 or 1.
+        setServ(0);
+        return;
+    }
+
     ['Standing','Jmp Flt', 'Jmp Rot', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
         btnArray[3][idx].value = val;
     })
@@ -281,17 +295,16 @@ function onPoint(team){
     changeStateButtonCol(3, true);
 }
 /**
- * 
+ *
  */
 function changeStateButtonCol(col, enabled){
-    //console.log('changeState '+col+' to '+enabled);
+    console.log('changeState '+col+' to '+enabled);
     //console.log(btnArray[col][0]);
     //console.log(btnStyle[col][enabled]);
     btnArray[col].forEach(function(item){
         item.disabled = !enabled;
         item.classList = 'w3-btn '+ btnStyle[col][enabled];
     });
-    console.log(btnArray[col][0]);
 }
 function transferT0(){
     for(i=0; i<12; i++){
