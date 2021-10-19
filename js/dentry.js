@@ -3,19 +3,18 @@
  */
 /* Variable section */
 /*********************************************/
-let sctBox = null;
-let isChain = false;
-let pltBtT0 = [];
-let pltBtT1 = [];
-let plrBt = [];
-let rotT = [0,0];
-let srvT = 0;
-let ptsT = [];
-let btnStyle = [];
-
-let btnArray = [];
-
-let setEnd = 25;
+let sctBox    = null;
+let isChain   = false;
+let pltBtT0   = [];
+let pltBtT1   = [];
+let plrBt     = [];
+let rotT      = [0,0];
+let srvT      = 0;
+let ptsT      = [];
+let btnStyle  = [];
+let btnArray  = [];
+let setEnd    = 25;
+let firstServ = 0;
 function initDentry(){
     console.log('Into DEntry()');
     btnArray = [
@@ -223,6 +222,7 @@ function onGuestField(btn){
 }
 
 function setServ(team){
+    firstServ = team;
     plrBt.forEach(function(x,t){
         x.forEach(function(item,idx){
             let cl = (idx>0) && (idx<4) ? 'bg-blue-front': 'bg-blue-back';
@@ -284,7 +284,7 @@ function onPoint(team){
         document.getElementById('set'+aTeam).innerHTML = setA;
         ptsT[0].value = ptsT[1].value = rotT[0] = rotT[1] = 0;
         // FIXME: 0 or 1.
-        setServ(0);
+        setServ(1-firstServ);
         return;
     }
 
@@ -321,4 +321,10 @@ function transferT0(){
             plrBt[1][p-1].value = t;
         }
     }
+}
+function copyHistory() {
+    console.log('Try to copy');
+    var copyText = document.getElementById("sctHist");
+    copyText.select();
+    document.execCommand("copy");
 }
