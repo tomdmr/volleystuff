@@ -6,6 +6,7 @@
     </head>
     <body>
         <h2>Parsing DV-Strings</h2>
+        Parser for scouting strings. Paste them into the text area below and press "Analyze". 
         <textarea id="tdata" rows="8" cols="60">
         </textarea>
         <p>
@@ -34,6 +35,9 @@
         </table>
     </body>
     <script>
+     /**
+      * Create a new data object.
+      */
      function makeZap(name){
          obj = new Object();
          obj.name = name;
@@ -70,14 +74,19 @@
          E: {'=':  0, '/':   0, '-': 0, '!': 0, '+' : 7, '#' :10 },
          F: {'=':  0, '/':  10, '-': 2, '!': 5, '+' : 5, '#' :10 },
      };
-     // Map new skill value to  new value
+     /**
+      * For chained data. Map the response judgement to the judgement
+      * of the initial skill.
+      */
      let btValMap = {
          R: {os:'S', '/':'/', '#':'-', '+':'!', '-':'+', '=':'#' },
      }
-
+     /**
+      * Analyze the input textarea
+      */
      function analyze(){
          let myZap = new Object();
-
+         // FIXME: These should be created on the fly, or from ini file
          myZap['ANH'] = makeZap('Anna');
          myZap['CAB'] = makeZap('Cathi');
          myZap['EMD'] = makeZap('Emily');
@@ -95,18 +104,18 @@
          myZap['JUM'] = makeZap('Julian');
          myZap['JUK'] = makeZap('Julius');
          myZap['XXX'] = makeZap('XXX');
-
          //
          document.getElementById('sdata').value = '';
          document.getElementById('rdata').value = '';
+         document.getElementById('adata').value = '';
+         document.getElementById('ddata').value = '';
+
          let lines = document.getElementById('tdata').value.trim().split('\n');
          console.log('************************');
          lines.forEach(function(line){
-             let results = [];
              let re = /(a|\*)*([A-Z]{3}|\d{1,2})([srabdef])([hmqtufo])*([-+!=#.\/])/;
              let doBT = false;
              while ( match = re.exec(line) ){
-                 let value     = 0;
                  let team      = match[1] === undefined ? '*' : 'a';
                  let playerTag = match[2];
                  let skill     = match[3].toUpperCase();
@@ -131,7 +140,6 @@
              }
          });
          console.log('Done lines');
-
          Object.entries(myZap).forEach(([key, obj])=>{
              let pts = obj.data.S['=']*0
                      + obj.data.S['/']*0.5
