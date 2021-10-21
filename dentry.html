@@ -202,9 +202,12 @@
                         <td><input type="button" id="bt76" class="w3-btn btn-yel-pas" value="1"      onclick="onGuestField(this)"></td>
                     </tr>
                     <tr>
-                        <td><input type="button" class="w3-btn" value="Pt A" onclick="onPoint(0)"></td>
+                        <td><input type="button"           class="w3-btn" value="Pt A" onclick="onPoint(0)"></td>
                         <td><input type="number" id="pts0" class="w3-btn" value="0" onclick=""></td>
-                        <td colspan="4"></td>
+                        <td></td>
+                        <td id="set0">0</td>
+                        <td id="set1">0</td>
+                        <td></td>
                         <td><input type="number" id="pts1" class="w3-btn" value="0" onclick=""></td>
                         <td><input type="button" class="w3-btn" value="Pt B" onclick="onPoint(1)"></td>
                     </tr>
@@ -213,7 +216,8 @@
                     </tr>
                     <tr>
                         <td colspan="6"><textarea id="sctHist" cols="60"></textarea></td>
-                        <td></td>
+                        <td><input type="button" class="w3-btn" value="Copy" onclick="copyHistory()"></td>
+                        <td><input type="button" class="w3-btn" value="Clear" onclick=""></td>
                     </tr>
                 </tbdody>
             </table>
