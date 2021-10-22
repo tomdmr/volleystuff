@@ -25,3 +25,13 @@ button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[
 .btn-yel-act{background-color: #fdc300; color:#000000}
 .btn-yel-pas{background-color: #7e6110; color:#a0a0a0}
 .btn-lbl-pas{background-color: #bff0fb; color:#000000}
+
+.Player-act{background-color: #bff0fb; color:#000000}
+.Player-pas{background-color: #88abb3; color:#000000}
+.Spielstand{background-color: black;color: red; font-size: 3.5vmin; text-align: center}
+.Skill-pas{background-color: #404040; color:#a0a0a0}
+.Skill-act{background-color: #c0c0c0; color:#000000}
+.Type-pas{background-color: #7e6000; color:#a0a0a0}
+.Type-act{background-color: #fdc300; color:#000000}
+.Eval-act{background-color: #15cc15; color:#000000}
+.Eval-pas{background-color: #105510; color:#a0a0a0}
