@@ -1,6 +1,6 @@
 html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}
 /* Extract from normalize.css by Nicolas Gallagher and Jonathan Neal git.io/normalize */
-html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}
+html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-family: "Lucida Sans", sans-serif;}body{margin:0}
 button,input,select,textarea,optgroup{font:inherit;margin:0}optgroup{font-weight:bold}
 /*
 button,input{overflow:visible}button,select{text-transform:none}
