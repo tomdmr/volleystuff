@@ -68,7 +68,9 @@ function initDentry(){
     plrBt[0][0].classList.add('border-red')
     //document.getElementById('divSet').style.display = 'none';
     //document.getElementById('divTeam').style.display = 'none';
-}
+    window.onbeforeunload = function () {
+        return 'Are you sure you want to leave?';
+}}
 
 function transferTeams(){
     for(j=0; j<2; j++){
