@@ -177,6 +177,12 @@ function enableEval(idx){
     item.classList.add('Eval-act');
     item.disabled = false;
 }
+function disableEval(idx){
+    let item = evalsBt[idx];
+    item.classList.remove('Eval-act');
+    item.classList.add('Eval-pas');
+    item.disabled = false;
+}
 /*******************************************/
 
 function toggleFirstService(){
@@ -208,6 +214,7 @@ function onSkill(skill){
     disableSkills();
     if(     skill ==='r' ){
         enableEvals();
+        disableEval(2);
     }
     else if(skill ==='a'){
         enableTypes();
@@ -301,6 +308,7 @@ function onPlayer(side, btn){
         sctBox.value += 'r';
         lastSkill    =  'r';
         enableEvals();
+        disableEval(2);
     }
     else{
         console.log('had player, enabling skills');
