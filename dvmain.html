@@ -101,23 +101,20 @@
                             <input type="button" onclick="toggleFirstService()" value="Service"/>
                         </td>
                         <td>
-                            <input type="button" value="Rot. +" onclick="rotateTeam(0)"/>
-                            <!--
-                                 <br>
-                                 <input type="button" value="Rot. -"/>
-                            -->
+                            <input type="button" value="Rot. +" onclick="rotateTeam(0)"/><br>
+                            <input type="button" value="Pt -" onclick="decPoints(0)"/>
                         </td>
                         <td><input type="button" class="w3-btn" onclick="onPoint(0)" value="Pt A"/></td>
                         <td id="Spielstand" class="Spielstand">0:0</td>
                         <td><input type="button" class="w3-btn" onclick="onPoint(1)" value="Pt B"/></td>
                         <td>
-                            <input type="button" value="Rot +" onclick="rotateTeam(1)"/>
-                            <!--
-                                 <br>
-                                 <input type="button" value="Rot -"/>
-                            -->
+                            <input type="button" value="Rot +" onclick="rotateTeam(1)"/><br>
+                            <input type="button" value="Pt -" onclick="decPoints(1)"/>
                         </td>
-                        <td><input type="button" onclick="startRalley()" value="Start"/></td>
+                        <td>
+                            <input type="button" onclick="startRalley()" value="Start"/><br>
+                            <input type="button" onclick="zapAll()" value="Zero"/>
+                        </td>
                     </tr>
                 </thead>
                 <tbdody>

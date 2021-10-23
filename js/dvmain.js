@@ -62,7 +62,7 @@ function initDentry(){
     disableSkills();
     disableTypes();
     disableEvals();
-    sctBox  = document.getElementById('sctBox');    
+    sctBox  = document.getElementById('sctBox');
     sctHist = document.getElementById('sctHist');
     sctBox.value = sctHist.value = '';
     plrBt[0][0].classList.add('border-red')
@@ -332,6 +332,7 @@ function onPoint(side){
         disableTeam(0);
         disableTeam(1);
         document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
+        rotT[0] = rotT[1] = 0;
         transferTeams();
         startRalley();
     }
@@ -345,6 +346,19 @@ function onPoint(side){
         }
         startRalley();
     }
+}
+function decPoints(side){
+    if(points[side]!=0) --points[side];
+    document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
+}
+function zapAll(){
+    points[0] = points[1] = 0;
+    disableTeam(0);
+    disableTeam(1);
+    document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
+    rotT[0] = rotT[1] = 0;
+    transferTeams();
+    startRalley();
 }
 function copyHistory(){
     console.log('Try to copy');
