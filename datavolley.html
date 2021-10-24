@@ -6,7 +6,8 @@
     </head>
     <body>
         <h2>Parsing DV-Strings</h2>
-        Parser for scouting strings. Paste them into the text area below and press "Analyze". 
+        Parser for scouting strings. Paste them into the text area below and press "Analyze".
+        <br>
         <textarea id="tdata" rows="8" cols="60">
         </textarea>
         <p>
@@ -87,23 +88,24 @@
      function analyze(){
          let myZap = new Object();
          // FIXME: These should be created on the fly, or from ini file
-         myZap['ANH'] = makeZap('Anna');
-         myZap['CAB'] = makeZap('Cathi');
-         myZap['EMD'] = makeZap('Emily');
-         myZap['FAJ'] = makeZap('Fati');
-         myZap['LEB'] = makeZap('Lena');
-         myZap['MAH'] = makeZap('Marie');
-         myZap['MIK'] = makeZap('Milena');
-         myZap['PAD'] = makeZap('Paula D');
-         myZap['PAE'] = makeZap('Paula E');
-         myZap['PID'] = makeZap('Pia');
-         myZap['REZ'] = makeZap('Becci');
-         myZap['TAS'] = makeZap('Tami');
+         /*
+            myZap['ANH'] = makeZap('Anna');
+            myZap['CAB'] = makeZap('Cathi');
+            myZap['EMD'] = makeZap('Emily');
+            myZap['FAJ'] = makeZap('Fati');
+            myZap['LEB'] = makeZap('Lena');
+            myZap['MAH'] = makeZap('Marie');
+            myZap['MIK'] = makeZap('Milena');
+            myZap['PAD'] = makeZap('Paula D');
+            myZap['PAE'] = makeZap('Paula E');
+            myZap['PID'] = makeZap('Pia');
+            myZap['REZ'] = makeZap('Becci');
+            myZap['TAS'] = makeZap('Tami');
 
-         myZap['LAK'] = makeZap('Lasse');
-         myZap['JUM'] = makeZap('Julian');
-         myZap['JUK'] = makeZap('Julius');
-         myZap['XXX'] = makeZap('XXX');
+            myZap['LAK'] = makeZap('Lasse');
+            myZap['JUM'] = makeZap('Julian');
+            myZap['JUK'] = makeZap('Julius');
+          */
          //
          document.getElementById('sdata').value = '';
          document.getElementById('rdata').value = '';
@@ -113,33 +115,48 @@
          let lines = document.getElementById('tdata').value.trim().split('\n');
          console.log('************************');
          lines.forEach(function(line){
-             let re = /(a|\*)*([A-Z]{3}|\d{1,2})([srabdef])([hmqtufo])*([-+!=#.\/])/;
-             let doBT = false;
-             while ( match = re.exec(line) ){
-                 let team      = match[1] === undefined ? '*' : 'a';
-                 let playerTag = match[2];
-                 let skill     = match[3].toUpperCase();
-                 let speed     = match[4] === undefined ? undefined : match[4].toUpperCase();
-                 let valchr    = match[5];
-                 if( valchr === '.' ){
-                     doBT    = true;
-                     btPT    = playerTag;
-                     btSkill = skill;
-                 }
-                 else{
-                     if(doBT){
-                         // Map new value to old Value
-                         myZap[btPT].data[btSkill][btValMap[skill][valchr]] += 1;
-                         myZap[btPT].data[btSkill].cnt += 1;
-                         doBT = false;
+             if(line.startsWith('@Home:') || line.startsWith('@Away:')){
+                 line = line.substr(6);
+                 let players=line.trim().split(';');
+                 console.log(players);
+                 players.forEach(function(player){
+                     fields=player.split('=');
+                     if(fields.length==1) fields[1] = fields[0];
+                     console.log(fields);
+                     myZap[fields[0]] = makeZap(fields[1]);
+                 });
+             }
+             else{
+                 let re = /(a|\*)*([A-Z]{3}|\d{1,2})([srabdef])([hmqtufo])*([-+!=#.\/])/;
+                 let doBT = false;
+                 while ( match = re.exec(line) ){
+                     let team      = match[1] === undefined ? '*' : 'a';
+                     let playerTag = match[2];
+                     let skill     = match[3].toUpperCase();
+                     let speed     = match[4] === undefined ? undefined : match[4].toUpperCase();
+                     let valchr    = match[5];
+                     if( valchr === '.' ){
+                         doBT    = true;
+                         btPT    = playerTag;
+                         btSkill = skill;
                      }
-                     myZap[playerTag].data[skill][valchr] += 1;
-                     myZap[playerTag].data[skill].cnt += 1;
+                     else{
+                         if(doBT){
+                             // Map new value to old Value
+                             myZap[btPT].data[btSkill][btValMap[skill][valchr]] += 1;
+                             myZap[btPT].data[btSkill].cnt += 1;
+                             doBT = false;
+                         }
+                         myZap[playerTag].data[skill][valchr] += 1;
+                         myZap[playerTag].data[skill].cnt += 1;
+                     }
+                     line = line.substring(match[0].length);
                  }
-                 line = line.substring(match[0].length);
              }
          });
          console.log('Done lines');
+         document.getElementById('sdata').value += 'Name\t#\tPukte\tAnzahl\t=\t/\t+\t!\t-\t#\n';
+         document.getElementById('rdata').value += 'Name\t=\tPukte\tAnzahl\t=\t/\t+\t!\t-\t#\n';
          Object.entries(myZap).forEach(([key, obj])=>{
              let pts = obj.data.S['=']*0
                      + obj.data.S['/']*0.5
