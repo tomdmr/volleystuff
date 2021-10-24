@@ -1,5 +1,6 @@
 let sctBox    = null;
 let sctHist   = null;
+let teamList  = [];
 let plrBt     = [];
 let skillsBt  = [];
 let typesBt   = [];
@@ -12,51 +13,29 @@ let serve     = firstServe;
 let points    = [0,0];
 let lastSkill = '';
 let chndSkill = '';
+let lastPlr   = null;
 let setEnd    = 25;
 function initDentry(){
     plrBt = [
-        [
-            document.getElementById('bt00'),
-            document.getElementById('bt01'),
-            document.getElementById('bt02'),
-            document.getElementById('bt03'),
-            document.getElementById('bt04'),
-            document.getElementById('bt05'),
+        [ document.getElementById('bt00'), document.getElementById('bt01'), document.getElementById('bt02'),
+          document.getElementById('bt03'), document.getElementById('bt04'), document.getElementById('bt05'),
         ],
-        [
-            document.getElementById('bt10'),
-            document.getElementById('bt11'),
-            document.getElementById('bt12'),
-            document.getElementById('bt13'),
-            document.getElementById('bt14'),
-            document.getElementById('bt15'),
+        [ document.getElementById('bt10'), document.getElementById('bt11'), document.getElementById('bt12'),
+          document.getElementById('bt13'), document.getElementById('bt14'), document.getElementById('bt15'),
         ]
     ];
     skillsBt = [
-        document.getElementById('bt20'),
-        document.getElementById('bt21'),
-        document.getElementById('bt22'),
-        document.getElementById('bt23'),
-        document.getElementById('bt24'),
-        document.getElementById('bt25'),
-        document.getElementById('bt26'),
+        document.getElementById('bt20'), document.getElementById('bt21'), document.getElementById('bt22'), document.getElementById('bt23'),
+        document.getElementById('bt24'), document.getElementById('bt25'), document.getElementById('bt26'),
     ];
     typesBt = [
-        document.getElementById('bt30'),
-        document.getElementById('bt31'),
-        document.getElementById('bt32'),
-        document.getElementById('bt33'),
-        document.getElementById('bt34'),
-        document.getElementById('bt35'),
+        document.getElementById('bt30'), document.getElementById('bt31'), document.getElementById('bt32'),
+        document.getElementById('bt33'), document.getElementById('bt34'), document.getElementById('bt35'),
         document.getElementById('bt36'),
     ];
     evalsBt = [
-        document.getElementById('bt40'),
-        document.getElementById('bt41'),
-        document.getElementById('bt42'),
-        document.getElementById('bt43'),
-        document.getElementById('bt44'),
-        document.getElementById('bt45'),
+        document.getElementById('bt40'), document.getElementById('bt41'), document.getElementById('bt42'),
+        document.getElementById('bt43'), document.getElementById('bt44'), document.getElementById('bt45'),
         document.getElementById('bt46'),
     ];
     disableSkills();
@@ -70,18 +49,42 @@ function initDentry(){
     //document.getElementById('divTeam').style.display = 'none';
     window.onbeforeunload = function () {
         return 'Are you sure you want to leave?';
-}}
+    }
+    /*
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    for(var key of urlParams.keys()) {
+        console.log(key);
+        console.log(urlParams.get(key));
+    }
+    */
+}
 
 function transferTeams(){
+    teamList[0] = '@Home:';
+    teamList[1] = '@Away:';
     for(j=0; j<2; j++){
-        for(i=0;i<12;i++){
-            let p = Number(document.getElementById('p'+j+i).value);
+        let inpPlr = document.getElementsByName('pTag'+j);
+        let inpPos = document.getElementsByName('pPos'+j);
+        inpPlr.forEach(function(item, idx){
+            let t = item.value.trim()
+            if(t !== '')
+                teamList[j] += t+ ';';
+            let s = t.indexOf('=');
+            if(s>0){
+                console.log('Found =');
+                t= t.substring(0,s);
+                console.log(t);
+            }
+            p = Number(inpPos[idx].value);
             if(p>0){
-                let t = document.getElementById(''+j+i).value;
                 plr[left==0?1-j:j][(5+p-rotT[j])%6] = t;
             }
-        }
+        });
     }
+    teamList[0] = teamList[0].slice(0,-1);
+    teamList[1] = teamList[1].slice(0,-1);
+    console.log(teamList[0]);
     displayTeams();
 }
 function displayTeams(){
@@ -202,6 +205,9 @@ function setSide(){
     //deactivateTeam(1-left);
 }
 function startRalley(){
+    if(sctHist.value===''){
+        sctHist.value += teamList[0]+'\n'+teamList[1]+'\n';;
+    }
     enableTypes();
     sctBox.value = (left?'*':'a') + plrBt[serve][0].value + 's';
     ['Standing', 'Jmp Flt', 'Jmp Top', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
@@ -257,10 +263,11 @@ function onType(type){
     enableEvals();
 }
 function onEval(eval){
+    console.log(lastPlr);
     if(     eval === '#'){
         if(lastSkill ==='b' || lastSkill === 'a'){
             sctBox.value +='#';
-            onPoint(serve);
+            onPoint(lastPlr.side);
             disableEvals();
             return;
         }
@@ -303,6 +310,7 @@ function onChain(){
 }
 function onPlayer(side, btn){
     sctBox.value += (side==left? 'a': '*') +btn.value;
+    lastPlr = {side: side, tag: btn.value};
     if( chndSkill === 's' ){
         chndSkill = '';
         sctBox.value += 'r';
@@ -316,6 +324,7 @@ function onPlayer(side, btn){
     }
 }
 function onPoint(side){
+    lastPlr = null;
     sctHist.value += sctBox.value + '\n';
     console.log('Point on side ' + side);
     console.log(serve);
