@@ -67,6 +67,7 @@ function initDentry(){
              });
          }
      }
+    hideField();
 }
 
 function transferTeams(){
@@ -132,6 +133,12 @@ function disableSkills(){
         item.disabled = true;
     } );
 }
+function disableSkill(idx){
+    let item = skillsBt[idx];
+    item.classList.remove('Skill-act');
+    item.classList.add('Skill-pas');
+    item.disabled = true;
+}
 function enableSkills(){
     console.log('enableSkills()');
     skillsBt.forEach(function(item){
@@ -195,6 +202,38 @@ function disableEval(idx){
     item.classList.add('Eval-pas');
     item.disabled = false;
 }
+function hideField(){
+    document.getElementsByName('btField').forEach(function(item){
+        item.style.display = 'none';
+    });
+}
+function showField(side,full){
+    let vals = [ ['5', '7', '4', '6', '8', '3', '1', '9', '2'],
+                 ['2', '9', '1', '3', '8', '6', '4', '7', '5']];
+    document.getElementsByName('btField').forEach(function(item, idx){
+        item.value = vals[side][idx];
+        if(full){
+            item.classList.remove('Field-pas');
+            item.classList.add('Field-act');
+            item.disabled = false;
+        }
+        else{
+            if( ((side==0)&&( idx==0 || idx==3 || idx ==6)
+                 || ((side==1)&&( idx==2 || idx==5 || idx==8)))){
+                item.classList.remove('Field-pas');
+                item.classList.add('Field-act');
+                item.disabled = false;
+            }else{
+                item.classList.remove('Field-act');
+                item.classList.add('Field-pas');
+                item.disabled = true;
+            }
+        }
+        //item.style.display = 'block';
+    });
+}
+function serviceField(side){}
+function receiveField(side){}
 /*******************************************/
 
 function toggleFirstService(){
@@ -218,6 +257,7 @@ function startRalley(){
         sctHist.value += teamList[0]+'\n'+teamList[1]+'\n';;
     }
     enableTypes();
+    showField(1-left, false);
     sctBox.value = (left?'*':'a') + plrBt[serve][0].value + 's';
     ['Standing', 'Jmp Flt', 'Jmp Top', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
         typesBt[idx].value = val;
@@ -330,6 +370,8 @@ function onPlayer(side, btn){
     else{
         console.log('had player, enabling skills');
         enableSkills();
+        disableSkill(0);
+        // Can we disable Receive, too?
     }
 }
 function onPoint(side){
