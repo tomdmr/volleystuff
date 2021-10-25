@@ -50,14 +50,23 @@ function initDentry(){
     window.onbeforeunload = function () {
         return 'Are you sure you want to leave?';
     }
-    /*
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    for(var key of urlParams.keys()) {
-        console.log(key);
-        console.log(urlParams.get(key));
-    }
-    */
+
+     const queryString = window.location.search;
+     const urlParams = new URLSearchParams(queryString);
+     for(j=0; j<2; j++){
+         inpPlr = document.getElementsByName('pTag'+j)
+         inpPos = document.getElementsByName('pPos'+j)
+         if(urlParams.has('T'+j)){
+             let T1 = urlParams.get('T'+j);
+             console.log(T1);
+             T1.split(';').forEach(function(plr,idx){
+                 plrPos = plr.split('?');
+                 inpPlr[idx].value = plrPos[0];
+                 if( plrPos.length > 1)
+                     inpPos[idx].value = plrPos[1];
+             });
+         }
+     }
 }
 
 function transferTeams(){
