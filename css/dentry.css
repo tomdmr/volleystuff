@@ -35,3 +35,5 @@ button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[
 .Type-act{background-color: #fdc300; color:#000000}
 .Eval-act{background-color: #15cc15; color:#000000}
 .Eval-pas{background-color: #105510; color:#a0a0a0}
+.Field-act{background-color: #2020ff; color:#ffffff}
+.Field-pas{background-color: #10107f; color:#a0a0a0}
