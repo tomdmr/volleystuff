@@ -69,6 +69,7 @@ function initDentry(){
          }
      }
     hideField();
+    document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
 }
 
 function transferTeams(){
@@ -274,6 +275,7 @@ function onSkill(skill){
         disableEval(2);
     }
     else if(skill ==='a'){
+        // Type buttons: Hard, Quick, Tip etc.
         enableTypes();
     }
     else if(skill ==='b'){
@@ -311,7 +313,14 @@ function onType(type){
     })
 
     disableTypes();
-    enableEvals();
+    if(lastSkill === 's'){
+        disableEvals();
+        enableEval(5);
+        enableEval(6);
+    }
+    else{
+        enableEvals();
+    }
 }
 function onEval(eval){
     if(lastField !==''){
@@ -391,7 +400,7 @@ function onPlayer(side, btn){
 }
 function onPoint(side){
     lastPlr = null;
-    sctHist.value += sctBox.value + '\n';
+    sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'\n';
     console.log('Point on side ' + side);
     console.log(serve);
     points[side] += 1;
