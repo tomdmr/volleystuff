@@ -12,6 +12,7 @@ let firstServe= 0;
 let serve     = firstServe;
 let points    = [0,0];
 let lastSkill = '';
+let lastField = '';
 let chndSkill = '';
 let lastPlr   = null;
 let setEnd    = 25;
@@ -82,9 +83,9 @@ function transferTeams(){
                 teamList[j] += t+ ';';
             let s = t.indexOf('=');
             if(s>0){
-                console.log('Found =');
+                //console.log('Found =');
                 t= t.substring(0,s);
-                console.log(t);
+                //console.log(t);
             }
             p = Number(inpPos[idx].value);
             if(p>0){
@@ -96,6 +97,7 @@ function transferTeams(){
     teamList[1] = teamList[1].slice(0,-1);
     console.log(teamList[0]);
     displayTeams();
+    document.getElementsByName('btnHead').forEach(function(item){item.disabled=false;});
 }
 function displayTeams(){
     for(j=0; j<2; j++){
@@ -229,13 +231,12 @@ function showField(side,full){
                 item.disabled = true;
             }
         }
-        //item.style.display = 'block';
+        item.style.display = 'block';
     });
 }
 function serviceField(side){}
 function receiveField(side){}
 /*******************************************/
-
 function toggleFirstService(){
     firstServe = 1- firstServe;
     setService(firstServe);
@@ -253,11 +254,12 @@ function setSide(){
     //deactivateTeam(1-left);
 }
 function startRalley(){
+    console.log('startRalley, left='+left+' serve='+serve);
     if(sctHist.value===''){
         sctHist.value += teamList[0]+'\n'+teamList[1]+'\n';;
     }
     enableTypes();
-    showField(1-left, false);
+    showField(serve, false);
     sctBox.value = (left?'*':'a') + plrBt[serve][0].value + 's';
     ['Standing', 'Jmp Flt', 'Jmp Top', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
         typesBt[idx].value = val;
@@ -312,6 +314,10 @@ function onType(type){
     enableEvals();
 }
 function onEval(eval){
+    if(lastField !==''){
+        sctBox.value += lastField;
+        lastField = '';
+    }
     console.log(lastPlr);
     if(     eval === '#'){
         if(lastSkill ==='b' || lastSkill === 'a'){
@@ -350,14 +356,21 @@ function onEval(eval){
     enableTeam(1);
 }
 function onChain(){
+    if(lastField !==''){
+        sctBox.value += lastField;
+        lastField = '';
+    }
     sctBox.value += '.';
     chndSkill = lastSkill;
     console.log('setting chained skill to '+lastSkill);
     disableEvals();
     enableTeam(0);
     enableTeam(1);
+    hideField();
+
 }
 function onPlayer(side, btn){
+    showField(side, true);
     sctBox.value += (side==left? 'a': '*') +btn.value;
     lastPlr = {side: side, tag: btn.value};
     if( chndSkill === 's' ){
@@ -372,6 +385,8 @@ function onPlayer(side, btn){
         enableSkills();
         disableSkill(0);
         // Can we disable Receive, too?
+        disableSkill(1);
+
     }
 }
 function onPoint(side){
@@ -406,6 +421,12 @@ function onPoint(side){
         }
         startRalley();
     }
+}
+function onField(btn){
+    console.log('onField, value '+btn.value);
+    console.log('Last skill: '+lastSkill);
+    lastField = btn.value;
+    hideField();
 }
 function decPoints(side){
     if(points[side]!=0) --points[side];
