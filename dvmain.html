@@ -95,23 +95,23 @@
                 <thead>
                     <tr style="text-align: center">
                         <td>
-                            <input type="button" onclick="setSide()" value="Seite"/><br>
-                            <input type="button" onclick="toggleFirstService()" value="Service"/>
+                            <input type="button" name="btnHead" onclick="setSide()" value="Seite" disabled="true"/><br>
+                            <input type="button" name="btnHead" onclick="toggleFirstService()" value="Service" disabled="true"/>
                         </td>
                         <td>
-                            <input type="button" value="Rot. +" onclick="rotateTeam(0)"/><br>
-                            <input type="button" value="Pt -" onclick="decPoints(0)"/>
+                            <input type="button" name="btnHead" value="Rot. +" onclick="rotateTeam(0)" disabled="true"/><br>
+                            <input type="button" name="btnHead" value="Pt -" onclick="decPoints(0)" disabled="true"/>
                         </td>
-                        <td><input type="button" class="w3-btn" onclick="onPoint(0)" value="Pt A"/></td>
+                        <td><input type="button" name="btnHead" class="w3-btn" onclick="onPoint(0)" value="Pt A" disabled="true"/></td>
                         <td id="Spielstand" class="Spielstand">0:0</td>
-                        <td><input type="button" class="w3-btn" onclick="onPoint(1)" value="Pt B"/></td>
+                        <td><input type="button" name="btnHead" class="w3-btn" onclick="onPoint(1)" value="Pt B" disabled="true"/></td>
                         <td>
-                            <input type="button" value="Rot +" onclick="rotateTeam(1)"/><br>
-                            <input type="button" value="Pt -" onclick="decPoints(1)"/>
+                            <input type="button" name="btnHead" value="Rot +" onclick="rotateTeam(1)" disabled="true"/><br>
+                            <input type="button" name="btnHead" value="Pt -" onclick="decPoints(1)" disabled="true"/>
                         </td>
                         <td>
-                            <input type="button" onclick="startRalley()" value="Start"/><br>
-                            <input type="button" onclick="zapAll()" value="Zero"/>
+                            <input type="button" name="btnHead" id="btnStart" onclick="startRalley()" value="Start" disabled="true"/><br>
+                            <input type="button" name="btnHead" onclick="zapAll()" value="Zero" disabled="true"/>
                         </td>
                     </tr>
                 </thead>
