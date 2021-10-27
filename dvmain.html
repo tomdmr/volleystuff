@@ -9,7 +9,7 @@
         <title>Data-Volley Entry</title>
     </head>
     <body onload="initDentry()">
-        <h2><input type="button" onclick="toggleVisibility('divTeam')" value="Toggle"/>Spieler</h2>
+        <h2><input type="button" onclick="toggleVisibility('divTeam')" value="Toggle"/> Spieler</h2>
         <div id="divTeam">
             <table>
                 <tr>
@@ -89,14 +89,17 @@
                 </tr>
             </table>
         </div>
-        <h2><input type="button" onclick="toggleVisibility('divSet')" value="Toggle"/>Erfassen</h2>
+        <h2><input type="button" onclick="toggleVisibility('divSet')" value="Toggle"/> Erfassen</h2>
         <div id="divSet">
             <table>
                 <thead>
                     <tr style="text-align: center">
                         <td>
-                            <input type="button" name="btnHead" onclick="setSide()" value="Seite" disabled="true"/><br>
-                            <input type="button" name="btnHead" onclick="toggleFirstService()" value="Service" disabled="true"/>
+                            <input type="button" name="btnHead" class="w4-btn" onclick="setSide()"     value="Seite" disabled="true"/>
+                            <input type="button" name="btnHead" class="w4-btn" onclick="rotateTeam(0)" value="Rot +" disabled="true"/>
+                            <br>
+                            <input type="button" name="btnHead" class="w4-btn" onclick="toggleFirstService()" value="Ball" disabled="true"/>
+                            <input type="button" name="btnHead" class="w4-btn" onclick="decPoints(0)" value="Pt -" disabled="true"/>
                         </td>
                         <td>
                             <input type="button" name="btnHead" value="Rot. +" onclick="rotateTeam(0)" disabled="true"/><br>
