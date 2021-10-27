@@ -12,6 +12,7 @@
         </textarea>
         <p>
             <button onclick="analyze()">Analyze</button>
+            <button onclick="document.getElementById('tdata').value=''">Clear</button>
         </p>
         <h2>Results</h2>
         <table>
@@ -108,8 +109,8 @@
                      myZap[fields[0]] = makeZap(fields[1]);
                  });
              }
-             else{
-                 let re = /(a|\*)*([A-Z]{3}|\d{1,2})([srabdef])([hmqtufo])*([-+!=#.\/])/;
+             else{        // team         Tag          skill      type      zone  rating
+                 let re = /(a|\*)?([A-Z]{3}|\d{1,2})([srabdef])([hmqtufo])?(\d)?([-+!=#.\/])/;
                  let doBT = false;
                  while ( match = re.exec(line) ){
                      let team      = match[1] === undefined ? '*' : 'a';
@@ -129,8 +130,12 @@
                              myZap[btPT].data[btSkill].cnt += 1;
                              doBT = false;
                          }
-                         myZap[playerTag].data[skill][valchr] += 1;
-                         myZap[playerTag].data[skill].cnt += 1;
+                         if(playerTag in myZap){
+                             myZap[playerTag].data[skill][valchr] += 1;
+                             myZap[playerTag].data[skill].cnt += 1;
+                         }
+                         else
+                             console.warn(playerTag + 'is not defined as Player');
                      }
                      line = line.substring(match[0].length);
                  }
