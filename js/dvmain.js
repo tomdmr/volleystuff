@@ -1,5 +1,6 @@
 let sctBox    = null;
 let sctHist   = null;
+let clickHist = [];
 let teamList  = [];
 let plrBt     = [];
 let skillsBt  = [];
