@@ -94,6 +94,7 @@
             <table>
                 <thead>
                     <tr style="text-align: center">
+                        <td></td>
                         <td>
                             <input type="button" name="btnHead" class="w4-btn" onclick="setSide()"     value="Seite" disabled="true"/>
                             <input type="button" name="btnHead" class="w4-btn" onclick="rotateTeam(0)" value="Rot +" disabled="true"/>
@@ -101,20 +102,16 @@
                             <input type="button" name="btnHead" class="w4-btn" onclick="toggleFirstService()" value="Ball" disabled="true"/>
                             <input type="button" name="btnHead" class="w4-btn" onclick="decPoints(0)" value="Pt -" disabled="true"/>
                         </td>
-                        <td>
-                            <input type="button" name="btnHead" value="Rot. +" onclick="rotateTeam(0)" disabled="true"/><br>
-                            <input type="button" name="btnHead" value="Pt -" onclick="decPoints(0)" disabled="true"/>
-                        </td>
                         <td><input type="button" name="btnHead" class="w3-btn" onclick="onPoint(0)" value="Pt A" disabled="true"/></td>
                         <td id="Spielstand" class="Spielstand">0:0</td>
                         <td><input type="button" name="btnHead" class="w3-btn" onclick="onPoint(1)" value="Pt B" disabled="true"/></td>
                         <td>
-                            <input type="button" name="btnHead" value="Rot +" onclick="rotateTeam(1)" disabled="true"/><br>
-                            <input type="button" name="btnHead" value="Pt -" onclick="decPoints(1)" disabled="true"/>
+                            <input type="button" name="btnHead" class="w4-btn" value="Rot +" onclick="rotateTeam(1)" disabled="true"/>
+                            <input type="button" name="btnHead" class="w4-btn" id="btnStart" onclick="startRalley()" value="Start" disabled="true"/><br>
+                            <input type="button" name="btnHead" class="w4-btn" value="Pt -" onclick="decPoints(1)" disabled="true"/>
+                            <input type="button" name="btnHead" class="w4-btn" onclick="zapAll()" value="Zero" disabled="true"/>
                         </td>
                         <td>
-                            <input type="button" name="btnHead" id="btnStart" onclick="startRalley()" value="Start" disabled="true"/><br>
-                            <input type="button" name="btnHead" onclick="zapAll()" value="Zero" disabled="true"/>
                         </td>
                     </tr>
                 </thead>
