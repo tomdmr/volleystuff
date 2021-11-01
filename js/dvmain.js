@@ -17,6 +17,7 @@ let lastField = '';
 let chndSkill = '';
 let lastPlr   = null;
 let setEnd    = 25;
+let timeRalleyStart = ''
 function initDentry(){
     plrBt = [
         [ document.getElementById('bt00'), document.getElementById('bt01'), document.getElementById('bt02'),
@@ -309,15 +310,16 @@ function onType(type){
         console.log('Unknown play-type '+type);
     }
     sctBox.value += type;
-    ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
-        typesBt[idx].value = val;
-    })
 
     disableTypes();
     if(lastSkill === 's'){
+        timeRalleyStart = new Date().toISOString();
         disableEvals();
         enableEval(5);
         enableEval(6);
+        ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
+            typesBt[idx].value = val;
+        })
     }
     else{
         enableEvals();
@@ -401,7 +403,7 @@ function onPlayer(side, btn){
 }
 function onPoint(side){
     lastPlr = null;
-    sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'\n';
+    sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'|' + timeRalleyStart + '\n';
     console.log('Point on side ' + side);
     console.log(serve);
     points[side] += 1;
