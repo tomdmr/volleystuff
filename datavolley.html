@@ -109,15 +109,20 @@
                      myZap[fields[0]] = makeZap(fields[1]);
                  });
              }
-             else{        // team         Tag          skill      type      zone  rating
+             else{
+                 // Split off who won the point and date and time.
+                 recs = line.split('|');
+                 console.log(recs);
+                 //         Team  Tag              Skill      Speed       Zone  Eval
                  let re = /(a|\*)?([A-Z]{3}|\d{1,2})([srabdef])([hmqtufo])?(\d)?([-+!=#.\/])/;
                  let doBT = false;
-                 while ( match = re.exec(line) ){
-                     let team      = match[1] === undefined ? '*' : 'a';
+                 while ( match = re.exec(recs[0]) ){
+                     let team      = match[1] === undefined ? '*' : match[1];
                      let playerTag = match[2];
                      let skill     = match[3].toUpperCase();
                      let speed     = match[4] === undefined ? undefined : match[4].toUpperCase();
-                     let valchr    = match[5];
+                     let valchr    = match[6];
+                     //console.log(match);
                      if( valchr === '.' ){
                          doBT    = true;
                          btPT    = playerTag;
@@ -137,7 +142,8 @@
                          else
                              console.warn(playerTag + 'is not defined as Player');
                      }
-                     line = line.substring(match[0].length);
+                     //line = line.substring(match[0].length);
+                     recs[0] = recs[0].substring(match[0].length);
                  }
              }
          });
