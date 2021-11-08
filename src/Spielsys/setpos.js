@@ -5,11 +5,34 @@ rcvPos= {
     r4: [{x: 37.5,y:210}, {x:112.5, y:240}, {x:187.5, y:240}, {x:262.5, y:210},],
     r3: [{x:  65, y: 210}, {x: 150, y: 240}, {x: 235, y: 210},]
 };
+let atkBP = [ // Basispunkt
+              {x: 10, y:10}, // left
+              {x: 10, y:10}, // middle
+              {x: 10, y:10}, // right
+              {x: 10, y:10}, // right back
+              {x: 10, y:10}, // Pipe
+];
+
+let atkAP = [ // Angriffspunkt
+              {x:  10, y: 10}, // left
+              {x:  10, y: 10}, // middle
+              {x:  10, y: 10}, // right
+              {x:  10, y: 10}, // right back
+              {x: 105, y:150}, // Pipe
+];
+let atkPP = [ // Passpunkt, da kommt der Ball hin
+              {x:  10, y: 10}, // left
+              {x:  10, y: 10}, // middle
+              {x:  10, y: 10}, // right
+              {x:  10, y: 10}, // right back
+              {x: 105, y:150}, // Pipe
+];
+
 /************* Postionen für die Annahme **************/
 let K1_0 = {
     s4_2: {
         r3:[
-            { d: [ 4, 5, 0 ],    s:  {idx: 3, x: 230, y: 32 }, o: [{idx: 2, x: 265, y: 30 },{idx:1, x:285, y:100} ], },
+            { d: [ 4, 5, 1 ],    s:  {idx: 0, x: 268, y:227 }, o: [{idx: 2, x: 150, y: 30 },{idx:3, x: 16, y: 30} ], },
             { d: [ 4, 5, 0 ],    s:  {idx: 2, x: 230, y: 32 }, o: [{idx: 1, x: 285, y:100 },{idx:3, x: 20, y:100} ], },
             { d: [ 4, 5, 0 ],    s:  {idx: 1, x: 230, y: 32 }, o: [{idx: 2, x: 175, y: 30,},{idx:3, x: 16, y:100} ], },
             { d: [ 4, 5, 1 ],    s:  {idx: 0, x: 268, y:227 }, o: [{idx: 2, x: 150, y: 30 },{idx:3, x: 16, y:100} ], },
@@ -17,7 +40,7 @@ let K1_0 = {
             { d: [ 5, 0, 1 ],    s:  {idx: 4, x:  35, y: 45 }, o: [{idx: 2, x: 115, y: 16 },{idx:3, x: 16, y: 16} ], },
         ],
         r4:[
-            { d: [ 4, 5, 0, 1 ], s:  {idx: 3, x: 190, y: 30 }, o: [{idx: 2, x: 230, y: 30 },], },
+            { d: [ 3, 4, 5, 1 ], s:  {idx: 0, x: 284, y:225 }, o: [{idx: 2, x: 150, y: 30 },], },
             { d: [ 4, 5, 0, 1 ], s:  {idx: 2, x: 225, y: 30 }, o: [{idx: 3, x:  16, y:100 },], },
             { d: [ 3, 4, 5, 0 ], s:  {idx: 1, x: 235, y: 32 }, o: [{idx: 2, x: 175, y: 30 },], },
             { d: [ 3, 4, 5, 2 ], s:  {idx: 0, x: 284, y:225 }, o: [{idx: 1, x: 285, y: 16 },], },
@@ -78,12 +101,22 @@ function doK1_0(sys, rot, rieg, Q){
     Q[sit.s.idx].animate(xFPos(sit.s), { onChange: canvas.renderAll.bind(canvas), onComplete: animationRunning = 0 })
     Phase = 1;
 }
-let K1_3Pos0 = [
-    [ {x:225, y: 35}, {x:  5,y:100}, {x:175,y:100}, {x:300,y:100}, {x:112.5,y:200}, {x:187.5,y:200}, ],
-    [ {x:225, y: 35}, {x:  5,y:100}, {x:175,y:100}, {x:300,y:185}, {x:112.5,y:200}, {x:187.5,y:200}, ],
-];
+let K1_3Pos0 = { 
+    s4_2:[ // Wartepositionen während Pass
+        [ {x:225, y: 35}, {x:  5,y:100}, {x:175,y:100}, {x:300,y:100}, {x:112.5,y:200}, {x:187.5,y:200}, ],
+        [ {x:225, y: 35}, {x:  5,y:100}, {x:175,y:100}, {x:300,y:185}, {x:112.5,y:200}, {x:187.5,y:200}, ],
+    ],
+    s5_1:[
+        // Pos rot 1-3
+        // Setter          L Attacker     Ctr Attacker  R Attacker      Left Back        Right Back
+        [ {x:225, y: 35}, {x:  5,y:100}, {x:175,y:100}, {x:300,y:100}, {x:112.5,y:200}, {x:187.5,y:200}, ],
+        // Pos rot 4-6
+        // Setter          L Attacker     Ctr Attacker  R Attacker      Left Back        Right Back
+        [ {x:225, y: 35}, {x:  5,y:100}, {x:175,y:100}, {x:300,y:185}, {x:112.5,y:200}, {x:187.5,y:200}, ],
+    ],
+};
 let K1_3Pos1 = [
-    [
+    [   
         [ {x:225, y: 35}, {x: 25,y:45}, {x:120,y: 65}, {x:215,y:100}, {x: 15  ,y:185}, {x: 135 ,y:160}, ],
         [ {x:225, y: 35}, {x: 82,y:54}, {x:160,y: 45}, {x:270,y: 80}, {x:125  ,y:134}, {x: 213 ,y:132}, ],
         [ {x:225, y: 35}, {x: 95,y:40}, {x:160,y: 87}, {x:275,y: 45}, {x: 200 ,y:140}, {x:285  ,y:145}, ],
@@ -97,12 +130,12 @@ let K1_3Pos1 = [
 
 let K1_30={
     s4_2:[ // Steller, links, mitte, rechts, LB, RB
-        [3, 3, 1, 2, 4, 5],
-        [5, 3, 2, 1, 4, 0],
-        [1, 3, 2, 0, 4, 5],
-        [0, 3, 2, 1, 4, 5],
-        [5, 3, 2, 1, 4, 0],
-        [4, 3, 2, 1, 5, 0],
+           [0, 3, 2, 1, 4, 5],
+           [5, 3, 2, 1, 4, 0],
+           [1, 3, 2, 0, 4, 5],
+           [0, 3, 2, 1, 4, 5],
+           [5, 3, 2, 1, 4, 0],
+           [4, 3, 2, 1, 5, 0],
     ],
     s5_1:[
         [0, 3, 2, 1, 4, 5],
@@ -141,22 +174,25 @@ function doK1_1(spsys, rot, rieg, Q){
                     {easing: fabric.util.ease.easeInOutQuad});
     // Rest
     K1_1['s'+ spsys][rot].forEach(function(item){
-        console.log('item.idx: '+item.idx);
-        console.log('pp: '+pp);
+        //console.log('item.idx: '+item.idx);
+        //console.log('pp: '+pp);
         if(item.idx != pp )
             Q1[item.idx].animate(xF(item.x, item.y));
     });
     //Ball
+    B.animate( {left: xt, top:yt}, { onChange: canvas.renderAll.bind(canvas),});
+    /*
     setTimeout(function(){
         B.animate( {left: xt, top:yt}, { onChange: canvas.renderAll.bind(canvas),})}, 1000);
+    */
     console.log('Done doK1_1');
 }
-function doK1_2(spsys, rot, Q){
+function doK1_2(spsys, rot, rieg, Q){
     console.log('Running doK1_2 with spsys: s'+spsys);
     K1_30['s'+spsys][rot].forEach(function(item, idx){
         //console.log(item);
         //console.log(K1_3Pos0[Math.floor(rot/3)][idx]);
-        Q[item].animate(xFPos(K1_3Pos0[Math.floor(rot/3)][idx]));
+        Q[item].animate(xFPos(K1_3Pos0['s'+spsys][Math.floor(rot/3)][idx]));
     });
     // Ball zum Steller
     B.animate(xF(230,20),{onChange: canvas.renderAll.bind(canvas)});
@@ -168,7 +204,7 @@ function doK1_3(spsys, rot, state, Q){
     K1_30['s'+spsys][rot].forEach(function(item, idx){
         //console.log(item);
         //console.log(K1_3Pos0[Math.floor(rot/3)][idx]);
-        Q[item].set(xFPos(K1_3Pos0[Math.floor(rot/3)][idx]));
+        Q[item].set(xFPos(K1_3Pos0['s'+spsys][Math.floor(rot/3)][idx]));
     });
 
     K1_30['s'+spsys][rot].forEach(function(item, idx){
@@ -222,3 +258,17 @@ function doK2(spsys, rot, state, Q){
 }
 
 
+function setK1_0(spsys, rota){
+    console.log('Into setK1_0');
+    riegel = 1 - riegel;
+    doK1_0(spsys, rota, riegel, Q1);
+    document.getElementById("mp-2").innerHTML = "<center>" + (riegel ? "4er-Riegel" : "3er-Riegel") + "</center>";
+    document.getElementById('mp-3').style.display = 'block';
+}
+function setK1_1(spsys, rota){
+    console.log('Into setK1_1');
+    doK1_1(spsys, rota, riegel, Q1);
+    document.getElementById('mp-2').style.display = 'none';
+    document.getElementById('mp-3').style.display = 'none';
+    document.getElementById('mp-4').style.display = 'block';
+}
