@@ -28,8 +28,11 @@ divert(0)
          //window.onresize = resizeCanvas;
          var state = 0;
          var bState = 0;
+         console.log(Q1[0]);
+         console.log(Q1[0].left+Q1[0].width/2);
          function pass(){
-             doK1_2('_SPSYS', _ROTA-1, Q1);
+             console.log('Into situation K1_2');
+             doK1_2('_SPSYS', _ROTA-1, riegel, Q1);
              document.getElementById('mp-4').style.display = 'none';
              document.getElementById('mp-5').style.display = 'block';
          }
