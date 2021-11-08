@@ -1,0 +1,40 @@
+html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}
+/* Extract from normalize.css by Nicolas Gallagher and Jonathan Neal git.io/normalize */
+html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-family: "Lucida Sans", sans-serif;}body{margin:0}
+button,input,select,textarea,optgroup{font:inherit;margin:0}optgroup{font-weight:bold}
+/*
+button,input{overflow:visible}button,select{text-transform:none}
+button,[type=button],[type=reset],[type=submit]{-webkit-appearance:button}
+button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{padding:}
+button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring{outline:12px dotted ButtonText}
+*/
+.w3-btn{ background-color: #f1f1f1;height: 11.8vmin; width: 11.8vmin; font-size: 2.5vmin;/*0.7cm;*/ padding:10px}
+.w4-btn{ background-color: #f1f1f1;height: 5.5vmin; width: 5.5vmin; font-size: 1.6vmin;padding:3px}
+.bg-blue-front{background-color: #2020ff; color:#ffffff}
+.bg-blue-back{ background-color: #2020c0; color:#ffffff}
+.bg-gray{background-color: #505050; color:#ffffff}
+.bg-green{background-color: #20aa20; color:#ffffff}
+.bg-orange{background-color: #fdc303; color:#ffffff}
+.bg-red{background-color: #d01010; color:#ffffff}
+.border-black{border: 10px solid black}
+.border-red{border: 10px solid red}
+
+.btn-gry-pas{background-color: #404040; color:#a0a0a0}
+.btn-gry-act{background-color: #c0c0c0; color:#000000}
+.btn-grn-act{background-color: #15cc15; color:#000000}
+.btn-grn-pas{background-color: #105510; color:#a0a0a0}
+.btn-yel-act{background-color: #fdc300; color:#000000}
+.btn-yel-pas{background-color: #7e6110; color:#a0a0a0}
+.btn-lbl-pas{background-color: #bff0fb; color:#000000}
+
+.Player-act{background-color: #bff0fb; color:#000000}
+.Player-pas{background-color: #88abb3; color:#000000}
+.Spielstand{background-color: black;color: red; font-size: 3.5vmin; text-align: center}
+.Skill-pas{background-color: #404040; color:#a0a0a0}
+.Skill-act{background-color: #c0c0c0; color:#000000}
+.Type-pas{background-color: #7e6000; color:#a0a0a0}
+.Type-act{background-color: #fdc300; color:#000000}
+.Eval-act{background-color: #15cc15; color:#000000}
+.Eval-pas{background-color: #105510; color:#a0a0a0}
+.Field-act{background-color: #2020ff; color:#ffffff}
+.Field-pas{background-color: #10107f; color:#a0a0a0}
