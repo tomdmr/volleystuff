@@ -21,7 +21,9 @@ function createCourt(){
     pf.set('selectable', false);
     return pf;
 }
-
+/**
+ * Die 50 Offsetkommen von der Vershiebung des Courts um 50. Die 16 vom Kreisradius
+*/
 function createPlayer(rotation, name, x, y){
     if((rotation>1) && (rotation<5)){
 	    color = 'rgba(192, 255, 192, 1.0)';
@@ -34,8 +36,6 @@ function createPlayer(rotation, name, x, y){
     var P = new fabric.Group([ C, T ], {left: x+50-16, top: y+50-16 }); /* 318, 318*/
     P.set('lockScalingX', true);
     P.set('lockScalingY', true);
-    //T.hasControls = T.hasBorders = false;
-    //C.hasControls = C.hasBorders = false;
     P.hasControls = P.hasBorders = false;
     return P;
 }
@@ -49,14 +49,15 @@ function setPlayersBasePosition( P, anim){
     var xP = [ 270, 270, 150,  30,  30, 150 ];
     var yP = [ 270, 130, 130, 130, 270, 270 ];
     var i;
+    let pW= P[0].width / 2;
     if(anim){
 	    for(i=0; i<6; i++){
-	        P[i].animate({left: xP[i]+50-16, top: yP[i]+50-16},
+	        P[i].animate({left: xP[i]+50-pW, top: yP[i]+50-pW},
 			             { onChange: canvas.renderAll.bind(canvas) }) ;
 	    }
     }else{
 	    for(i=0; i<6; i++){
-	        P[i].set( {left: xP[i]+50-16, top: yP[i]+50-16}) ;
+	        P[i].set( {left: xP[i]+50-pW, top: yP[i]+50-pW}) ;
 	    }
     }
 }
@@ -200,18 +201,6 @@ function resizeCanvas() {
    }
  */
 
-function setK1_0(spsys, rota){
-    riegel = 1 - riegel;
-    doK1_0(spsys, rota, riegel, Q1);
-    document.getElementById("mp-2").innerHTML = "<center>" + (riegel ? "4er-Riegel" : "3er-Riegel") + "</center>";
-    document.getElementById('mp-3').style.display = 'block';
-}
-function setK1_1(spsys, rota){
-    doK1_1(spsys, rota, riegel, Q1);
-    document.getElementById('mp-2').style.display = 'none';
-    document.getElementById('mp-3').style.display = 'none';
-    document.getElementById('mp-4').style.display = 'block';
-}
 
 function reset(){
     document.getElementById('mp-1').style.display = 'block';
