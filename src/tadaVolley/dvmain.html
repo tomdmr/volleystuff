@@ -4,6 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link href="css/dvstyle.css" rel="stylesheet" type="text/css">
         <script src="js/common.js"></script>
+        <script src="js/DragDropTouch.js"></script>
         <script src="js/dvmain.js"></script>
         
         <title>Data-Volley Entry</title>
@@ -13,79 +14,91 @@
         <div id="divTeam">
             <table>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag00" draggable="true" ondragstart="drag(event)">Player  1 </span></td>
+                    <td><input type="text" id="pTag00" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag10" draggable="true" ondragstart="drag(event)">Player  1 </span></td>
+                    <td><input type="text" id="pTag10" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag01" draggable="true" ondragstart="drag(event)">Player  2 </span></td>
+                    <td><input type="text" id="pTag01" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag11" draggable="true" ondragstart="drag(event)">Player  2 </span></td>
+                    <td><input type="text" id="pTag11" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag02" draggable="true" ondragstart="drag(event)">Player  3 </span></td>
+                    <td><input type="text" id="pTag02" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag12" draggable="true" ondragstart="drag(event)">Player  3 </span></td>
+                    <td><input type="text" id="pTag12" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag03" draggable="true" ondragstart="drag(event)">Player  4 </span></td>
+                    <td><input type="text" id="pTag03" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag13" draggable="true" ondragstart="drag(event)">Player  4 </span></td>
+                    <td><input type="text" id="pTag13" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag04" draggable="true" ondragstart="drag(event)">Player  5 </span></td>
+                    <td><input type="text" id="pTag04" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag14" draggable="true" ondragstart="drag(event)">Player  5 </span></td>
+                    <td><input type="text" id="pTag14" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag05" draggable="true" ondragstart="drag(event)">Player  6 </span></td>
+                    <td><input type="text" id="pTag05" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag15" draggable="true" ondragstart="drag(event)">Player  6 </span></td>
+                    <td><input type="text" id="pTag15" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag06" draggable="true" ondragstart="drag(event)">Player  7 </span></td>
+                    <td><input type="text" id="pTag06" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag16" draggable="true" ondragstart="drag(event)">Player  7 </span></td>
+                    <td><input type="text" id="pTag16" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag07" draggable="true" ondragstart="drag(event)">Player  8 </span></td>
+                    <td><input type="text" id="pTag07" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag17" draggable="true" ondragstart="drag(event)">Player  8 </span></td>
+                    <td><input type="text" id="pTag17" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag08" draggable="true" ondragstart="drag(event)">Player  9 </span></td>
+                    <td><input type="text" id="pTag08" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag18" draggable="true" ondragstart="drag(event)">Player  9 </span></td>
+                    <td><input type="text" id="pTag18" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"   name="pTag0" value=""/></td>
-                    <td><input type="number" name="pPos0" value=""/></td>
-                    <td><input type="text"   name="pTag1" value=""/></td>
-                    <td><input type="number" name="pPos1" value=""/></td>
+                    <td><span id="spTag09" draggable="true" ondragstart="drag(event)">Player 10 </span></td>
+                    <td><input type="text" id="pTag09" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag19" draggable="true" ondragstart="drag(event)">Player 10 </span></td>
+                    <td><input type="text" id="pTag19" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"    name="pTag0" value=""/></td>
-                    <td><input type="number"  name="pPos0" value=""/></td>
-                    <td><input type="text"    name="pTag1" value=""/></td>
-                    <td><input type="number"  name="pPos1" value=""/></td>
+                    <td><span id="spTag0a" draggable="true" ondragstart="drag(event)">Player 11 </span></td>
+                    <td><input type="text" id="pTag0a" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag1a" draggable="true" ondragstart="drag(event)">Player 11 </span></td>
+                    <td><input type="text" id="pTag1a" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="text"    name="pTag0" value=""/></td>
-                    <td><input type="number"  name="pPos0" value=""/></td>
-                    <td><input type="text"    name="pTag1" value=""/></td>
-                    <td><input type="number"  name="pPos1" value=""/></td>
+                    <td><span id="spTag0b" draggable="true" ondragstart="drag(event)">Player 12 </span></td>
+                    <td><input type="text" id="pTag0b" name="pTag0" value=""/></td>
+                    <td>&nbsp;</td>
+                    <td><span id="spTag1b" draggable="true" ondragstart="drag(event)">Player 12 </span></td>
+                    <td><input type="text" id="pTag1b" name="pTag1" value=""/></td>
                 </tr>
                 <tr>
-                    <td><input type="button" onclick="transferTeams()" value="Übertrage Teams"/></td>
+                    <td><input type="button" onclick="transferTeams()" value="Finalize Teams"></td>
                 </tr>
             </table>
         </div>
@@ -117,31 +130,31 @@
                 </thead>
                 <tbdody>
                     <tr>
-                        <td><input type="button" id="bt04" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value="V"/></td>
-                        <td><input type="button" id="bt03" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value="IV"/></td>
+                        <td><input type="button" id="bt04" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""/></td>
+                        <td><input type="button" id="bt03" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="5" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="7" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="4" onclick="onField(this)"/></td>
-                        <td><input type="button" id="bt11" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value="II"/></td>
-                        <td><input type="button" id="bt10" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value="I"/></td>
+                        <td><input type="button" id="bt11" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""/></td>
+                        <td><input type="button" id="bt10" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""/></td>
                     </tr>
                     <tr>
-                        <td><input type="button" id="bt05" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value="VI"></td>
-                        <td><input type="button" id="bt02" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value="III"></td>
+                        <td><input type="button" id="bt05" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
+                        <td><input type="button" id="bt02" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="6" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="8" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="3" onclick="onField(this)"/></td>
-                        <td><input type="button" id="bt12" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value="III"></td>
-                        <td><input type="button" id="bt15" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value="VI"></td>
+                        <td><input type="button" id="bt12" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
+                        <td><input type="button" id="bt15" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
                     </tr>
                     <tr>
-                        <td><input type="button" id="bt00" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value="I"></td>
-                        <td><input type="button" id="bt01" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value="II"></td>
+                        <td><input type="button" id="bt00" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
+                        <td><input type="button" id="bt01" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="1" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="9" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="2" onclick="onField(this)"/></td>
-                        <td><input type="button" id="bt13" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value="IV"></td>
-                        <td><input type="button" id="bt14" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value="V"></td>
+                        <td><input type="button" id="bt13" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
+                        <td><input type="button" id="bt14" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
                     </tr>
                     <tr>
                         <td><input type="button" id="bt20" class="w3-btn Skill-pas" value="Serve" onclick="onSkill('s')"></td>

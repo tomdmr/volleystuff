@@ -48,66 +48,96 @@ function initDentry(){
     sctHist = document.getElementById('sctHist');
     sctBox.value = sctHist.value = '';
     plrBt[0][0].classList.add('border-red')
+    plrBt.forEach(function(team){
+        team.forEach(function(bt){
+            bt.addEventListener('dragover', function(ev){ev.preventDefault(); });
+            bt.addEventListener('drop', function(ev){
+                ev.preventDefault();
+                let data = ev.dataTransfer.getData('text');
+                ev.target.value = data;
+                document.getElementById('btnStart').disabled = !checkCanStart();
+            });
+        });
+    });
     //document.getElementById('divSet').style.display = 'none';
     //document.getElementById('divTeam').style.display = 'none';
     window.onbeforeunload = function () {
         return 'Are you sure you want to leave?';
     }
 
-     const queryString = window.location.search;
-     const urlParams = new URLSearchParams(queryString);
-     for(j=0; j<2; j++){
-         inpPlr = document.getElementsByName('pTag'+j)
-         inpPos = document.getElementsByName('pPos'+j)
-         if(urlParams.has('T'+j)){
-             let T1 = urlParams.get('T'+j);
-             console.log(T1);
-             T1.split(';').forEach(function(plr,idx){
-                 plrPos = plr.split('?');
-                 inpPlr[idx].value = plrPos[0];
-                 if( plrPos.length > 1)
-                     inpPos[idx].value = plrPos[1];
-             });
-         }
-     }
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    for(j=0; j<2; j++){
+        let inpPlr = document.getElementsByName('pTag'+j)
+        //let inpPos = document.getElementsByName('pPos'+j)
+        if(urlParams.has('T'+j)){
+            let T1 = urlParams.get('T'+j);
+            T1.split(';').forEach(function(plr,idx){
+                // Run through all player from cmd-line
+                plrPos = plr.split('?');
+                inpPlr[idx].value = plrPos[0];
+                if(plrPos.length > 1){
+                    let ofs = plrPos[0].indexOf('=');
+                    if(ofs > 0)
+                        plrBt[j][plrPos[1]-1].value = plrPos[0].substring(0, plrPos[0].indexOf('='));
+                    else
+                        plrBt[j][plrPos[1]-1].value = plrPos[0];
+                }
+            });
+        }
+    }
     hideField();
-    document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
+    collectTeams();
+    console.log(plr);
+    //document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
+    document.getElementById('btnStart').disabled= !checkCanStart();
 }
 
 function transferTeams(){
+    /* Build team list for header */
     teamList[0] = '@Home:';
     teamList[1] = '@Away:';
     for(j=0; j<2; j++){
         let inpPlr = document.getElementsByName('pTag'+j);
-        let inpPos = document.getElementsByName('pPos'+j);
         inpPlr.forEach(function(item, idx){
             let t = item.value.trim()
             if(t !== '')
                 teamList[j] += t+ ';';
             let s = t.indexOf('=');
             if(s>0){
-                //console.log('Found =');
                 t= t.substring(0,s);
-                //console.log(t);
-            }
-            p = Number(inpPos[idx].value);
-            if(p>0){
-                plr[left==0?1-j:j][(5+p-rotT[j])%6] = t;
             }
         });
     }
     teamList[0] = teamList[0].slice(0,-1);
     teamList[1] = teamList[1].slice(0,-1);
-    console.log(teamList[0]);
+    /*
+    //console.log(teamList[0]);
+    //console.log(plr[0]);
     displayTeams();
     document.getElementsByName('btnHead').forEach(function(item){item.disabled=false;});
+    document.getElementById('btnStart').disabled= !checkCanStart();
+    */
+}
+
+function checkCanStart(){
+    let OK = true;
+    plrBt.forEach(function(t,idxT){
+        t.forEach(function(item, idxP){
+            plr[idxT][idxP] = item.value;
+            OK = OK && (item.value !== '' )
+        })
+    });
+    document.getElementsByName('btnHead').forEach(function(item){item.disabled=!OK;});
+    return OK;
+}
+function collectTeams(){
+    plrBt[0].forEach(function(item, idx){ plr[0][idx]=item.value;});
+    plrBt[1].forEach(function(item, idx){ plr[1][idx]=item.value;});
 }
 function displayTeams(){
-    for(j=0; j<2; j++){
-        for(i=0; i<6; i++){
-            plrBt[j][i].value = plr[j][i];
-        }
-    }
+    plrBt[0].forEach(function(item, idx){ item.value = plr[0][idx]; });
+    plrBt[1].forEach(function(item, idx){ item.value = plr[1][idx]; });
 }
 function rotateTeam(team){
     console.log('Rotating team '+team);
@@ -224,7 +254,7 @@ function showField(side,full){
         }
         else{
             if( ((side==0)&&( idx==0 || idx==3 || idx ==6)
-                 || ((side==1)&&( idx==2 || idx==5 || idx==8)))){
+              || ((side==1)&&( idx==2 || idx==5 || idx==8)))){
                 item.classList.remove('Field-pas');
                 item.classList.add('Field-act');
                 item.disabled = false;
@@ -251,6 +281,8 @@ function setService(team){
     //sctBox.value = (left?'*':'a') + plrBt[firstServe][0].value + 's';
 }
 function setSide(){
+    plrBt[0].forEach(function(item, idx){ plr[1][idx]=item.value;});
+    plrBt[1].forEach(function(item, idx){ plr[0][idx]=item.value;});
     left = 1-left;
     transferTeams();
     //activateTeam(left);
@@ -259,6 +291,7 @@ function setSide(){
 function startRalley(){
     console.log('startRalley, left='+left+' serve='+serve);
     if(sctHist.value===''){
+        transferTeams();
         sctHist.value += teamList[0]+'\n'+teamList[1]+'\n';;
     }
     enableTypes();
@@ -461,4 +494,24 @@ function copyHistory(){
 }
 function clearHistory(){
     document.getElementById("sctHist").value='';
+}
+function drag(ev){
+    let data = ev.target.id.substring(1,100);
+    data = document.getElementById(data).value;
+    let s = data.indexOf('=');
+    if(s>0){
+        ev.dataTransfer.setData('text', data.substring(0,s));
+    }
+    else{
+        ev.dataTransfer.setData('text', data);
+    }
+    console.log(data);
+}
+function allowDrop(ev){
+    ev.preventDefault();
+}
+function drop(ev){
+    ev.preventDefault();
+    let data = ev.dataTransfer.getData('text');
+    ev.target.value = data;
 }
