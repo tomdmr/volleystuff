@@ -11,8 +11,7 @@
         <h2>Parsing DV-Strings</h2>
         Parser for scouting strings. Paste them into the text area below and press "Analyze".
         <br>
-        <textarea id="tdata" rows="8" cols="60">
-        </textarea>
+        <textarea id="tdata" rows="8" cols="60"></textarea>
         <p>
             <button onclick="analyze()">Analyze</button>
             <button onclick="document.getElementById('tdata').value=''">Clear</button>
@@ -23,10 +22,10 @@
             <thead>
                 <tr>
                     <th>Name</th><th>#</th><th>Punkte</th>
-                    <th>Anzahl</th><th>=</th>
+                    <th>Anzahl</th><th>#</th>
                     <th>/</th><th>+</th>
                     <th>!</th><th>-</th>
-                    <th>#</th>
+                    <th>=</th>
                 </tr>
             </thead>
         </table>
@@ -35,35 +34,47 @@
             <thead>
                 <tr>
                     <th>Name</th><th>=</th><th>Punkte</th>
-                    <th>Anzahl</th><th>=</th>
+                    <th>Anzahl</th><th>#</th>
                     <th>/</th><th>+</th>
                     <th>!</th><th>-</th>
-                    <th>#</th>
+                    <th>=</th>
+                </tr>
+            </thead>
+        </table>
+        <h3>Attack</h3>
+        <table id="tAttack" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Name</th><th>=</th><th>Punkte</th>
+                    <th>Anzahl</th><th>#</th>
+                    <th>/</th><th>+</th>
+                    <th>!</th><th>-</th>
+                    <th>0</th>
                 </tr>
             </thead>
         </table>
         <!-- 
-        <h2>Stuff</h2>
-        <table>
-            <thead>
-                <th>Serve</th>
-                <th>Receive</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><textarea id="Sdata" rows="16" cols="80"></textarea></td>
-                    <td><textarea id="Rdata" rows="16" cols="80"></textarea></td>
-                </tr>
-                <tr>
-                    <th>Attack</th>
-                    <th>Dig</th>
-                </tr>
-                <tr>
-                    <td><textarea id="Adata" rows="16" cols="80"></textarea></td>
-                    <td><textarea id="Ddata" rows="16" cols="80"></textarea></td>
-                </tr>
-            </tbody>
-        </table>
+             <h2>Stuff</h2>
+             <table>
+             <thead>
+             <th>Serve</th>
+             <th>Receive</th>
+             </thead>
+             <tbody>
+             <tr>
+             <td><textarea id="Sdata" rows="16" cols="80"></textarea></td>
+             <td><textarea id="Rdata" rows="16" cols="80"></textarea></td>
+             </tr>
+             <tr>
+             <th>Attack</th>
+             <th>Dig</th>
+             </tr>
+             <tr>
+             <td><textarea id="Adata" rows="16" cols="80"></textarea></td>
+             <td><textarea id="Ddata" rows="16" cols="80"></textarea></td>
+             </tr>
+             </tbody>
+             </table>
         -->
     </body>
     <script>
@@ -121,11 +132,11 @@
          let myZap = new Object();
          //
          /*
-         document.getElementById('Sdata').value = '';
-         document.getElementById('Rdata').value = '';
-         document.getElementById('Adata').value = '';
-         document.getElementById('Ddata').value = '';
-         */
+            document.getElementById('Sdata').value = '';
+            document.getElementById('Rdata').value = '';
+            document.getElementById('Adata').value = '';
+            document.getElementById('Ddata').value = '';
+          */
          let lines = document.getElementById('tdata').value.trim().split('\n');
          console.log('************************');
          lines.forEach(function(line){
@@ -180,64 +191,51 @@
          });
          console.log('Done lines');
          /*
-         document.getElementById('Sdata').value += 'Name\t#\tPukte\tAnzahl\t=\t/\t+\t!\t-\t#\n';
-         document.getElementById('Rdata').value += 'Name\t=\tPukte\tAnzahl\t=\t/\t+\t!\t-\t#\n';
-         */
+            document.getElementById('Sdata').value += 'Name\t#\tPukte\tAnzahl\t=\t/\t+\t!\t-\t#\n';
+            document.getElementById('Rdata').value += 'Name\t=\tPukte\tAnzahl\t=\t/\t+\t!\t-\t#\n';
+          */
          let tServiceData = [];
          let tReceiveData = [];
+         let tAttackData = [];
          Object.entries(myZap).forEach(([key, obj])=>{
              pts = 0;
              evals.forEach(function(item){
                  pts += obj.data.S[item] * skillWeights.S[item];
              });
              tServiceData.push([
-                 obj.name, obj.data.S['#'], pts, obj.data.S.cnt, obj.data.S['='],
+                 obj.name, obj.data.S['#'], pts, obj.data.S.cnt, obj.data.S['#'],
                  obj.data.S['/'], obj.data.S['+'], obj.data.S['!'], obj.data.S['-'],
-                 obj.data.S['#']
+                 obj.data.S['=']
              ]);
-             /*
-                document.getElementById('Sdata')
-                .value += obj.name
-                + '\t' + obj.data.S['#']
-                + '\t' + pts
-                + '\t' + obj.data.S.cnt
-                + '\t' + obj.data.S['=']
-                + '\t' + obj.data.S['/']
-                + '\t' + obj.data.S['+']
-                + '\t' + obj.data.S['!']
-                + '\t' + obj.data.S['-']
-                + '\t' + obj.data.S['#']
-                + '\n';
-              */
+
              pts = 0;
              evals.forEach(function(item){
                  pts += obj.data.R[item] * skillWeights.R[item];
              });
              tReceiveData.push([
-                 obj.name, obj.data.R['='], pts, obj.data.R.cnt, obj.data.R['='],
+                 obj.name, obj.data.R['='], pts, obj.data.R.cnt, obj.data.R['#'],
                  obj.data.R['/'], obj.data.R['+'], obj.data.R['!'], obj.data.R['-'],
-                 obj.data.R['#']
+                 obj.data.R['=']
              ]);
-             /*
-                document.getElementById('Rdata')
-                .value += obj.name
-                + '\t' + obj.data.R['=']
-                + '\t' + pts
-                + '\t' + obj.data.R.cnt
-                + '\t' + obj.data.R['=']
-                + '\t' + obj.data.R['/']
-                + '\t' + obj.data.R['+']
-                + '\t' + obj.data.R['!']
-                + '\t' + obj.data.R['-']
-                + '\t' + obj.data.R['#']
-                + '\n';
-              */
+
+             pts = 0;
+             evals.forEach(function(item){
+                 pts += obj.data.A[item] * skillWeights.A[item];
+             });
+             tAttackData.push([
+                 obj.name, obj.data.A['='], pts, obj.data.A.cnt, obj.data.A['#'],
+                 obj.data.A['/'], obj.data.A['+'], obj.data.A['!'], obj.data.A['-'],
+                 obj.data.A['=']
+             ]);
          });
          $('#tService').DataTable( {
              data: tServiceData,
          });
          $('#tReceive').DataTable( {
              data: tReceiveData,
+         });
+         $('#tAttack').DataTable( {
+             data: tAttackData,
          });
      }
     </script>
