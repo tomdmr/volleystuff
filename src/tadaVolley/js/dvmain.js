@@ -18,6 +18,7 @@ let chndSkill = '';
 let lastPlr   = null;
 let setEnd    = 25;
 let timeRalleyStart = ''
+let plrFire   = false;
 function initDentry(){
     plrBt = [
         [ document.getElementById('bt00'), document.getElementById('bt01'), document.getElementById('bt02'),
@@ -50,8 +51,9 @@ function initDentry(){
     plrBt[0][0].classList.add('border-red')
     plrBt.forEach(function(team){
         team.forEach(function(bt){
-            bt.addEventListener('dragover', function(ev){ev.preventDefault(); });
+            bt.addEventListener('dragover', function(ev){console.log('in dragover'); ev.preventDefault(); });
             bt.addEventListener('drop', function(ev){
+                console.log('in drop');
                 ev.preventDefault();
                 let data = ev.dataTransfer.getData('text');
                 ev.target.value = data;
@@ -89,7 +91,7 @@ function initDentry(){
     hideField();
     collectTeams();
     console.log(plr);
-    //document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
+    document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
     document.getElementById('btnStart').disabled= !checkCanStart();
 }
 
@@ -131,6 +133,9 @@ function checkCanStart(){
     document.getElementsByName('btnHead').forEach(function(item){item.disabled=!OK;});
     return OK;
 }
+/**
+* Collect teams from plr buffer
+*/
 function collectTeams(){
     plrBt[0].forEach(function(item, idx){ plr[0][idx]=item.value;});
     plrBt[1].forEach(function(item, idx){ plr[1][idx]=item.value;});
@@ -159,6 +164,10 @@ function disableTeam(team){
         plrBt[team][i].classList.add('Player-pas');
         plrBt[team][i].disabled = true;
     }
+}
+function disableTeamEvent(team){
+    plrBt[team].forEach(function(item){
+    });
 }
 /*******************************************/
 function disableSkills(){
@@ -281,19 +290,21 @@ function setService(team){
     //sctBox.value = (left?'*':'a') + plrBt[firstServe][0].value + 's';
 }
 function setSide(){
-    plrBt[0].forEach(function(item, idx){ plr[1][idx]=item.value;});
-    plrBt[1].forEach(function(item, idx){ plr[0][idx]=item.value;});
+    plrBt[0].forEach(function(item, idx){ plr[1][idx] = item.value;});
+    plrBt[1].forEach(function(item, idx){ plr[0][idx] = item.value;});
     left = 1-left;
-    transferTeams();
-    //activateTeam(left);
-    //deactivateTeam(1-left);
+    console.log(left);
+    displayTeams();
 }
 function startRalley(){
+    plrFire = true;
     console.log('startRalley, left='+left+' serve='+serve);
     if(sctHist.value===''){
         transferTeams();
         sctHist.value += teamList[0]+'\n'+teamList[1]+'\n';;
     }
+    disableTeam(0);
+    disableTeam(1);
     enableTypes();
     showField(serve, false);
     sctBox.value = (left?'*':'a') + plrBt[serve][0].value + 's';
@@ -415,8 +426,11 @@ function onChain(){
 
 }
 function onPlayer(side, btn){
+    // Check if we should fire?
+    if(!plrFire)
+        return;
     showField(side, true);
-    sctBox.value += (side==left? 'a': '*') +btn.value;
+    sctBox.value += ' ' + (side==left? 'a': '*') +btn.value;
     lastPlr = {side: side, tag: btn.value};
     if( chndSkill === 's' ){
         chndSkill = '';
@@ -429,10 +443,9 @@ function onPlayer(side, btn){
         console.log('had player, enabling skills');
         enableSkills();
         disableSkill(0);
-        // Can we disable Receive, too?
         disableSkill(1);
-
     }
+    disableTeam(side);
 }
 function onPoint(side){
     lastPlr = null;
