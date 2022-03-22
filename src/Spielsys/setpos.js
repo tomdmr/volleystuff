@@ -98,7 +98,8 @@ function doK1_0(sys, rot, rieg, Q){
         Q[item.idx].animate( xFPos(item));
     });
     animationRunning = 1;
-    Q[sit.s.idx].animate(xFPos(sit.s), { onChange: canvas.renderAll.bind(canvas), onComplete: animationRunning = 0 })
+    Q[sit.s.idx].animate(xFPos(sit.s),
+                         { onChange: canvas.renderAll.bind(canvas), onComplete: animationRunning = 0 })
     Phase = 1;
 }
 let K1_3Pos0 = { 
