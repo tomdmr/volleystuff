@@ -4,7 +4,8 @@ SRC = ball_t.png  fabric.js  myinit.js  setpos.js  spielsys.css
 DSTFILES= $(foreach name, $(SRC), $(DSTDIR)/$(name))
 HTMLSRC= d2.m4 blank.html
 
-all: # $(DSTFILES) $(DSTDIR)/5_1_rot1.html
+all: $(DSTDIR) $(DSTDIR)/5_1_rot1.html # $(DSTFILES)
+	cp $(SRC) $(DSTDIR)
 
 install:
 	echo $(DSTROOT)/$(DSTDIR)
@@ -15,6 +16,9 @@ $(DSTDIR)/5_1_rot1.html: d2.m4 blank.html
 	for s in 5_1 4_2; do for r in 1 2 3 4 5 6; do \
 	m4 -D_SPSYS=$$s -D_ROTA=$$r blank.html | tail -n+4 > $(DSTDIR)/$${s}_rot$${r}.html ; \
 	done; done
+
+$(DSTDIR):
+	mkdir -p $(DSTDIR)
 
 foo: $(CPYFILES)
 	echo $(CPYFILES) $(DSTDIR)
