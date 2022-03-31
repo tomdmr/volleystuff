@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+    <!-- Copyright (C) thd 2020, CC BY-SA 4.0
+         Schwarzer Basis-Hintergrund, wechselt zu Blau oder Rot, daraufhin muss die eine
+         oder andere Reaktion durchgeführt werden
+    -->
+    <head>
+        <meta charset="UTF-8">
+        <!-- Grundsätzlicher style: Farbiger Hintergrund, weiße Schrift. Größe proportional zum Viewport -->
+        <style>
+         body {
+             background-color: black;
+         }
+         h1 {
+             color: white;
+             text-align: center;
+             font-size: 15vw;
+         }
+         h2 {
+             color: white;
+             text-align: center;
+             font-size: 6vw;
+         }
+        </style>
+    </head>
+    <body onload="pageLoaded()">
+        <script>
+         var base   = 2000;
+         var show   =  500;
+         var jitter = 1000;
+         function pageLoaded(){
+             const queryString = window.location.search;
+             const urlParams = new URLSearchParams(queryString);
+             if(urlParams.has('base')){
+                 base = parseInt(urlParams.get('base'));
+             }
+             if(urlParams.has('show')){
+                 show = parseInt(urlParams.get('show'));
+             }
+             if(urlParams.has('jitter')){
+                 jitter = parseInt(urlParams.get('jitter'));
+             }
+             console.log('Base: '+ base+' show: '+ show +' Jitter: '+jitter);
+             looping();
+         }
+         function looping(){
+             if (document.body.style.backgroundColor == "black"){
+                 if(Math.random()>0.5)
+                     document.body.style.backgroundColor = "red";
+                 else
+                     document.body.style.backgroundColor = "blue";
+                 var t = setTimeout(looping, show);
+                 
+             }
+             else{
+                 document.body.style.backgroundColor = "black";
+                 var t = setTimeout(looping, base + Math.floor(Math.random()*jitter));
+             }
+         }
+        </script>
+    </body>
+</html>
