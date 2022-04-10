@@ -22,3 +22,9 @@ install:
 
 clean:
 	find . -iname \*~ -print0 | xargs -0 rm
+	make -C tadaVolley DSTROOT=$(DSTROOT) clean
+	make -C Spielsys   DSTROOT=$(DSTROOT) clean
+	make -C misc       DSTROOT=$(DSTROOT) clean
+
+distclean:
+	echo rm -rf $(DSTROOT)/*
