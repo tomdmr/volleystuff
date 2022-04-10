@@ -11,11 +11,15 @@ let rotT      = [0,0];
 let left      = 1;
 let firstServe= 0;
 let serve     = firstServe;
+let ballSide  = serve;
 let points    = [0,0];
-let lastSkill = '';
-let lastField = '';
-let chndSkill = '';
 let lastPlr   = null;
+let lastPlayer= '';    // Set by onPlayer
+let lastSide = -1;
+let lastField = '';    // set by onField
+let lastSkill = '';
+let chndSkill = '';
+let lastSpeed = '';
 let setEnd    = 25;
 let timeRalleyStart = ''
 let plrFire   = false;
@@ -42,9 +46,15 @@ function initDentry(){
         document.getElementById('bt43'), document.getElementById('bt44'), document.getElementById('bt45'),
         document.getElementById('bt46'),
     ];
-    disableSkills();
-    disableTypes();
-    disableEvals();
+    ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
+        typesBt[idx].val = val;
+    });
+    ['s', 'r', 'a', 'b', 'd', 'e', 'f'].forEach(function(val, idx){
+        skillsBt[idx].val = val;
+    });
+    //disableSkills();
+    //disableTypes();
+    //disableEvals();
     sctBox  = document.getElementById('sctBox');
     sctHist = document.getElementById('sctHist');
     sctBox.value = sctHist.value = '';
@@ -63,10 +73,11 @@ function initDentry(){
     });
     //document.getElementById('divSet').style.display = 'none';
     //document.getElementById('divTeam').style.display = 'none';
-    window.onbeforeunload = function () {
-        return 'Are you sure you want to leave?';
-    }
-
+    /*
+       window.onbeforeunload = function () {
+       return 'Are you sure you want to leave?';
+       }
+     */
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     for(j=0; j<2; j++){
@@ -88,13 +99,22 @@ function initDentry(){
             });
         }
     }
-    hideField();
     collectTeams();
-    console.log(plr);
     document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
     document.getElementById('btnStart').disabled= !checkCanStart();
-}
+    disablePlayers(0);
+    disablePlayers(1);
+    disableField(0);
+    disableSkills();
+    disableTypes();
+    disableEvals();
+    toggleVisibility('divTeam')
 
+    console.log('done initDentry');
+}
+/**
+ * @transferTeams: Get team list into variable teamList.
+ */
 function transferTeams(){
     /* Build team list for header */
     teamList[0] = '@Home:';
@@ -113,13 +133,6 @@ function transferTeams(){
     }
     teamList[0] = teamList[0].slice(0,-1);
     teamList[1] = teamList[1].slice(0,-1);
-    /*
-    //console.log(teamList[0]);
-    //console.log(plr[0]);
-    displayTeams();
-    document.getElementsByName('btnHead').forEach(function(item){item.disabled=false;});
-    document.getElementById('btnStart').disabled= !checkCanStart();
-    */
 }
 
 function checkCanStart(){
@@ -134,8 +147,8 @@ function checkCanStart(){
     return OK;
 }
 /**
-* Collect teams from plr buffer
-*/
+ * Collect teams from plr buffer
+ */
 function collectTeams(){
     plrBt[0].forEach(function(item, idx){ plr[0][idx]=item.value;});
     plrBt[1].forEach(function(item, idx){ plr[1][idx]=item.value;});
@@ -144,112 +157,270 @@ function displayTeams(){
     plrBt[0].forEach(function(item, idx){ item.value = plr[0][idx]; });
     plrBt[1].forEach(function(item, idx){ item.value = plr[1][idx]; });
 }
+/**
+ * Handlers for top line buttons
+ */
+function setSide(){
+    plrBt[0].forEach(function(item, idx){ plr[1][idx] = item.value;});
+    plrBt[1].forEach(function(item, idx){ plr[0][idx] = item.value;});
+    left = 1-left;
+    displayTeams();
+}
+
 function rotateTeam(team){
-    console.log('Rotating team '+team);
     rotT[team] = (rotT[team]+1) % 6;
     x = plr[team].shift();
     plr[team].push(x);
     displayTeams();
 }
-function enableTeam(team){
-    for(i=0;i<6;i++){
-        plrBt[team][i].classList.remove('Player-pas');
-        plrBt[team][i].classList.add('Player-act');
-        plrBt[team][i].disabled = false;
+
+
+function decPoints(side){
+    if(points[side]!=0) --points[side];
+    document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
+}
+
+function onPoint(side){
+    lastPlr = null;
+    sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'|' + timeRalleyStart + '\n';
+    points[side] += 1;
+    document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
+    // Satzende?
+    if( points[side] >= setEnd && points[side] - points[1-side] > 1){
+        console.log('Satzende');
+        copyHistory();
+        clearHistory();
+        setSide();
+        setService(firstServe);
+        points[0] = points[1] = 0;
+        disableTeam(0);
+        disableTeam(1);
+        document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
+        rotT[0] = rotT[1] = 0;
+        transferTeams();
+        startRalley();
+    }
+    else{
+        if(side != serve){
+            console.log('Rotating');
+            rotateTeam(side);
+            setService(side);
+            ballSide = side;
+            disablePlayers(0);
+            disablePlayers(1);
+        }
+        startRalley();
     }
 }
-function disableTeam(team){
-    for(i=0;i<6;i++){
-        plrBt[team][i].classList.remove('Player-act');
-        plrBt[team][i].classList.add('Player-pas');
-        plrBt[team][i].disabled = true;
-    }
-}
-function disableTeamEvent(team){
-    plrBt[team].forEach(function(item){
+
+/*******************************************/
+function onPlayer(btn, side){
+    console.log('onPlayer '+ side);
+    // All players off
+    plrBt[side].forEach(function(item){
+        if(item === btn ){
+            // This player on
+            btn.classList.remove('Player-off');
+            btn.classList.add('Player-on');
+            lastPlayer = (side==left? 'a': '*') + btn.value;
+            lastSide = side;
+            document.getElementById('lastPlayer').value = btn.value;
+        }
+        else{
+            item.classList.remove('Player-on');
+            item.classList.add('Player-off');
+        }
     });
+    if( lastSkill === 's' ){
+        enableChains();
+    }else{
+        //enableField(side);
+        enableNoChains();
+    }
+    setFieldTags(side)
+    return 0;
 }
 /*******************************************/
-function disableSkills(){
-    skillsBt.forEach(function(item){
-        item.classList.remove('Skill-act');
-        item.classList.add('Skill-pas');
-        item.disabled = true;
-    } );
-}
-function disableSkill(idx){
-    let item = skillsBt[idx];
-    item.classList.remove('Skill-act');
-    item.classList.add('Skill-pas');
-    item.disabled = true;
-}
-function enableSkills(){
-    console.log('enableSkills()');
-    skillsBt.forEach(function(item){
-        item.classList.remove('Skill-pas');
-        item.classList.add('Skill-act');
-        item.disabled = false;
-    } );
-}
-function enableSkill(idx){
-    let item = skillsBt[idx];
-    item.classList.remove('Skill-pas');
-    item.classList.add('Skill-act');
-    item.disabled = false;
-}
-/*******************************************/
-function disableTypes(){
-    typesBt.forEach(function(item){
-        item.classList.remove('Type-act');
-        item.classList.add('Type-pas');
-        item.disabled = true;
-    } );
-}
-function enableTypes(){
-    typesBt.forEach(function(item){
-        item.classList.remove('Type-pas');
-        item.classList.add('Type-act');
-        item.disabled = false;
-    } );
-}
-function enableType(idx){
-    let item = typesBt[idx];
-    item.classList.remove('Type-pas');
-    item.classList.add('Type-act');
-    item.disabled = false;
-}
-/*******************************************/
-function disableEvals(){
-    evalsBt.forEach(function(item){
-        item.classList.remove('Eval-act');
-        item.classList.add('Eval-pas');
-        item.disabled = true;
-    } );
-}
-function enableEvals(){
-    console.log('Enable Eval');
-    evalsBt.forEach(function(item){
-        item.classList.remove('Eval-pas');
-        item.classList.add('Eval-act');
-        item.disabled = false;
-    } );
-}
-function enableEval(idx){
-    let item = evalsBt[idx];
-    item.classList.remove('Eval-pas');
-    item.classList.add('Eval-act');
-    item.disabled = false;
-}
-function disableEval(idx){
-    let item = evalsBt[idx];
-    item.classList.remove('Eval-act');
-    item.classList.add('Eval-pas');
-    item.disabled = false;
-}
-function hideField(){
+function onField(btn){
     document.getElementsByName('btField').forEach(function(item){
-        item.style.display = 'none';
+        if(item === btn ){
+            console.log(btn);
+            btn.classList.remove('Field-off');
+            btn.classList.add('Field-on');
+            lastField = btn.value;
+            document.getElementById('lastField').value = btn.value;
+        }
+        else{
+            item.classList.remove('Field-on');
+            item.classList.add('Field-off');
+        }
     });
+    return 0;
+}
+/*******************************************/
+function onSkill(btn, skill){
+    console.log('onSkill');
+    skillsBt.forEach(function(item){
+        if(item === btn ){
+            console.log(btn);
+            // This player on
+            btn.classList.remove('Skill-off');
+            btn.classList.add('Skill-on');
+            lastSkill = item.val;
+            document.getElementById('lastSkill').value = item.val;
+        }
+        else{
+            item.classList.remove('Skill-on');
+            item.classList.add('Skill-off');
+        }
+    });
+    if( lastSkill === 's'){
+        ['Standing', 'Jmp Flt', 'Jmp Top', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
+            typesBt[idx].value = val;
+        })
+    }
+    else{
+        ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
+            typesBt[idx].value = val;
+        })
+    }
+    if( (lastSkill === 's' ) || (lastSkill === 'a' ) || (lastSkill === 'e') ){
+        enableTypes();
+    }
+    else{
+        disableTypes();
+    }
+    return 0;
+}
+/*******************************************/
+function onType(btn, type){
+    console.log('onType');
+
+    typesBt.forEach(function(item){
+        if(item === btn ){
+            console.log(btn);
+            // This player on
+            btn.classList.remove('Type-off');
+            btn.classList.add('Type-on');
+            lastType = btn.val;
+            document.getElementById('lastType').value = btn.val;
+        }
+        else{
+            item.classList.remove('Type-on');
+            item.classList.add('Type-off');
+        }
+    });
+    if(lastSkill === 's'){
+        timeRalleyStart = new Date().toISOString();
+    }
+    return 0;
+}
+/*******************************************/
+/*
+ * This one should set a new state of the field
+ */
+function onEval(btn, eval){
+    console.log('onEval');
+    console.log('lastPlayer: '+ lastPlayer
+               +' lastField: '+ lastField
+               +' lastSkill: '+ lastSkill
+               +' lastType: '+ lastType
+    );
+    let rsp = lastPlayer + lastSkill + lastType + lastField + eval;
+    sctBox.value += rsp;
+    if(eval === '='){
+        onPoint(1-lastSide);
+        return 0;
+    }
+    else if( eval === '#' ){
+        onPoint(lastSide);
+        return 0;
+    }
+    if(lastSkill === 's'){
+        ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
+            typesBt[idx].value = val;
+        })
+        disablePlayers(ballSide);
+        ballSide= 1-ballSide;
+        enableField(ballSide);
+        enablePlayers(ballSide);
+        disableSkills();
+        // Select 'Serve' Button
+        skillsBt[1].classList.remove('Skill-dis');
+        skillsBt[1].classList.add('Skill-on');
+        lastSkill = 'r';
+        disableTypes();
+    }
+    else if( lastSkill === 'r' ){
+        enableK2Skills();
+    }
+    /*
+       else if( eval ==='/' ){
+       // Overpass: Pull over to other side
+       disablePlayers(ballSide);
+       ballSide = 1 -ballSide;
+       enablePlayers(ballSide);
+       enableField(ballSide);
+       enableSkills();
+       disableSkill(0);
+       disableSkill(1);
+       disableEvals();
+       }*/
+    else{
+        enablePlayers(0);
+        enablePlayers(1);
+        enableField(2);
+        enableK2Skills();
+        disableTypes();
+    }
+    lastPlayer = lastSkill = lastType = lastField = '';
+    document.getElementById('lastPlayer').value
+    = document.getElementById('lastSkill').value
+    = document.getElementById('lastType').value
+    = document.getElementById('lastField').value = '';
+    disableEvals();
+    return 0;
+}
+/*******************************************/
+function onChain(){
+    console.log('onChain, lastSkill='+lastSkill);
+    if(lastField !==''){
+        sctBox.value += lastField;
+        lastField = '';
+    }
+    sctBox.value += '.';
+    chndSkill = lastSkill;
+    console.log('setting chained skill to '+lastSkill);
+    disableEvals();
+    enablePlayers(0);
+    enablePlayers(1);
+    //hideField();
+    showField(1-serve, true);
+    if( lastSkill === 's'){
+        disableSkills();
+        enableSkill(1);
+    }
+}
+/*******************************************/
+/*
+   function activateField(side, aIdx){
+   document.getElementsByName('btField').forEach(function(item, idx){
+   if( idx == aIdx){
+   item.classList.remove('Field-off');
+   item.classList.add('Field-on');
+   }
+   });
+   }
+ */
+function setFieldTags(side){
+    let vals = [
+        ['5', '7', '4', '6', '8', '3', '1', '9', '2'],
+        ['2', '9', '1', '3', '8', '6', '4', '7', '5'],
+        ['', '', '', '', '', '', '', '', ''],
+    ];
+    document.getElementsByName('btField').forEach(function(item, idx){
+        item.value = vals[side][idx];
+    })
 }
 function showField(side,full){
     let vals = [ ['5', '7', '4', '6', '8', '3', '1', '9', '2'],
@@ -276,18 +447,18 @@ function showField(side,full){
         item.style.display = 'block';
     });
 }
+/** End clean-up **/
+function disableTeamEvent(team){
+    plrBt[team].forEach(function(item){
+    });
+}
+/*******************************************/
 function serviceField(side){}
 function receiveField(side){}
 /*******************************************/
 function toggleFirstService(){
     firstServe = 1- firstServe;
     setService(firstServe);
-}
-function setService(team){
-    plrBt[  team][0].classList.add('border-red')
-    plrBt[1-team][0].classList.remove('border-red')
-    serve = team;
-    //sctBox.value = (left?'*':'a') + plrBt[firstServe][0].value + 's';
 }
 function setSide(){
     plrBt[0].forEach(function(item, idx){ plr[1][idx] = item.value;});
@@ -296,6 +467,13 @@ function setSide(){
     console.log(left);
     displayTeams();
 }
+function setService(team){
+    plrBt[  team][0].classList.add('border-red')
+    plrBt[1-team][0].classList.remove('border-red')
+    serve = team;
+    sctBox.value = '';
+    //sctBox.value = (left?'*':'a') + plrBt[firstServe][0].value + 's';
+}
 function startRalley(){
     plrFire = true;
     console.log('startRalley, left='+left+' serve='+serve);
@@ -303,197 +481,32 @@ function startRalley(){
         transferTeams();
         sctHist.value += teamList[0]+'\n'+teamList[1]+'\n';;
     }
-    disableTeam(0);
-    disableTeam(1);
-    enableTypes();
-    showField(serve, false);
-    sctBox.value = (left?'*':'a') + plrBt[serve][0].value + 's';
-    ['Standing', 'Jmp Flt', 'Jmp Top', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
-        typesBt[idx].value = val;
-    })
-    lastSkill = 's';
-}
-
-function onSkill(skill){
+    // Disable teams
+    disablePlayers(0);
+    disablePlayers(1);
     disableSkills();
-    if(     skill ==='r' ){
-        enableEvals();
-        disableEval(2);
-    }
-    else if(skill ==='a'){
-        // Type buttons: Hard, Quick, Tip etc.
-        enableTypes();
-    }
-    else if(skill ==='b'){
-        enableEvals();
-    }
-    else if(skill ==='d'){
-        enableEvals();
-    }
-    else if(skill ==='e'){
-        enableTypes();
-    }
-    else if(skill ==='f'){
-        enableTypes();
-    }
-    else{
-        console.log('Unknown skill: '+skill);
-    }
-    lastSkill     = skill;
-    sctBox.value += skill;
-}
-function onType(type){
-    if(     type === 'h'){}
-    else if(type === 'm'){}
-    else if(type === 'q'){}
-    else if(type === 't'){}
-    else if(type === 'u'){}
-    else if(type === 'f'){}
-    else if(type === 'o'){}
-    else{
-        console.log('Unknown play-type '+type);
-    }
-    sctBox.value += type;
-
-    disableTypes();
-    if(lastSkill === 's'){
-        timeRalleyStart = new Date().toISOString();
-        disableEvals();
-        enableEval(5);
-        enableEval(6);
-        ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
-            typesBt[idx].value = val;
-        })
-    }
-    else{
-        enableEvals();
-    }
-}
-function onEval(eval){
-    if(lastField !==''){
-        sctBox.value += lastField;
-        lastField = '';
-    }
-    console.log(lastPlr);
-    if(     eval === '#'){
-        if(lastSkill ==='b' || lastSkill === 'a'){
-            sctBox.value +='#';
-            onPoint(lastPlr.side);
-            disableEvals();
-            return;
-        }
-    }
-    else if(eval === '+'){}
-    else if(eval === '!'){}
-    else if(eval === '-'){}
-    else if(eval === '/'){}
-    else if(eval === '='){
-        if( lastSkill === 's' ){
-            console.log('Service FU, serve='+serve);
-            sctBox.value +='=';
-            onPoint(1-serve);
-            disableEvals();
-            return;
-        }
-        else if (lastSkill == 'r'){
-            sctBox.value +='=';
-            onPoint(serve);
-            disableEvals();
-            return;
-        }
-    }
-    else{
-        console.log('Unknown quality '+ eval);
-    }
-    sctBox.value += eval +' ';
-    chndSkill = '';
     disableEvals();
-    enableTeam(0);
-    enableTeam(1);
+    // Select 'Serve' Button
+    skillsBt[0].classList.remove('Skill-dis');
+    skillsBt[0].classList.add('Skill-on');
+    onSkill(skillsBt[0], 's');
+    lastSkill = 's';
+    // Enable and select service player
+    plrBt[serve][0].classList.remove('Player-dis');
+    plrBt[serve][0].classList.add('Player-on');
+    // This is BS, right?
+    onPlayer(plrBt[serve][0], serve);
+    //enableTypes();
+    //onSkill(btSkills[0]);
+    // show partial field
+    enableFieldBR(serve);
+    ballSide = serve;
 }
-function onChain(){
-    if(lastField !==''){
-        sctBox.value += lastField;
-        lastField = '';
-    }
-    sctBox.value += '.';
-    chndSkill = lastSkill;
-    console.log('setting chained skill to '+lastSkill);
-    disableEvals();
-    enableTeam(0);
-    enableTeam(1);
-    hideField();
 
-}
-function onPlayer(side, btn){
-    // Check if we should fire?
-    if(!plrFire)
-        return;
-    showField(side, true);
-    sctBox.value += ' ' + (side==left? 'a': '*') +btn.value;
-    lastPlr = {side: side, tag: btn.value};
-    if( chndSkill === 's' ){
-        chndSkill = '';
-        sctBox.value += 'r';
-        lastSkill    =  'r';
-        enableEvals();
-        disableEval(2);
-    }
-    else{
-        console.log('had player, enabling skills');
-        enableSkills();
-        disableSkill(0);
-        disableSkill(1);
-    }
-    disableTeam(side);
-}
-function onPoint(side){
-    lastPlr = null;
-    sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'|' + timeRalleyStart + '\n';
-    console.log('Point on side ' + side);
-    console.log(serve);
-    points[side] += 1;
-    document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
-    // Satzende?
-    if( points[side] >= setEnd && points[side] - points[1-side] > 1){
-        console.log('Satzende');
-        copyHistory();
-        clearHistory();
-        setSide();
-        setService(firstServe);
-        points[0] = points[1] = 0;
-        disableTeam(0);
-        disableTeam(1);
-        document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
-        rotT[0] = rotT[1] = 0;
-        transferTeams();
-        startRalley();
-    }
-    else{
-        if(side != serve){
-            console.log('Rotating');
-            rotateTeam(side);
-            setService(side);
-            disableTeam(0);
-            disableTeam(1);
-        }
-        startRalley();
-    }
-}
-function onField(btn){
-    console.log('onField, value '+btn.value);
-    console.log('Last skill: '+lastSkill);
-    lastField = btn.value;
-    hideField();
-}
-function decPoints(side){
-    if(points[side]!=0) --points[side];
-    document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
-}
 function zapAll(){
     points[0] = points[1] = 0;
-    disableTeam(0);
-    disableTeam(1);
+    disablePlayers(0);
+    disablePlayers(1);
     document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
     rotT[0] = rotT[1] = 0;
     transferTeams();

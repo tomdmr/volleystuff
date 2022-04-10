@@ -4,6 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link href="css/dvstyle.css" rel="stylesheet" type="text/css">
         <script src="js/common.js"></script>
+        <script src="js/enablers.js"></script>
         <script src="js/DragDropTouch.js"></script>
         <script src="js/dvmain.js"></script>
         
@@ -121,7 +122,13 @@
             <table>
                 <thead>
                     <tr style="text-align: center">
-                        <td></td>
+                        <td>
+                            <input type="button" id="lastField" class="w4-btn" value="" disabled="true"/>
+                            <input type="button" id="lastPlayer" class="w4-btn" value="" disabled="true"/>
+                            <br>
+                            <input type="button" id="lastSkill" class="w4-btn" value="" disabled="true"/>
+                            <input type="button" id="lastType"  class="w4-btn" value="" disabled="true"/>
+                        </td>
                         <td>
                             <input type="button" name="btnHead" class="w4-btn" onclick="setSide()"     value="Seite" disabled="true"/>
                             <input type="button" name="btnHead" class="w4-btn" onclick="rotateTeam(0)" value="Rot +" disabled="true"/>
@@ -144,58 +151,58 @@
                 </thead>
                 <tbdody>
                     <tr>
-                        <td><input type="button" id="bt04" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""/></td>
-                        <td><input type="button" id="bt03" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""/></td>
+                        <td><input type="button" id="bt04" class="w3-btn Player-dis" onclick="onPlayer(this,0)" value=""/></td>
+                        <td><input type="button" id="bt03" class="w3-btn Player-dis" onclick="onPlayer(this,0)" value=""/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="5" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="7" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="4" onclick="onField(this)"/></td>
-                        <td><input type="button" id="bt11" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""/></td>
-                        <td><input type="button" id="bt10" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""/></td>
+                        <td><input type="button" id="bt11" class="w3-btn Player-dis" onclick="onPlayer(this,1)" value=""/></td>
+                        <td><input type="button" id="bt10" class="w3-btn Player-dis" onclick="onPlayer(this,1)" value=""/></td>
                     </tr>
                     <tr>
-                        <td><input type="button" id="bt05" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
-                        <td><input type="button" id="bt02" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
+                        <td><input type="button" id="bt05" class="w3-btn Player-dis" onclick="onPlayer(this,0)" value=""></td>
+                        <td><input type="button" id="bt02" class="w3-btn Player-dis" onclick="onPlayer(this,0)" value=""></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="6" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="8" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="3" onclick="onField(this)"/></td>
-                        <td><input type="button" id="bt12" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
-                        <td><input type="button" id="bt15" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
+                        <td><input type="button" id="bt12" class="w3-btn Player-dis" onclick="onPlayer(this,1)" value=""></td>
+                        <td><input type="button" id="bt15" class="w3-btn Player-dis" onclick="onPlayer(this,1)" value=""></td>
                     </tr>
                     <tr>
-                        <td><input type="button" id="bt00" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
-                        <td><input type="button" id="bt01" class="w3-btn Player-pas" onclick="onPlayer(0,this)" value=""></td>
+                        <td><input type="button" id="bt00" class="w3-btn Player-dis" onclick="onPlayer(this,0)" value=""></td>
+                        <td><input type="button" id="bt01" class="w3-btn Player-dis" onclick="onPlayer(this,0)" value=""></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="1" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="9" onclick="onField(this)"/></td>
                         <td><input type="button" class="w3-btn Field-act" name="btField" value="2" onclick="onField(this)"/></td>
-                        <td><input type="button" id="bt13" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
-                        <td><input type="button" id="bt14" class="w3-btn Player-pas" onclick="onPlayer(1,this)" value=""></td>
+                        <td><input type="button" id="bt13" class="w3-btn Player-dis" onclick="onPlayer(this,1)" value=""></td>
+                        <td><input type="button" id="bt14" class="w3-btn Player-dis" onclick="onPlayer(this,1)" value=""></td>
                     </tr>
                     <tr>
-                        <td><input type="button" id="bt20" class="w3-btn Skill-pas" value="Serve" onclick="onSkill('s')"></td>
-                        <td><input type="button" id="bt21" class="w3-btn Skill-pas" value="Receive" onclick="onSkill('r')"></td>
-                        <td><input type="button" id="bt22" class="w3-btn Skill-pas" value="Attack" onclick="onSkill('a')"></td>
-                        <td><input type="button" id="bt23" class="w3-btn Skill-pas" value="Block"  onclick="onSkill('b')"></td>
-                        <td><input type="button" id="bt24" class="w3-btn Skill-pas" value="Dig"    onclick="onSkill('d')"></td>
-                        <td><input type="button" id="bt25" class="w3-btn Skill-pas" value="Set"    onclick="onSkill('e')" ></td>
-                        <td><input type="button" id="bt26" class="w3-btn Skill-pas" value="Freeb." onclick="onSkill('f')"></td>
+                        <td><input type="button" id="bt20" class="w3-btn Skill-dis" value="Serve"  onclick="onSkill(this, 's')"></td>
+                        <td><input type="button" id="bt21" class="w3-btn Skill-dis" value="Receive" onclick="onSkill(this, 'r')"></td>
+                        <td><input type="button" id="bt22" class="w3-btn Skill-dis" value="Attack" onclick="onSkill(this, 'a')"></td>
+                        <td><input type="button" id="bt23" class="w3-btn Skill-dis" value="Block"  onclick="onSkill(this, 'b')"></td>
+                        <td><input type="button" id="bt24" class="w3-btn Skill-dis" value="Dig"    onclick="onSkill(this, 'd')"></td>
+                        <td><input type="button" id="bt25" class="w3-btn Skill-dis" value="Set"    onclick="onSkill(this, 'e')" ></td>
+                        <td><input type="button" id="bt26" class="w3-btn Skill-dis" value="Freeb." onclick="onSkill(this, 'f')"></td>
                     </tr>
                     <tr>
-                        <td><input type="button" id="bt30" class="w3-btn Type-pas" value="H"      onclick="onType ('h')"></td>
-                        <td><input type="button" id="bt31" class="w3-btn Type-pas" value="M"      onclick="onType ('m')"></td>
-                        <td><input type="button" id="bt32" class="w3-btn Type-pas" value="Q"      onclick="onType ('q')"></td>
-                        <td><input type="button" id="bt33" class="w3-btn Type-pas" value="T"      onclick="onType ('t')"></td>
-                        <td><input type="button" id="bt34" class="w3-btn Type-pas" value="U"      onclick="onType ('u')" ></td>
-                        <td><input type="button" id="bt35" class="w3-btn Type-pas" value="F"      onclick="onType ('f')"></td>
-                        <td><input type="button" id="bt36" class="w3-btn Type-pas" value="O"      onclick="onType ('o')"></td>
+                        <td><input type="button" id="bt30" class="w3-btn Type-dis" value="H"      onclick="onType (this, 'h')"></td>
+                        <td><input type="button" id="bt31" class="w3-btn Type-dis" value="M"      onclick="onType (this, 'm')"></td>
+                        <td><input type="button" id="bt32" class="w3-btn Type-dis" value="Q"      onclick="onType (this, 'q')"></td>
+                        <td><input type="button" id="bt33" class="w3-btn Type-dis" value="T"      onclick="onType (this, 't')"></td>
+                        <td><input type="button" id="bt34" class="w3-btn Type-dis" value="U"      onclick="onType (this, 'u')" ></td>
+                        <td><input type="button" id="bt35" class="w3-btn Type-dis" value="F"      onclick="onType (this, 'f')"></td>
+                        <td><input type="button" id="bt36" class="w3-btn Type-dis" value="O"      onclick="onType (this, 'o')"></td>
                     </tr>
                     <tr>
-                        <td><input type="button" id="bt40" class="w3-btn Eval-pas" value="#"       onclick="onEval(this.value)"></td>
-                        <td><input type="button" id="bt41" class="w3-btn Eval-pas" value="+"      onclick="onEval(this.value)"></td>
-                        <td><input type="button" id="bt42" class="w3-btn Eval-pas" value="!"      onclick="onEval(this.value)"></td>
-                        <td><input type="button" id="bt43" class="w3-btn Eval-pas" value="-"      onclick="onEval(this.value)"></td>
-                        <td><input type="button" id="bt44" class="w3-btn Eval-pas" value="/"      onclick="onEval(this.value)"></td>
-                        <td><input type="button" id="bt45" class="w3-btn Eval-pas" value="="      onclick="onEval(this.value)"></td>
-                        <td><input type="button" id="bt46" class="w3-btn Eval-pas" value="."      onclick="onChain()"></td>
+                        <td><input type="button" id="bt40" class="w3-btn Eval-dis" value="#"       onclick="onEval(this, this.value)"></td>
+                        <td><input type="button" id="bt41" class="w3-btn Eval-dis" value="+"      onclick="onEval(this, this.value)"></td>
+                        <td><input type="button" id="bt42" class="w3-btn Eval-dis" value="!"      onclick="onEval(this, this.value)"></td>
+                        <td><input type="button" id="bt43" class="w3-btn Eval-dis" value="-"      onclick="onEval(this, this.value)"></td>
+                        <td><input type="button" id="bt44" class="w3-btn Eval-dis" value="/"      onclick="onEval(this, this.value)"></td>
+                        <td><input type="button" id="bt45" class="w3-btn Eval-dis" value="="      onclick="onEval(this, this.value)"></td>
+                        <td><input type="button" id="bt46" class="w3-btn Eval-dis" value="."      onclick="onEval(this, this.value)"></td>
                     </tr>
                     <tr style="text-align: center">
                         <td colspan="7"><textarea id="sctBox" style="width:35.4vmin;font-family: monospace"></textarea></td>
