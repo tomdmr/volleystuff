@@ -169,3 +169,17 @@ function enableNoChains(){
     enableEvals();
     disableEval(6);
 }
+function disablePlrXch(){
+    //console.log('disable Exchange');
+    let btn = document.getElementById('plrXch');
+    btn.disabled = true;
+    btn.classList.remove('btn-gry-act');
+    btn.classList.add('btn-gry-pas');
+}
+function enablePlrXch(){
+    //console.log('enable Exchange');
+    let btn = document.getElementById('plrXch');
+    //btn.disabled = false;
+    btn.classList.remove('btn-gry-pas');
+    btn.classList.add('btn-gry-act');
+}
