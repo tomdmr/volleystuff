@@ -38,3 +38,24 @@ button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[
 .Eval-pas{background-color: #105510; color:#a0a0a0}
 .Field-act{background-color: #2020ff; color:#ffffff}
 .Field-pas{background-color: #10107f; color:#a0a0a0}
+
+
+.Player-on{ background-color: #bff0fb; color:#000000}
+.Player-off{background-color: #91b7bf; color:#000000}
+.Player-dis{background-color: #34494d; color:#a0a0a0}
+
+.Field-on{ background-color: #212aff; color:#ffffff}
+.Field-off{background-color: #0f1373; color:#ffffff}
+.Field-dis{background-color: #080a3b; color:#c0c0c0}
+
+.Skill-on{ background-color: #ff9d00; color:#000000}
+.Skill-off{background-color: #bf7600; color:#000000}
+.Skill-dis{background-color: #804f00; color:#a0a0a0}
+
+.Type-on{ background-color: #ffe000; color:#000000}
+.Type-off{background-color: #bfa800; color:#000000}
+.Type-dis{background-color: #807000; color:#a0a0a0}
+
+.Eval-on{ background-color: #15cc15; color:#000000}
+.Eval-off{background-color: #12ab12; color:#000000}
+.Eval-dis{background-color: #105510; color:#a0a0a0}
