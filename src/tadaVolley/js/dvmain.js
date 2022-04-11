@@ -109,7 +109,7 @@ function initDentry(){
     disableTypes();
     disableEvals();
     toggleVisibility('divTeam')
-
+    disablePlrXch();
     console.log('done initDentry');
 }
 /**
@@ -183,6 +183,7 @@ function decPoints(side){
 function onPoint(side){
     lastPlr = null;
     sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'|' + timeRalleyStart + '\n';
+    sctBox.value = '';
     points[side] += 1;
     document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
     // Satzende?
@@ -216,6 +217,7 @@ function onPoint(side){
 /*******************************************/
 function onPlayer(btn, side){
     console.log('onPlayer '+ side);
+    document.getElementById('lastPlayer').value = btn.value;
     // All players off
     plrBt[side].forEach(function(item){
         if(item === btn ){
@@ -224,16 +226,16 @@ function onPlayer(btn, side){
             btn.classList.add('Player-on');
             lastPlayer = (side==left? 'a': '*') + btn.value;
             lastSide = side;
-            document.getElementById('lastPlayer').value = btn.value;
         }
         else{
             item.classList.remove('Player-on');
             item.classList.add('Player-off');
         }
     });
+    console.log('lastSkill: '+ lastSkill);
     if( lastSkill === 's' ){
         enableChains();
-    }else{
+    }else if(lastSkill !==''){
         //enableField(side);
         enableNoChains();
     }
@@ -242,13 +244,13 @@ function onPlayer(btn, side){
 }
 /*******************************************/
 function onField(btn){
+    document.getElementById('lastField').value = btn.value;
     document.getElementsByName('btField').forEach(function(item){
         if(item === btn ){
-            console.log(btn);
+            //console.log(btn);
             btn.classList.remove('Field-off');
             btn.classList.add('Field-on');
             lastField = btn.value;
-            document.getElementById('lastField').value = btn.value;
         }
         else{
             item.classList.remove('Field-on');
@@ -259,15 +261,16 @@ function onField(btn){
 }
 /*******************************************/
 function onSkill(btn, skill){
-    console.log('onSkill');
+    console.log('>>> onSkill '+skill);
+    lastSkill = skill;
+    document.getElementById('lastSkill').value = skill;
     skillsBt.forEach(function(item){
         if(item === btn ){
-            console.log(btn);
+            //console.log(btn);
             // This player on
             btn.classList.remove('Skill-off');
             btn.classList.add('Skill-on');
-            lastSkill = item.val;
-            document.getElementById('lastSkill').value = item.val;
+            //lastSkill = item.val;
         }
         else{
             item.classList.remove('Skill-on');
@@ -283,6 +286,9 @@ function onSkill(btn, skill){
         ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
             typesBt[idx].value = val;
         })
+        if( lastPlayer !== ''){
+            enableNoChains();
+        }
     }
     if( (lastSkill === 's' ) || (lastSkill === 'a' ) || (lastSkill === 'e') ){
         enableTypes();
@@ -290,11 +296,13 @@ function onSkill(btn, skill){
     else{
         disableTypes();
     }
+    console.log('<<< onSkill');
     return 0;
 }
 /*******************************************/
 function onType(btn, type){
     console.log('onType');
+    disablePlrXch();
 
     typesBt.forEach(function(item){
         if(item === btn ){
@@ -348,11 +356,22 @@ function onEval(btn, eval){
         // Select 'Serve' Button
         skillsBt[1].classList.remove('Skill-dis');
         skillsBt[1].classList.add('Skill-on');
-        lastSkill = 'r';
+        onSkill(skillsBt[1], 'r');
+        lastPlayer =  lastType = lastField = '';
+        document.getElementById('lastPlayer').value
+            = document.getElementById('lastType').value
+            = document.getElementById('lastField').value = '';
+        disableEvals();
         disableTypes();
+        return 0;
     }
     else if( lastSkill === 'r' ){
+        console.log('after receive eval');
         enableK2Skills();
+        enablePlayers(0);
+        enablePlayers(1);
+        enableField(2);
+        disableTypes();
     }
     /*
        else if( eval ==='/' ){
@@ -475,7 +494,8 @@ function setService(team){
     //sctBox.value = (left?'*':'a') + plrBt[firstServe][0].value + 's';
 }
 function startRalley(){
-    plrFire = true;
+    enablePlrXch();
+    //plrFire = true;
     console.log('startRalley, left='+left+' serve='+serve);
     if(sctHist.value===''){
         transferTeams();
@@ -534,9 +554,11 @@ function drag(ev){
     console.log(data);
 }
 function allowDrop(ev){
+    console.log('allowDrop');
     ev.preventDefault();
 }
 function drop(ev){
+    console.log('drop');
     ev.preventDefault();
     let data = ev.dataTransfer.getData('text');
     ev.target.value = data;
