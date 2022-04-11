@@ -146,6 +146,7 @@
                             <input type="button" name="btnHead" class="w4-btn" onclick="zapAll()" value="Zero" disabled="true"/>
                         </td>
                         <td>
+                            <input type="button" id="plrXch" class="w3-btn btn-gry-act" onclick="onPlrXchng()" value="Wecsel" disabled="true"/>
                         </td>
                     </tr>
                 </thead>
@@ -210,7 +211,7 @@
                     <tr style="text-align: center">
                         <td><input type="button" class="w3-btn" value="Clear" onclick="clearHistory()"></td>
                         <td><input type="button" class="w3-btn" value="Copy"  onclick="copyHistory()"></td>
-                        <td colspan="3"><textarea id="sctHist" style="width:35.4vmin;font-family: monospace"></textarea></td>
+                        <td colspan="5"><textarea id="sctHist" style="width:60vmin;font-family: monospace"></textarea></td>
                     </tr>
                 </tbdody>
             </table>
