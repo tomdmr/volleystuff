@@ -1,7 +1,36 @@
+/**
+ * Helper function to set state of an array of buttons.
+ * @buttons: Array of buttons to set state.
+ * @newState: integer 0-2, stting state to 'dis', 'off', of 'on'
+ * @stem: the name of the base css-class.
+ */
+function setButtonsState(buttons, newState, stem){
+    let classArray = [ stem+'-dis', stem+'-off', stem+'-on' ];
+    let disabled = (newState == 0);
+    buttons.forEach(function(item){
+        if( item.triState != newState ){
+            item.classList.remove(classArray[item.triState]);
+            item.classList.add(classArray[newState]);
+            item.triState = newState;
+            item.disabled = disabled;
+        }
+    });
+}
+function setButtonState(item, newState, stem){
+    let classArray = [ stem+'-dis', stem+'-off', stem+'-on' ];
+    let disabled = (newState == 0);
+    if( item.triState != newState ){
+        item.classList.remove(classArray[item.triState]);
+        item.classList.add(classArray[newState]);
+        item.triState = newState;
+        item.disabled = disabled;
+    }
+}
 /** 
-* Players
-*/
+ * Players
+ */
 function enablePlayers(side){
+    // setButtonsState(plrBt[side], 1, ['Player-dis', 'Player-off', 'Player-On'] );
     for(i=0;i<6;i++){
         plrBt[side][i].classList.remove('Player-dis');
         plrBt[side][i].classList.remove('Player-on');
@@ -18,15 +47,12 @@ function disablePlayers(side){
     }
 }
 /**
-* Field
-*/
+ * Field
+ */
 function disableField(side){
+    setButtonsState(document.getElementsByName('btField'), 0, 'Field' );
     document.getElementsByName('btField').forEach(function(item){
-        item.classList.remove('Field-on');
-        item.classList.remove('Field-off');
-        item.classList.add('Field-dis');
         item.value = '';
-        item.disabled = true;
     });
 }
 function enableField(side){
@@ -35,14 +61,12 @@ function enableField(side){
         ['2', '9', '1', '3', '8', '6', '4', '7', '5'],
         ['', '', '', '', '', '', '', '', ''],
     ];
+    setButtonsState(document.getElementsByName('btField'), 1, 'Field');
     document.getElementsByName('btField').forEach(function(item, idx){
-        item.classList.remove('Field-on');
-        item.classList.remove('Field-dis');
-        item.classList.add('Field-off');
         item.value = vals[side][idx]
-        item.disabled = false;
     });
 }
+
 function enableFieldBR(side){
     let vals = [
         ['5', '7', '4', '6', '8', '3', '1', '9', '2'],
@@ -53,47 +77,32 @@ function enableFieldBR(side){
     document.getElementsByName('btField').forEach(function(item, idx){
         if( ((side==0)&&( idx==0 || idx==3 || idx ==6)
           || ((side==1)&&( idx==2 || idx==5 || idx==8)))){
-            item.classList.remove('Field-on');
+            //item.classList.remove('Field-on');
             item.classList.remove('Field-dis');
             item.classList.add('Field-off');
             item.value = vals[side][idx]
             item.disabled= false;
+            item.triState = 1;
         }
     })
 }
 /*
-** Skills
-*/
+ ** Skills
+ */
 function disableSkills(){
-    skillsBt.forEach(function(item){
-        item.classList.remove('Skill-on');
-        item.classList.remove('Skill-off');
-        item.classList.add('Skill-dis');
-        item.disabled = true;
-    } );
+    setButtonsState(skillsBt, 0, 'Skill');
 }
 function disableSkill(idx){
     let item = skillsBt[idx];
-    item.classList.remove('Skill-on');
-    item.classList.remove('Skill-off');
-    item.classList.add('Skill-dis');
-    item.disabled = true;
+    setButtonState(item, 0, 'Skill');
 }
 function enableSkills(){
     console.log('enableSkills()');
-    skillsBt.forEach(function(item){
-        item.classList.remove('Skill-dis');
-        item.classList.remove('Skill-on');
-        item.classList.add('Skill-off');
-        item.disabled = false;
-    } );
+    setButtonsState(skillsBt, 1, 'Skill');
 }
 function enableSkill(idx){
     let item = skillsBt[idx];
-    item.classList.remove('Skill-dis');
-    item.classList.remove('Skill-on');
-    item.classList.add('Skill-off');
-    item.disabled = false;
+    setButtonState(item, 1, 'Skill');
 }
 function enableK2Skills(){
     enableSkills();
@@ -104,62 +113,37 @@ function enableK2Skills(){
  ** Types
  */
 function disableTypes(){
-    typesBt.forEach(function(item){
-        item.classList.remove('Type-on');
-        item.classList.remove('Type-off');
-        item.classList.add('Type-dis');
-        item.disabled = true;
-    });
+    setButtonsState(typesBt, 0, 'Type');
 }
 function enableTypes(){
-    typesBt.forEach(function(item){
-        item.classList.remove('Type-on');
-        item.classList.remove('Type-dis');
-        item.classList.add('Type-off');
-        item.disabled = false;
-    });
+    setButtonsState(typesBt, 1, 'Type');
 }
 function enableType(idx){
-    let item = typesBt[idx];
-    item.classList.remove('Type-on');
-    item.classList.remove('Type-dis');
-    item.classList.add('Type-off');
-    item.disabled = false;
+    setButtonsState(typesBt[idx], 1, 'Type');
 }
 /*
  ** Evaluations, Evals
  */
 function disableEvals(){
+    setButtonsState(evalsBt, 0, 'Eval');
+    /*
     evalsBt.forEach(function(item){
         item.classList.remove('Eval-off');
         item.classList.remove('Eval-on');
         item.classList.add('Eval-dis');
         item.disabled = true;
     } );
+    */
 }
 function disableEval(idx){
-    let item = evalsBt[idx];
-    item.classList.remove('Eval-off');
-    item.classList.remove('Eval-on');
-    item.classList.add('Eval-dis');
-    item.disabled = false;
+    setButtonState(evalsBt[idx], 0, 'Eval');
 }
 
 function enableEvals(){
-    console.log('Enable Eval');
-    evalsBt.forEach(function(item){
-        item.classList.remove('Eval-on');
-        item.classList.remove('Eval-dis');
-        item.classList.add('Eval-off');
-        item.disabled = false;
-    } );
+    setButtonsState(evalsBt, 1, 'Eval');
 }
 function enableEval(idx){
-    let item = evalsBt[idx];
-    item.classList.remove('Eval-on');
-    item.classList.remove('Eval-dis');
-    item.classList.add('Eval-off');
-    item.disabled = false;
+    setButtonState(evalsBt[idx], 1, 'Eval');
 }
 function enableChains(){
     enableEval(5);
