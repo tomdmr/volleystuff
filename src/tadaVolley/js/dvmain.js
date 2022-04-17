@@ -22,7 +22,6 @@ let chndSkill = '';
 let lastSpeed = '';
 let setEnd    = 25;
 let timeRalleyStart = ''
-let plrFire   = false;
 function initDentry(){
     plrBt = [
         [ document.getElementById('bt00'), document.getElementById('bt01'), document.getElementById('bt02'),
@@ -491,11 +490,9 @@ function setService(team){
     plrBt[1-team][0].classList.remove('border-red')
     serve = team;
     sctBox.value = '';
-    //sctBox.value = (left?'*':'a') + plrBt[firstServe][0].value + 's';
 }
 function startRalley(){
     enablePlrXch();
-    //plrFire = true;
     console.log('startRalley, left='+left+' serve='+serve);
     if(sctHist.value===''){
         transferTeams();
