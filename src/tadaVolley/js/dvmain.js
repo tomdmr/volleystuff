@@ -31,26 +31,30 @@ function initDentry(){
           document.getElementById('bt13'), document.getElementById('bt14'), document.getElementById('bt15'),
         ]
     ];
+    plrBt.forEach(function(item){item.triState=0;});
     skillsBt = [
         document.getElementById('bt20'), document.getElementById('bt21'), document.getElementById('bt22'), document.getElementById('bt23'),
         document.getElementById('bt24'), document.getElementById('bt25'), document.getElementById('bt26'),
     ];
+    ['s', 'r', 'a', 'b', 'd', 'e', 'f'].forEach(function(val, idx){
+        skillsBt[idx].val = val;
+        skillsBt[idx].triState = 0;
+    });
     typesBt = [
         document.getElementById('bt30'), document.getElementById('bt31'), document.getElementById('bt32'),
         document.getElementById('bt33'), document.getElementById('bt34'), document.getElementById('bt35'),
         document.getElementById('bt36'),
     ];
+    ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
+        typesBt[idx].val = val;
+        typesBt[idx].triState = 0;
+    });
     evalsBt = [
         document.getElementById('bt40'), document.getElementById('bt41'), document.getElementById('bt42'),
         document.getElementById('bt43'), document.getElementById('bt44'), document.getElementById('bt45'),
         document.getElementById('bt46'),
     ];
-    ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
-        typesBt[idx].val = val;
-    });
-    ['s', 'r', 'a', 'b', 'd', 'e', 'f'].forEach(function(val, idx){
-        skillsBt[idx].val = val;
-    });
+    evalsBt.forEach(function(item){item.triState=0;});
     //disableSkills();
     //disableTypes();
     //disableEvals();
@@ -246,14 +250,12 @@ function onField(btn){
     document.getElementById('lastField').value = btn.value;
     document.getElementsByName('btField').forEach(function(item){
         if(item === btn ){
-            //console.log(btn);
-            btn.classList.remove('Field-off');
-            btn.classList.add('Field-on');
+            setButtonState(item, 2, 'Field');
             lastField = btn.value;
         }
         else{
-            item.classList.remove('Field-on');
-            item.classList.add('Field-off');
+            if(item.triState == 2)
+                setButtonState(item, 1, 'Field');
         }
     });
     return 0;
@@ -267,19 +269,25 @@ function onSkill(btn, skill){
         if(item === btn ){
             //console.log(btn);
             // This player on
-            btn.classList.remove('Skill-off');
-            btn.classList.add('Skill-on');
+            setButtonState(item, 2, 'Skill');
             //lastSkill = item.val;
         }
         else{
-            item.classList.remove('Skill-on');
-            item.classList.add('Skill-off');
+            setButtonState(item, 1, 'Skill');
         }
     });
     if( lastSkill === 's'){
         ['Standing', 'Jmp Flt', 'Jmp Top', 'T', 'U', 'F', 'Other'].forEach(function(val, idx){
             typesBt[idx].value = val;
         })
+    }
+    else if( lastSkill === 'e'){
+        ['Shoot', 'Meter', 'Quick', 'High', 'U', 'F', 'Pass'].forEach(function(val, idx){
+            typesBt[idx].value = val;
+        })
+        if( lastPlayer !== ''){
+            enableNoChains();
+        }
     }
     else{
         ['H', 'M', 'Q', 'T', 'U', 'F', 'O'].forEach(function(val, idx){
@@ -305,16 +313,12 @@ function onType(btn, type){
 
     typesBt.forEach(function(item){
         if(item === btn ){
-            console.log(btn);
-            // This player on
-            btn.classList.remove('Type-off');
-            btn.classList.add('Type-on');
+            setButtonState(item, 2, 'Type');
             lastType = btn.val;
             document.getElementById('lastType').value = btn.val;
         }
         else{
-            item.classList.remove('Type-on');
-            item.classList.add('Type-off');
+            setButtonState(item, 1, 'Type');
         }
     });
     if(lastSkill === 's'){
@@ -352,9 +356,8 @@ function onEval(btn, eval){
         enableField(ballSide);
         enablePlayers(ballSide);
         disableSkills();
-        // Select 'Serve' Button
-        skillsBt[1].classList.remove('Skill-dis');
-        skillsBt[1].classList.add('Skill-on');
+        // Select 'Receive' Button
+        setButtonState(skillsBt[1], 2, 'Skill');
         onSkill(skillsBt[1], 'r');
         lastPlayer =  lastType = lastField = '';
         document.getElementById('lastPlayer').value
@@ -400,25 +403,6 @@ function onEval(btn, eval){
     return 0;
 }
 /*******************************************/
-function onChain(){
-    console.log('onChain, lastSkill='+lastSkill);
-    if(lastField !==''){
-        sctBox.value += lastField;
-        lastField = '';
-    }
-    sctBox.value += '.';
-    chndSkill = lastSkill;
-    console.log('setting chained skill to '+lastSkill);
-    disableEvals();
-    enablePlayers(0);
-    enablePlayers(1);
-    //hideField();
-    showField(1-serve, true);
-    if( lastSkill === 's'){
-        disableSkills();
-        enableSkill(1);
-    }
-}
 /*******************************************/
 /*
    function activateField(side, aIdx){
@@ -439,31 +423,6 @@ function setFieldTags(side){
     document.getElementsByName('btField').forEach(function(item, idx){
         item.value = vals[side][idx];
     })
-}
-function showField(side,full){
-    let vals = [ ['5', '7', '4', '6', '8', '3', '1', '9', '2'],
-                 ['2', '9', '1', '3', '8', '6', '4', '7', '5']];
-    document.getElementsByName('btField').forEach(function(item, idx){
-        item.value = vals[side][idx];
-        if(full){
-            item.classList.remove('Field-pas');
-            item.classList.add('Field-act');
-            item.disabled = false;
-        }
-        else{
-            if( ((side==0)&&( idx==0 || idx==3 || idx ==6)
-              || ((side==1)&&( idx==2 || idx==5 || idx==8)))){
-                item.classList.remove('Field-pas');
-                item.classList.add('Field-act');
-                item.disabled = false;
-            }else{
-                item.classList.remove('Field-act');
-                item.classList.add('Field-pas');
-                item.disabled = true;
-            }
-        }
-        item.style.display = 'block';
-    });
 }
 /** End clean-up **/
 function disableTeamEvent(team){
@@ -504,8 +463,7 @@ function startRalley(){
     disableSkills();
     disableEvals();
     // Select 'Serve' Button
-    skillsBt[0].classList.remove('Skill-dis');
-    skillsBt[0].classList.add('Skill-on');
+    setButtonState(skillsBt[0], 2, 'Skill');
     onSkill(skillsBt[0], 's');
     lastSkill = 's';
     // Enable and select service player
