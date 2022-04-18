@@ -2,7 +2,7 @@ DSTDIR := misc
 
 SRC  = Reaktionstraining1.html Reaktionstraining3.html Reaktionstraining4.html
 SRC += Reaktionstraining5.html Reaktionstraining7.html Reaktionstraining8.html
-SRC += ansagehorst.html brainbattle.html
+SRC += ansagehorst.html brainbattle.html $(wildcard media/*)
 all:
 
 install: $(SRC)
