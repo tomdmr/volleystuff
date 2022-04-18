@@ -12,7 +12,8 @@ all:
 #
 install: $(SRC)
 	echo $(DSTROOT)/$(DSTDIR)
-	mkdir -p $(DSTROOT)/$(DSTDIR)/{css,js}
+	mkdir -p $(DSTROOT)/$(DSTDIR)/css
+	mkdir -p $(DSTROOT)/$(DSTDIR)/js
 	for name in $(SRC); do \
 		install -D -m644 $$name $(DSTROOT)/$(DSTDIR)/$$name; \
 	done
