@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Test für Grids</title>
+        <title>Taktikboard Volleyball</title>
         <meta charset="utf-8" />
         <link href="grid.css" rel="stylesheet" type="text/css" />
         <script src="fabric.min.js"></script>
@@ -20,7 +20,6 @@
                     <li id="save" onclick="saveData()"><center>
                         <img src="save.png"  height="24px" >
                     </center></li>
-                    <li id="addPlayer"  onclick="onCreatePlayer()"><center>Spieler</center></li>
                     <li id="addLines"   onclick="onAddLines()"><center>Auswahl</center></li>
                     <li id="clrAll" onclick="removePlayers()">
                         <center><img src="trash.png" height="24px" >Spieler</center>
@@ -34,16 +33,27 @@
                     <li id="clrAll" onclick="clrAll()">
                         <center><img src="trash.png" height="24px" >Alles</center>
                     </li>
+                    <li id="plonk" onclick="plonk()">
+                        <center>Don't press</center>
+                    </li>
                 </ul>
             </div>
             <div class="menu2">
                 <center>
-                    <img width="28px" height="28px" src="ball_t.png"   onclick="insertObject('img-ball',{})"   >
+                    <img width="28px" height="28px" src="marker_red.png" onclick="onCreatePlayer()"/>
+                </center><br>
+                <center onclick="createTeam()">
+                    <img width="28px" height="28px" src="marker_red.png"/>
+                    <img width="28px" height="28px" src="marker_red.png"/>
+                    <img width="28px" height="28px" src="marker_red.png"/>
                 </center><br>
                 <center>
-                    <img width="28px" height="28px" src="cone_blue.png" onclick="insertObject('img-cone_blue',{scale:0.25})"   >
-                    <img width="28px" height="28px" src="cone_red.png" onclick="insertObject('img-cone_red',{scale:0.25})"   >
-                    <img width="28px" height="28px" src="cone_yellow.png" onclick="insertObject('img-cone_yellow',{scale:0.25})"   >
+                    <img width="28px" height="28px" src="ball_t.png"   onclick="insertObject('img-ball',{})"/>
+                </center><br>
+                <center>
+                    <img width="28px" height="28px" src="cone_blue.png" onclick="insertObject('img-cone_blue',{scale:0.25})" />
+                    <img width="28px" height="28px" src="cone_red.png" onclick="insertObject('img-cone_red',{scale:0.25})"   />
+                    <img width="28px" height="28px" src="cone_yellow.png" onclick="insertObject('img-cone_yellow',{scale:0.25})"   />
                 </center><br>
             </div>
             <article id="article">
@@ -145,6 +155,36 @@
              console.log('path-created event');
              console.log(e);
              console.log(e.path.path);
+             
+             if(false){
+                 let pts = e.path.path.length;
+                 let x1 = e.path.path[pts-3][1];
+                 let y1 = e.path.path[pts-3][2];
+                 let x2 = e.path.path[pts-1][1];
+                 let y2 = e.path.path[pts-1][2];
+
+                 let xDiff = x2 - x1;
+                 let yDiff = y2 - y1;
+                 let angle = Math.atan2(yDiff, xDiff);
+                 console.log(angle*180/3.141592653);
+                 let ll=20;
+                 let a1= angle + 3.1415926535*15/180;
+                 let x3 = x2-ll*Math.cos(a1);
+                 let y3 = y2-ll*Math.sin(a1);
+                 a1= angle - 3.1415926535*15/180;
+                 x4 = x2-ll*Math.cos(a1);
+                 y4 = y2-ll*Math.sin(a1);
+                 let head=[];
+                 head[0] = ['L', x3, y3];
+                 head[1] = ['L', x4, y4];
+                 head[2] = ['L', x2, y2];
+                 e.path.set({path: e.path.path.concat(head)});
+                 console.log(e.path.path);
+                 e.path.set('selectable', false);
+                 e.path.dirty = true;
+                 G_canvas.renderAll();
+                 G_canvas.renderAll();
+             }
              allPaths.push(e.path);
              if(false){
                  // Get last point and the one before,
@@ -207,6 +247,15 @@
                  brush.source = brush.getPatternSrc.call(brush);
              }
          };
+         ZZ = [1,2];
+         XX = [];
+         XX[0] ='Q';
+         XX[1] = 3;
+         XX[2] = 4;
+         console.log(ZZ);
+         console.log(XX);
+         ZZ = ZZ.concat(XX);
+         console.log(ZZ);
      }         
      /**
       * Add an image into the canvas.
@@ -324,6 +373,21 @@
              console.log(P);
          }
      }
+     function createTeam(){
+         removePlayers();
+         P=createPlayer(2.0, 4.0, 'IV', '', '#C0FFC0', 2, '#000');
+         playerEvents(P); G_canvas.add(P); players.push(P);
+         P=createPlayer(4.5, 4.0, 'III', '', '#C0FFC0', 2, '#000');
+         playerEvents(P); G_canvas.add(P); players.push(P);
+         P=createPlayer(7.0, 4.0, 'II', '', '#C0FFC0', 2, '#000');
+         playerEvents(P); G_canvas.add(P); players.push(P);
+         P=createPlayer(2.0, 7.0, 'V', '', '#FFC0C0', 2, '#000');
+         playerEvents(P); G_canvas.add(P); players.push(P);
+         P=createPlayer(4.5, 7.0, 'VI', '', '#FFC0C0', 2, '#000');
+         playerEvents(P); G_canvas.add(P); players.push(P);
+         P=createPlayer(7.0, 7.0, 'I', '', '#FFC0C0', 2, '#000');
+         playerEvents(P); G_canvas.add(P); players.push(P);
+     }
      function createPlayers(plrs){
          removePlayers();
          plrs.forEach(function(item, i){
@@ -339,6 +403,9 @@
              G_canvas.add(P);
              players.push(P);
          })
+     }
+     function createPaths(paths){
+         removeLines();
      }
      /**
       */
@@ -357,6 +424,9 @@
      /**
       * @saveData()
       * plug the relevant UserData into an array and save
+      * Taken from https://code-boxx.com/create-save-files-javascript/
+      * https://code.tutsplus.com/tutorials/how-to-save-a-file-with-javascript--cms-41105
+      * could also be interesting.
       */
      function saveData(){
          let data = {};
@@ -372,6 +442,7 @@
          })
          console.log(data);
          console.log(JSON.stringify(data));
+         // (A) CREATE BLOB OBJECT
          var myBlob = new Blob([JSON.stringify(data)], {type: "text/plain"});
 
          // (B) CREATE DOWNLOAD LINK
@@ -402,13 +473,18 @@
                  console.log(myJSON);
                  createPlayers(myJSON['players']);
                  createObjects(myJSON['objects']);
-                 // createPaths()
-                 // createDeco()
-                 // createWhatever()
+                 createPaths(myJSON['paths'])
              }
          };
          input.click();
      }
-     
+     function plonk(){
+         let t = JSON.stringify(G_canvas);
+         //console.log(G_canvas.getObjects());
+         console.log(G_canvas.getObjects()[0].toDataURL());
+         //console.log(t);
+         //console.log(t.length);
+     }
+     /*https://www.tvms-volleyball.de/framadate/HlXfEXv4NvIsqLX8v65Q27zR/admin*/
     </script>
 </html>
