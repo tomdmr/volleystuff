@@ -1,0 +1,414 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Test für Grids</title>
+        <meta charset="utf-8" />
+        <link href="grid.css" rel="stylesheet" type="text/css" />
+        <script src="fabric.min.js"></script>
+        <script src="util2.js"></script>
+    </head>
+    <body onload="pageLoaded()">
+        <div class="container"> 
+            <header>
+                <h1 id="title">Taktikboard</h1>
+            </header>
+            <div class="menu1 menu">
+                <ul>
+                    <li id="load" onclick="onLoadData()"><center>
+                        <img src="open.png"  height="24px" >
+                    </center></li>
+                    <li id="save" onclick="saveData()"><center>
+                        <img src="save.png"  height="24px" >
+                    </center></li>
+                    <li id="addPlayer"  onclick="onCreatePlayer()"><center>Spieler</center></li>
+                    <li id="addLines"   onclick="onAddLines()"><center>Auswahl</center></li>
+                    <li id="clrAll" onclick="removePlayers()">
+                        <center><img src="trash.png" height="24px" >Spieler</center>
+                    </li>
+                    <li id="clrAll" onclick="removeObjects()">
+                        <center><img src="trash.png" height="24px" >Objekte</center>
+                    </li>
+                    <li id="clrAll" onclick="removeLines()">
+                        <center><img src="trash.png" height="24px" >Linien</center>
+                    </li>
+                    <li id="clrAll" onclick="clrAll()">
+                        <center><img src="trash.png" height="24px" >Alles</center>
+                    </li>
+                </ul>
+            </div>
+            <div class="menu2">
+                <center>
+                    <img width="28px" height="28px" src="ball_t.png"   onclick="insertObject('img-ball',{})"   >
+                </center><br>
+                <center>
+                    <img width="28px" height="28px" src="cone_blue.png" onclick="insertObject('img-cone_blue',{scale:0.25})"   >
+                    <img width="28px" height="28px" src="cone_red.png" onclick="insertObject('img-cone_red',{scale:0.25})"   >
+                    <img width="28px" height="28px" src="cone_yellow.png" onclick="insertObject('img-cone_yellow',{scale:0.25})"   >
+                </center><br>
+            </div>
+            <article id="article">
+                <center>
+                    <canvas id="c" style="border: 3px solid black;"  width="400" height="400">
+                        <img src="ball_t.png" id="img-ball" >
+                        <img src="trash.png" id="img-trash">
+                        <img src="cone_blue.png" id="img-cone_blue">
+                        <img src="cone_red.png" id="img-cone_red">
+                        <img src="cone_yellow.png" id="img-cone_yellow">
+                        This text is displayed if your browser does not support HTML5 Canvas.
+                    </canvas>
+                </center>
+            </article> 
+            <aside>
+                <div id="playerAttributes" rumms="">
+                    <input type="text" id="plr-func" style="width: 80%" /><br>
+                    <input type="text" id="plr-name" style="width: 80%"/><br>
+                    <input type="number" id="plr-X" style="width: 38%"/>
+                    <input type="number" id="plr-Y" style="width: 38%"/><br>
+                    <input type="color" id="plr-color" style="border:none" value="#C0FFC0">
+                    <input type="color" id="txt-color" style="border:none"><br>
+                    <input type="button" value="Update" onclick="updatePlayerFromFields()" /><br>
+                </div>
+                <div id="drawing-mode-options">
+                    <label for="drawing-mode-selector">Linie</label>
+                    <select id="drawing-mode-selector">
+                        <option>Solid</option>
+                        <option>Dashed</option>
+                        <option>Dotted</option>
+                    </select>
+                    <br>
+                    <label for="drawing-line-width">Line width:</label>
+                    <span class="info">2</span><input type="range" value="2" min="0" max="10" id="drawing-line-width"><br>
+                    <label for="drawing-color">Line color:</label>
+                    <input type="color" value="#005E7A" id="drawing-color"><br>
+                    <br>
+                </div>
+            </aside> 
+            <footer id="footer">
+                <p>
+                    __DATE__
+                    <br>(C)THD
+                </p>
+            </footer> 
+        </div>
+    </body>
+    <script>
+     /**
+      * Global variables for this module.
+      * @var players[]: holds all player objects
+      * @var otherObjects: cones, balls, whatever
+      * @var allPaths: Lines
+      */
+     let players = [];
+     let otherObjects = [];
+     let allPaths = []
+
+     let cEdge =  50;
+
+     let vLinePatternBrush = null;
+     let cSize = 480;
+     /**
+      */
+     function pageLoaded(){
+         let a = $('article');
+         console.log(a);
+         let myCanvasSize = Math.min(a.clientHeight, a.clientWidth) -30;
+         console.log(myCanvasSize);
+         let c = $('c');
+         c.width = c.height = myCanvasSize;
+         cSize= myCanvasSize - 2*cEdge;
+         G_canvas = new fabric.Canvas('c');
+         vLinePatternBrush = new fabric.PencilBrush(G_canvas);
+         
+         G_canvas.add( createCourt2(cEdge, cEdge, cSize));
+         G_msg = new fabric.Text('/', {
+             fontFamily: 'Arial',
+             fontSize: 12,
+             fill: 'black',
+             fontWeight: 'bold',
+             left: 50,
+             top: 35,
+             selectable: false
+         });
+         G_canvas.add(G_msg);
+         G_canvas.on({
+             'object:moving':
+             function(e){
+                 //console.log(e);
+                 let X = e.target.left + e.target.UserData.dX - cEdge;
+                 let Y = e.target.top  + e.target.UserData.dY - cEdge;
+                 e.target.UserData.loc[0] = X/cSize*9.0;
+                 e.target.UserData.loc[1] = Y/cSize*9.0;
+                 G_msg.set('text', 'P:' + e.target.UserData.loc[0].toFixed(2) + '/'
+                                 + e.target.UserData.loc[1].toFixed(2));
+         }});
+         G_canvas.on({'path:created': function(e){
+             console.log('path-created event');
+             console.log(e);
+             console.log(e.path.path);
+             allPaths.push(e.path);
+             if(false){
+                 // Get last point and the one before,
+                 // compute angle
+                 // go from last point angle+/-15 and stroke
+                 
+                 let pts = e.path.path.length;
+                 let x1 = e.path.path[pts-4][1];
+                 let y1 = e.path.path[pts-4][2];
+                 let x2 = e.path.path[pts-1][1];
+                 let y2 = e.path.path[pts-1][2];
+                 console.log(x1+' '+y1);
+                 console.log(x2+' '+y2);
+                 let xDiff = x2 - x1;
+                 let yDiff = y2 - y1;
+                 console.log(xDiff+' '+yDiff);
+                 let angle = Math.atan2(yDiff, xDiff);
+                 console.log(angle*180/3.141592653);
+                 let a1= angle + 3.1415926535*15/180;
+                 console.log('A1: '+a1);
+                 let ll=20;
+                 let x3 = x2-ll*Math.cos(a1);;
+                 let y3 = y2-ll*Math.sin(a1);;
+                 a1= angle - 3.1415926535*15/180;
+                 x4 = x2-ll*Math.cos(a1);;
+                 y4 = y2-ll*Math.sin(a1);;
+                 e.path.path.push(["M", x2, y2]);
+                 e.path.path.push(["L", x3, y3]);
+                 e.path.path.push(["M", x2, y2]);
+                 e.path.path.push(["L", x4, y4]);
+                 e.path.set('selectable', false);
+                 e.path.dirty = true;
+                 G_canvas.renderAll();
+             }
+         }});
+         
+         $('plr-func').value = '';
+         $('plr-name').value = '';
+         $("drawing-mode-selector").onchange = function(){
+             console.log(G_canvas.strokeDashArray);
+             if     (this.value === 'Solid'){
+                 vLinePatternBrush.strokeDashArray = [0,0];
+             }
+             else if(this.value === 'Dashed'){
+                 vLinePatternBrush.strokeDashArray = [8,18];
+             }
+             else if(this.value === 'Dotted'){
+                 vLinePatternBrush.strokeDashArray = [2,8];
+             }
+             G_canvas.freeDrawingBrush = vLinePatternBrush;
+         };
+         $('drawing-line-width').onchange = function(){
+             G_canvas.freeDrawingBrush.width = parseInt(this.value, 10) || 1;
+             this.previousSibling.innerHTML = this.value;         }
+         
+         $("drawing-color").onchange = function() {
+             var brush = G_canvas.freeDrawingBrush;
+             brush.color = this.value;
+             if (brush.getPatternSrc) {
+                 brush.source = brush.getPatternSrc.call(brush);
+             }
+         };
+     }         
+     /**
+      * Add an image into the canvas.
+      */
+     function insertObject(id, params){
+         let I = createImage(id, params);
+         G_canvas.add(I);
+         otherObjects.push(I);
+     }
+     function removeObjects(){
+         console.log('removing Objects')
+         otherObjects.forEach(function(item){
+             G_canvas.remove(item);
+             console.log(item);
+         });
+         otherObjects = [];
+         console.log('done removing')
+     }
+     function createObjects(objs){
+         removeObjects();
+         if(objs) objs.forEach(function(e){
+             console.log(e);
+             console.log(e.loc);
+             insertObject(e.src, {
+                 dX: e.dX, dY: e.dY,
+                 loc: e.loc,
+                 scale: e.scale,
+                 src: e.src
+             });
+         });
+     }
+     /**
+      */
+     function playerEvents(P){
+         P.on('mousedown', function(e){
+             console.log(e.target);
+             document.getElementById("playerAttributes").rumms = e.target;
+             document.getElementById('plr-func').value = e.target.UserData.func;
+             document.getElementById('plr-name').value = e.target.UserData.name;
+             document.getElementById('plr-X').value = e.target.UserData.loc[0].toFixed(2);
+             document.getElementById('plr-Y').value = e.target.UserData.loc[1].toFixed(2);
+             document.getElementById('plr-color').value = e.target.UserData.pcolor;
+             document.getElementById('txt-color').value = e.target.UserData.tcolor;
+         });
+         P.on({'moving':
+               function(e){
+                   let s = e.transform.target;
+                   let X = s.left + s.UserData.dX - cEdge;
+                   let Y = s.top  + s.UserData.dY - cEdge;
+                   s.UserData.loc[0] = X/cSize*9.0;
+                   s.UserData.loc[1] = Y/cSize*9.0;
+                   G_msg.set('text', 'P:' + s.UserData.loc[0].toFixed(2) + '/'
+                                   + s.UserData.loc[1].toFixed(2));
+
+               }
+         });
+         P.on({'modified':
+               function(e){
+                   console.log('Player modified');
+                   //console.log(e);
+                   console.log(e.target);
+                   //console.log(e.target.UserData);
+                   document.getElementById("playerAttributes").rumms = e.target;
+                   document.getElementById('plr-func').value = e.target.UserData.func;
+                   document.getElementById('plr-name').value = e.target.UserData.name;
+                   document.getElementById('plr-X').value = e.target.UserData.loc[0].toFixed(2);
+                   document.getElementById('plr-Y').value = e.target.UserData.loc[1].toFixed(2);
+                   document.getElementById('plr-color').value = e.target.UserData.pcolor;
+                   document.getElementById('txt-color').value = e.target.UserData.tcolor;
+               }
+         });
+     }
+     function onCreatePlayer(){
+         let P = createPlayer(document.getElementById('plr-X').value*1.0,
+                              document.getElementById('plr-Y').value*1.0,
+                              document.getElementById('plr-func').value,
+                              document.getElementById('plr-name').value,
+                              document.getElementById('plr-color').value,
+                              2,
+                              document.getElementById('txt-color').value);
+         players.push(P);
+         playerEvents(P);
+         document.getElementById("playerAttributes").rumms = P;
+         G_canvas.add(P);
+     }
+     function removePlayers(){
+         console.log('removing Players')
+         players.forEach(function(item){
+             G_canvas.remove(item);
+             console.log(item);
+         });
+         players = [];
+         console.log('done removing')
+     }
+     function removeLines(){
+         console.log('removing lines')
+         allPaths.forEach(function(item){
+             G_canvas.remove(item);
+             console.log(item);
+         });
+         allPaths = [];
+         console.log('done removing')
+     }
+     function updatePlayerFromFields(){
+         P = document.getElementById("playerAttributes").rumms;
+         console.log(P);
+         if(P){
+             updatePlayer(P,
+                          document.getElementById("plr-func").value,
+                          document.getElementById("plr-name").value,
+                          document.getElementById('plr-color').value,
+                          document.getElementById('txt-color').value,
+                          [document.getElementById("plr-X").value*1.0, document.getElementById("plr-Y").value*1.0]
+             );
+             console.log(P);
+         }
+     }
+     function createPlayers(plrs){
+         removePlayers();
+         plrs.forEach(function(item, i){
+             let X = 4.5; let Y = 4.5;
+             if(item.loc){X = item.loc[0]; Y = item.loc[1]; }
+             let func = (item.func) ? item.func : '';
+             let name = (item.name) ? item.name : '';
+             let pcolor = (item.pcolor)? item.pcolor : ((i &&i<4)?'#C0FFC0':'#FFC0C0');
+             let size   = (item.size)? item.size: 2;
+             let tcolor = (item.tcolor)? item.tcolor: '#000';
+             let P = createPlayer(X, Y, func, name, pcolor, size, tcolor);
+             playerEvents(P);
+             G_canvas.add(P);
+             players.push(P);
+         })
+     }
+     /**
+      */
+     function onAddLines(){
+         G_canvas.isDrawingMode = !G_canvas.isDrawingMode;
+         if(G_canvas.isDrawingMode){
+             $('addLines').innerHTML = '<center>Auswahl</center>';
+             $("drawing-mode-selector").onchange();             
+             $('drawing-line-width').onchange();
+             $('drawing-color').onchange();
+         }else{
+         }
+         document.getElementById('addLines').innerHTML = '<center>'+(G_canvas.isDrawingMode? 'Zeichnen' : 'Auswahl')+'</center>';
+     }
+
+     /**
+      * @saveData()
+      * plug the relevant UserData into an array and save
+      */
+     function saveData(){
+         let data = {};
+         // players
+         data['players'] = Array();;
+         players.forEach(function(e){
+             data['players'].push(e.UserData);
+         });
+         // objects
+         data['objects'] = Array();
+         otherObjects.forEach(function(e){
+             data['objects'].push(e.UserData);
+         })
+         console.log(data);
+         console.log(JSON.stringify(data));
+         var myBlob = new Blob([JSON.stringify(data)], {type: "text/plain"});
+
+         // (B) CREATE DOWNLOAD LINK
+         var url = window.URL.createObjectURL(myBlob);
+         var anchor = document.createElement("a");
+         anchor.href = url;
+         anchor.download = "demo.json";
+
+         // (C) "FORCE DOWNLOAD"
+         // NOTE: MAY NOT ALWAYS WORK DUE TO BROWSER SECURITY
+         // BETTER TO LET USERS CLICK ON THEIR OWN
+         anchor.click();
+         window.URL.revokeObjectURL(url);
+         document.removeChild(anchor);
+     }
+     function onLoadData() {
+         let input = document.createElement('input');
+         input.type = 'file';
+         input.onchange = _ => {
+             // you can use this method to get file and perform respective operations
+             let files =   Array.from(input.files);
+             fr = new FileReader();
+             fr.onload = receivedText;
+             fr.readAsText(files[0]);
+             function receivedText(e) {
+                 let lines = e.target.result;
+                 let myJSON = JSON.parse(lines);
+                 console.log(myJSON);
+                 createPlayers(myJSON['players']);
+                 createObjects(myJSON['objects']);
+                 // createPaths()
+                 // createDeco()
+                 // createWhatever()
+             }
+         };
+         input.click();
+     }
+     
+    </script>
+</html>
