@@ -141,3 +141,9 @@ function makeAllPlayersExt( rot, _SPSYS, players ){
     setPlayersBasePosition(R, false);
     return R;
 }
+
+function moveAll(objects, targets){
+    objects.forEach(function(item,idx){
+        item.animate(targets[idx], {onChange: G_canvas.renderAll.bind(G_canvas)});
+    });
+}
