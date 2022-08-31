@@ -33,14 +33,40 @@ function createCourt(){
     pf.set('selectable', false);
     return pf;
 }
+function createCourt2(posX, posY, size){
+    let m3 = size/3;
+    let pf = new fabric.Path('M 0 0L' + size + ' 0L'+size+' '+size+'L0 '+size+'L0 0 zM0 '+m3+'L'+size+' '+m3+' z');
+    //pf.set({left: posX, top: posY, strokeWidth: 3, stroke: 'blue', fill: 'rgba(224, 224, 255,1.0)' });
+    pf.set({left: 50, top: 50, strokeWidth: 3, stroke: 'blue', fill: '#E0E0FF' });
+    pf.set('selectable', false);
+    return pf;
+}
+function createPlayer2(x, y, func, name, pcolor, size=1, tcolor='#000'){
+    let r = 16;
+    let fs=12;
+    if(size>1){
+        r  = 24;
+        fs =17;
+    }
+    let C  = new fabric.Circle({radius: 16, originX:'center', originY:'center', fill: pcolor } );
+    let T1 = new fabric.Text(func,  {fontSize: fs, originX: 'center', originY: 'center', fill: tcolor });
+    // Fixme: pos?
+    let T2 = new fabric.Text(name,  {fontSize: fs, originX: 'center', originY: 'center' , top : r});
+    let P  = new fabric.Group([C, T1, T2], {left: x+r/2, top: y+r/2})
+    P.set('lockScalingX', true);
+    P.set('lockScalingY', true);
+    P.hasControls = P.hasBorders = false;
+    P.UserData= { dX : r/2, dY: r/2};
+    return P;
+}
 /**
- * Die 50 Offsetkommen von der Verschiebung des Courts um 50. Die 16 vom Kreisradius
+ * Die 50 Offset kommen von der Verschiebung des Courts um 50. Die 16 vom Kreisradius
  */
 function createPlayer(rotation, name, x, y){
     if((rotation>1) && (rotation<5)){
-	    color = 'rgba(192, 255, 192, 1.0)';
+	    color = '#C0FFC0';
     }else{
-	    color = 'rgba(255, 192, 192, 1.0)';
+	    color = '#FFC0C0';
     }
 
     var C = new fabric.Circle({radius:16, originX:'center', originY:'center', fill: color });
