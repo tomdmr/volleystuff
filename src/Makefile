@@ -10,6 +10,7 @@ all: $(DSTFILES)
 	make -C Spielsys all
 	make -C tadaVolley all
 	make -C misc all
+	make -C TaktikBoard all
 
 install:
 	test -d $(DSTROOT) || install -d $(DSTROOT)
