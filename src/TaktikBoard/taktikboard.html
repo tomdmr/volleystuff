@@ -6,6 +6,7 @@
         <link href="grid.css" rel="stylesheet" type="text/css" />
         <script src="fabric.min.js"></script>
         <script src="util2.js"></script>
+        <script src="eventhandlers.js"></script>
     </head>
     <body onload="pageLoaded()">
         <div class="container"> 
@@ -35,6 +36,9 @@
                     </li>
                     <li id="plonk" onclick="plonk()">
                         <center>Don't press</center>
+                    </li>
+                    <li id="plink" onclick="plink()">
+                        <center>Really Don't press</center>
                     </li>
                 </ul>
             </div>
@@ -90,6 +94,8 @@
                     <span class="info">2</span><input type="range" value="2" min="0" max="10" id="drawing-line-width"><br>
                     <label for="drawing-color">Line color:</label>
                     <input type="color" value="#005E7A" id="drawing-color"><br>
+                    <label for="drawing-arrow">Pfeil</label>
+                    <input type="checkbox" id="drawing-arrow"><br>
                     <br>
                 </div>
             </aside> 
@@ -109,6 +115,7 @@
       * @var allPaths: Lines
       */
      let players = [];
+     let playerSelected = -1;
      let otherObjects = [];
      let allPaths = []
 
@@ -151,76 +158,7 @@
                  G_msg.set('text', 'P:' + e.target.UserData.loc[0].toFixed(2) + '/'
                                  + e.target.UserData.loc[1].toFixed(2));
          }});
-         G_canvas.on({'path:created': function(e){
-             console.log('path-created event');
-             console.log(e);
-             console.log(e.path.path);
-             
-             if(false){
-                 let pts = e.path.path.length;
-                 let x1 = e.path.path[pts-3][1];
-                 let y1 = e.path.path[pts-3][2];
-                 let x2 = e.path.path[pts-1][1];
-                 let y2 = e.path.path[pts-1][2];
-
-                 let xDiff = x2 - x1;
-                 let yDiff = y2 - y1;
-                 let angle = Math.atan2(yDiff, xDiff);
-                 console.log(angle*180/3.141592653);
-                 let ll=20;
-                 let a1= angle + 3.1415926535*15/180;
-                 let x3 = x2-ll*Math.cos(a1);
-                 let y3 = y2-ll*Math.sin(a1);
-                 a1= angle - 3.1415926535*15/180;
-                 x4 = x2-ll*Math.cos(a1);
-                 y4 = y2-ll*Math.sin(a1);
-                 let head=[];
-                 head[0] = ['L', x3, y3];
-                 head[1] = ['L', x4, y4];
-                 head[2] = ['L', x2, y2];
-                 e.path.set({path: e.path.path.concat(head)});
-                 console.log(e.path.path);
-                 e.path.set('selectable', false);
-                 e.path.dirty = true;
-                 G_canvas.renderAll();
-                 G_canvas.renderAll();
-             }
-             allPaths.push(e.path);
-             if(false){
-                 // Get last point and the one before,
-                 // compute angle
-                 // go from last point angle+/-15 and stroke
-                 
-                 let pts = e.path.path.length;
-                 let x1 = e.path.path[pts-4][1];
-                 let y1 = e.path.path[pts-4][2];
-                 let x2 = e.path.path[pts-1][1];
-                 let y2 = e.path.path[pts-1][2];
-                 console.log(x1+' '+y1);
-                 console.log(x2+' '+y2);
-                 let xDiff = x2 - x1;
-                 let yDiff = y2 - y1;
-                 console.log(xDiff+' '+yDiff);
-                 let angle = Math.atan2(yDiff, xDiff);
-                 console.log(angle*180/3.141592653);
-                 let a1= angle + 3.1415926535*15/180;
-                 console.log('A1: '+a1);
-                 let ll=20;
-                 let x3 = x2-ll*Math.cos(a1);;
-                 let y3 = y2-ll*Math.sin(a1);;
-                 a1= angle - 3.1415926535*15/180;
-                 x4 = x2-ll*Math.cos(a1);;
-                 y4 = y2-ll*Math.sin(a1);;
-                 e.path.path.push(["M", x2, y2]);
-                 e.path.path.push(["L", x3, y3]);
-                 e.path.path.push(["M", x2, y2]);
-                 e.path.path.push(["L", x4, y4]);
-                 e.path.set('selectable', false);
-                 e.path.dirty = true;
-                 G_canvas.renderAll();
-             }
-         }});
-         
+         G_canvas.on({'path:created': canvasOnPathCreated});
          $('plr-func').value = '';
          $('plr-name').value = '';
          $("drawing-mode-selector").onchange = function(){
@@ -290,43 +228,7 @@
      /**
       */
      function playerEvents(P){
-         P.on('mousedown', function(e){
-             console.log(e.target);
-             document.getElementById("playerAttributes").rumms = e.target;
-             document.getElementById('plr-func').value = e.target.UserData.func;
-             document.getElementById('plr-name').value = e.target.UserData.name;
-             document.getElementById('plr-X').value = e.target.UserData.loc[0].toFixed(2);
-             document.getElementById('plr-Y').value = e.target.UserData.loc[1].toFixed(2);
-             document.getElementById('plr-color').value = e.target.UserData.pcolor;
-             document.getElementById('txt-color').value = e.target.UserData.tcolor;
-         });
-         P.on({'moving':
-               function(e){
-                   let s = e.transform.target;
-                   let X = s.left + s.UserData.dX - cEdge;
-                   let Y = s.top  + s.UserData.dY - cEdge;
-                   s.UserData.loc[0] = X/cSize*9.0;
-                   s.UserData.loc[1] = Y/cSize*9.0;
-                   G_msg.set('text', 'P:' + s.UserData.loc[0].toFixed(2) + '/'
-                                   + s.UserData.loc[1].toFixed(2));
-
-               }
-         });
-         P.on({'modified':
-               function(e){
-                   console.log('Player modified');
-                   //console.log(e);
-                   console.log(e.target);
-                   //console.log(e.target.UserData);
-                   document.getElementById("playerAttributes").rumms = e.target;
-                   document.getElementById('plr-func').value = e.target.UserData.func;
-                   document.getElementById('plr-name').value = e.target.UserData.name;
-                   document.getElementById('plr-X').value = e.target.UserData.loc[0].toFixed(2);
-                   document.getElementById('plr-Y').value = e.target.UserData.loc[1].toFixed(2);
-                   document.getElementById('plr-color').value = e.target.UserData.pcolor;
-                   document.getElementById('txt-color').value = e.target.UserData.tcolor;
-               }
-         });
+         P.on({'mousedown': playerOnMouseDown, 'moving': playerOnMoving, 'modified': playerOnModified});
      }
      function onCreatePlayer(){
          let P = createPlayer(document.getElementById('plr-X').value*1.0,
@@ -443,11 +345,11 @@
          console.log(data);
          console.log(JSON.stringify(data));
          // (A) CREATE BLOB OBJECT
-         var myBlob = new Blob([JSON.stringify(data)], {type: "text/plain"});
+         let myBlob = new Blob([JSON.stringify(data)], {type: "text/plain"});
 
          // (B) CREATE DOWNLOAD LINK
-         var url = window.URL.createObjectURL(myBlob);
-         var anchor = document.createElement("a");
+         let url = window.URL.createObjectURL(myBlob);
+         let anchor = document.createElement("a");
          anchor.href = url;
          anchor.download = "demo.json";
 
@@ -478,12 +380,49 @@
          };
          input.click();
      }
+     // Experimental stuff
      function plonk(){
          let t = JSON.stringify(G_canvas);
          //console.log(G_canvas.getObjects());
          console.log(G_canvas.getObjects()[0].toDataURL());
+         // (A) CREATE BLOB OBJECT
+         let myBlob = new Blob([JSON.stringify(G_canvas)], {type: "text/plain"});
+
+         // (B) CREATE DOWNLOAD LINK
+         let url = window.URL.createObjectURL(myBlob);
+         let anchor = document.createElement("a");
+         anchor.href = url;
+         anchor.download = "demo.json";
+
+         // (C) "FORCE DOWNLOAD"
+         // NOTE: MAY NOT ALWAYS WORK DUE TO BROWSER SECURITY
+         // BETTER TO LET USERS CLICK ON THEIR OWN
+         anchor.click();
+         window.URL.revokeObjectURL(url);
+         document.removeChild(anchor);
          //console.log(t);
          //console.log(t.length);
+     }
+     function plink(){
+         let input = document.createElement('input');
+         input.type = 'file';
+         input.onchange = _ => {
+             // you can use this method to get file and perform respective operations
+             let files =   Array.from(input.files);
+             fr = new FileReader();
+             fr.onload = receivedText;
+             fr.readAsText(files[0]);
+             function receivedText(e) {
+                 let lines = e.target.result;
+                 //console.log(lines);
+                 console.log('Having lines');
+                 //G_canvas = new fabric.Canvas();
+                 G_canvas.loadFromJSON(JSON.parse(lines));
+                 console.log('Ready?');
+                 G_canvas.renderAll();
+             }
+         };
+         input.click();
      }
      /*https://www.tvms-volleyball.de/framadate/HlXfEXv4NvIsqLX8v65Q27zR/admin*/
     </script>
