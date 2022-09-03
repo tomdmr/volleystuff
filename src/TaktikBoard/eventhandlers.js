@@ -41,6 +41,7 @@ function canvasOnPathCreated(e){
             originX:'center', originY:'center'
         });
         G = new fabric.Group([e.path, T])
+        G.set('selectable', false);
         G_canvas.remove(e.path);
         // Create a group out of this.
         G_canvas.add(G);
@@ -48,6 +49,7 @@ function canvasOnPathCreated(e){
     }
     else{
         console.log('no arrow');
+        e.path.set('selectable', false);
         allPaths.push(e.path);
     }
 }
