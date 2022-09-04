@@ -136,7 +136,7 @@
          G_canvas = new fabric.Canvas('c');
          vLinePatternBrush = new fabric.PencilBrush(G_canvas);
          
-         G_canvas.add( createCourt2(cEdge, cEdge, cSize));
+         G_canvas.add(createCourt2(cEdge, cEdge, cSize));
          G_msg = new fabric.Text('/', {
              fontFamily: 'Arial',
              fontSize: 12,
@@ -147,18 +147,12 @@
              selectable: false
          });
          G_canvas.add(G_msg);
+
          G_canvas.on({
-             'object:moving':
-             function(e){
-                 //console.log(e);
-                 let X = e.target.left + e.target.UserData.dX - cEdge;
-                 let Y = e.target.top  + e.target.UserData.dY - cEdge;
-                 e.target.UserData.loc[0] = X/cSize*9.0;
-                 e.target.UserData.loc[1] = Y/cSize*9.0;
-                 G_msg.set('text', 'P:' + e.target.UserData.loc[0].toFixed(2) + '/'
-                                 + e.target.UserData.loc[1].toFixed(2));
-         }});
-         G_canvas.on({'path:created': canvasOnPathCreated});
+             'object:moving': onObjectMoving,
+             'path:created' : canvasOnPathCreated
+         });
+
          $('plr-func').value = '';
          $('plr-name').value = '';
          $("drawing-mode-selector").onchange = function(){
@@ -174,10 +168,13 @@
              }
              G_canvas.freeDrawingBrush = vLinePatternBrush;
          };
+         $("drawing-mode-selector").value = 'Solid';
+
          $('drawing-line-width').onchange = function(){
              G_canvas.freeDrawingBrush.width = parseInt(this.value, 10) || 1;
-             this.previousSibling.innerHTML = this.value;         }
-         
+             this.previousSibling.innerHTML = this.value;}
+
+         $('drawing-line-width').value = 2;
          $("drawing-color").onchange = function() {
              var brush = G_canvas.freeDrawingBrush;
              brush.color = this.value;
@@ -185,15 +182,7 @@
                  brush.source = brush.getPatternSrc.call(brush);
              }
          };
-         ZZ = [1,2];
-         XX = [];
-         XX[0] ='Q';
-         XX[1] = 3;
-         XX[2] = 4;
-         console.log(ZZ);
-         console.log(XX);
-         ZZ = ZZ.concat(XX);
-         console.log(ZZ);
+         $("drawing-color").value='#005e7a';
      }         
      /**
       * Add an image into the canvas.
@@ -203,6 +192,9 @@
          G_canvas.add(I);
          otherObjects.push(I);
      }
+     /**
+     * Remove all objects (i.e.: images) from canvas
+     */
      function removeObjects(){
          console.log('removing Objects')
          otherObjects.forEach(function(item){
@@ -231,16 +223,16 @@
          P.on({'mousedown': playerOnMouseDown, 'moving': playerOnMoving, 'modified': playerOnModified});
      }
      function onCreatePlayer(){
-         let P = createPlayer(document.getElementById('plr-X').value*1.0,
-                              document.getElementById('plr-Y').value*1.0,
-                              document.getElementById('plr-func').value,
-                              document.getElementById('plr-name').value,
-                              document.getElementById('plr-color').value,
+         let P = createPlayer($('plr-X').value*1.0,
+                              $('plr-Y').value*1.0,
+                              $('plr-func').value,
+                              $('plr-name').value,
+                              $('plr-color').value,
                               2,
-                              document.getElementById('txt-color').value);
+                              $('txt-color').value);
          players.push(P);
          playerEvents(P);
-         document.getElementById("playerAttributes").rumms = P;
+         $("playerAttributes").rumms = P;
          G_canvas.add(P);
      }
      function removePlayers(){
@@ -256,21 +248,21 @@
          console.log('removing lines')
          allPaths.forEach(function(item){
              G_canvas.remove(item);
-             console.log(item);
+             //console.log(item);
          });
          allPaths = [];
          console.log('done removing')
      }
      function updatePlayerFromFields(){
-         P = document.getElementById("playerAttributes").rumms;
+         P = $("playerAttributes").rumms;
          console.log(P);
          if(P){
              updatePlayer(P,
-                          document.getElementById("plr-func").value,
-                          document.getElementById("plr-name").value,
-                          document.getElementById('plr-color').value,
-                          document.getElementById('txt-color').value,
-                          [document.getElementById("plr-X").value*1.0, document.getElementById("plr-Y").value*1.0]
+                          $("plr-func").value,
+                          $("plr-name").value,
+                          $('plr-color').value,
+                          $('txt-color').value,
+                          [$("plr-X").value*1.0, $("plr-Y").value*1.0]
              );
              console.log(P);
          }
@@ -306,8 +298,23 @@
              players.push(P);
          })
      }
+     /**
+      * Basic code taken from
+      * https://stackoverflow.com/questions/19361971/deserialize-a-json-object-in-fabric-js
+      */
      function createPaths(paths){
          removeLines();
+         let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
+         G_canvas.renderOnAddRemove = false;
+         fabric.util.enlivenObjects(paths, function(objects) {
+             objects.forEach(function(o) {
+                 o.set('selectable', false);
+                 G_canvas.add(o);
+                 allPaths.push(o);
+             });
+         });
+         G_canvas.renderOnAddRemove = origRenderOnAddRemove;
+         G_canvas.renderAll();
      }
      /**
       */
@@ -320,9 +327,13 @@
              $('drawing-color').onchange();
          }else{
          }
-         document.getElementById('addLines').innerHTML = '<center>'+(G_canvas.isDrawingMode? 'Zeichnen' : 'Auswahl')+'</center>';
+         $('addLines').innerHTML = '<center>'+(G_canvas.isDrawingMode? 'Zeichnen' : 'Auswahl')+'</center>';
      }
-
+     function clrAll(){
+         removeLines();
+         removeObjects();
+         removePlayers();
+     }
      /**
       * @saveData()
       * plug the relevant UserData into an array and save
@@ -341,7 +352,11 @@
          data['objects'] = Array();
          otherObjects.forEach(function(e){
              data['objects'].push(e.UserData);
-         })
+         });
+         // paths
+         console.log(allPaths);
+         data['paths'] = allPaths;
+
          console.log(data);
          console.log(JSON.stringify(data));
          // (A) CREATE BLOB OBJECT
@@ -360,6 +375,9 @@
          window.URL.revokeObjectURL(url);
          document.removeChild(anchor);
      }
+     /**
+      * De-serialize JSON-Input from saved files
+     */
      function onLoadData() {
          let input = document.createElement('input');
          input.type = 'file';
@@ -382,47 +400,8 @@
      }
      // Experimental stuff
      function plonk(){
-         let t = JSON.stringify(G_canvas);
-         //console.log(G_canvas.getObjects());
-         console.log(G_canvas.getObjects()[0].toDataURL());
-         // (A) CREATE BLOB OBJECT
-         let myBlob = new Blob([JSON.stringify(G_canvas)], {type: "text/plain"});
-
-         // (B) CREATE DOWNLOAD LINK
-         let url = window.URL.createObjectURL(myBlob);
-         let anchor = document.createElement("a");
-         anchor.href = url;
-         anchor.download = "demo.json";
-
-         // (C) "FORCE DOWNLOAD"
-         // NOTE: MAY NOT ALWAYS WORK DUE TO BROWSER SECURITY
-         // BETTER TO LET USERS CLICK ON THEIR OWN
-         anchor.click();
-         window.URL.revokeObjectURL(url);
-         document.removeChild(anchor);
-         //console.log(t);
-         //console.log(t.length);
      }
      function plink(){
-         let input = document.createElement('input');
-         input.type = 'file';
-         input.onchange = _ => {
-             // you can use this method to get file and perform respective operations
-             let files =   Array.from(input.files);
-             fr = new FileReader();
-             fr.onload = receivedText;
-             fr.readAsText(files[0]);
-             function receivedText(e) {
-                 let lines = e.target.result;
-                 //console.log(lines);
-                 console.log('Having lines');
-                 //G_canvas = new fabric.Canvas();
-                 G_canvas.loadFromJSON(JSON.parse(lines));
-                 console.log('Ready?');
-                 G_canvas.renderAll();
-             }
-         };
-         input.click();
      }
      /*https://www.tvms-volleyball.de/framadate/HlXfEXv4NvIsqLX8v65Q27zR/admin*/
     </script>
