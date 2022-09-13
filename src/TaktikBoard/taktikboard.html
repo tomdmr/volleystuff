@@ -9,7 +9,7 @@
         <script src="eventhandlers.js"></script>
     </head>
     <body onload="pageLoaded()">
-        <div class="container"> 
+        <div class="container">
             <header>
                 <h1 id="title">Taktikboard</h1>
             </header>
@@ -44,13 +44,13 @@
             </div>
             <div class="menu2">
                 <center>
-                    <img width="28px" height="28px" src="marker_red.png" onclick="onCreatePlayer()"/>
+                    <img width="28px" height="28px" src="marker_red.png" onclick="insertTriangle()"/>
                 </center><br>
-                <center onclick="createTeam()">
+                <!-- center onclick="createTeam()">
                     <img width="28px" height="28px" src="marker_red.png"/>
                     <img width="28px" height="28px" src="marker_red.png"/>
                     <img width="28px" height="28px" src="marker_red.png"/>
-                </center><br>
+                </center><br -->
                 <center>
                     <img width="28px" height="28px" src="ball_t.png"   onclick="insertObject('img-ball',{})"/>
                 </center><br>
@@ -71,7 +71,7 @@
                         This text is displayed if your browser does not support HTML5 Canvas.
                     </canvas>
                 </center>
-            </article> 
+            </article>
             <aside>
                 <div id="playerAttributes" rumms="">
                     <input type="text" id="plr-func" style="width: 80%" /><br>
@@ -98,13 +98,13 @@
                     <input type="checkbox" id="drawing-arrow"><br>
                     <br>
                 </div>
-            </aside> 
+            </aside>
             <footer id="footer">
                 <p>
                     __DATE__
                     <br>(C)THD
                 </p>
-            </footer> 
+            </footer>
         </div>
     </body>
     <script>
@@ -117,13 +117,14 @@
      let players = [];
      let playerSelected = -1;
      let otherObjects = [];
-     let allPaths = []
+     let allPaths = [];
 
      let cEdge =  50;
 
      let vLinePatternBrush = null;
      let cSize = 480;
      /**
+      *
       */
      function pageLoaded(){
          let a = $('article');
@@ -135,7 +136,7 @@
          cSize= myCanvasSize - 2*cEdge;
          G_canvas = new fabric.Canvas('c');
          vLinePatternBrush = new fabric.PencilBrush(G_canvas);
-         
+
          G_canvas.add(createCourt2(cEdge, cEdge, cSize));
          G_msg = new fabric.Text('/', {
              fontFamily: 'Arial',
@@ -149,8 +150,9 @@
          G_canvas.add(G_msg);
 
          G_canvas.on({
-             'object:moving': onObjectMoving,
-             'path:created' : canvasOnPathCreated
+             'object:moving':   canvasOnObjectMoving,
+             'object:modified': canvasOnObjectModified,
+             'path:created'   : canvasOnPathCreated
          });
 
          $('plr-func').value = '';
@@ -183,44 +185,76 @@
              }
          };
          $("drawing-color").value='#005e7a';
-     }         
+     }
      /**
-      * Add an image into the canvas.
+      * Add an image into the canvas. @var id is the id of a graphic that is used to create the image
+      * The object is added to the canvas, but not placed anywhere.
       */
      function insertObject(id, params){
          let I = createImage(id, params);
+         // enable removal
+         //I.on({'modified': objectOnModified});
+         // into canvas and object list
          G_canvas.add(I);
          otherObjects.push(I);
      }
      /**
-     * Remove all objects (i.e.: images) from canvas
-     */
+      * Remove all objects (i.e.: images) from canvas
+      */
      function removeObjects(){
-         console.log('removing Objects')
          otherObjects.forEach(function(item){
              G_canvas.remove(item);
              console.log(item);
          });
          otherObjects = [];
-         console.log('done removing')
      }
-     function createObjects(objs){
-         removeObjects();
-         if(objs) objs.forEach(function(e){
-             console.log(e);
-             console.log(e.loc);
-             insertObject(e.src, {
-                 dX: e.dX, dY: e.dY,
-                 loc: e.loc,
-                 scale: e.scale,
-                 src: e.src
-             });
+     /**
+      * this will become our new player creator
+      */
+     function insertTriangle(){
+         const sizes = [1.0, 1.4, 1.7];
+         let idx=0;
+         let baseDim = cSize/18;
+
+         let D = new fabric.Triangle({
+             width: baseDim, height: baseDim,
+             originX: 'center', originY: 'center',
+             fill: $("plr-color").value,
+             stroke: '#000',  strokeWidth : 1,
+             lockScalingX: true, lockScalingY: true
          });
+         let T1  = new fabric.Text(
+             $('plr-func').value,
+             {
+                 fontSize: 0.4*baseDim, top: 0.14*baseDim,
+                 originX: 'center', originY: 'center',
+                 fill: '#000',
+                 lockScalingX: true, lockScalingY: true
+         });
+         let T2  = new fabric.Text(
+             $('plr-name').value,
+             {
+                 fontSize: 0.489*baseDim, top: 0.66*baseDim,
+                 originX: 'center', originY: 'top',
+                 fill: '#000',
+                 lockScalingX: true, lockScalingY: true
+         });
+         let G  = new fabric.Group([D, T1, T2]);
+         G.set({
+             originX: 'center', originY: 'center',
+             left: 100, top: 100,
+             lockScalingX: true, lockScalingY: true,
+             hasBoders: false
+         });
+         G.on({'selected': playerOnSelected/*, 'modified': playerOnModified*/});
+         players.push(G);
+         G_canvas.add(G);
      }
+
      /**
       */
      function playerEvents(P){
-         P.on({'mousedown': playerOnMouseDown, 'moving': playerOnMoving, 'modified': playerOnModified});
+         P.on({'selected': playerOnSelected, 'modified': playerOnModified});
      }
      function onCreatePlayer(){
          let P = createPlayer($('plr-X').value*1.0,
@@ -236,39 +270,43 @@
          G_canvas.add(P);
      }
      function removePlayers(){
-         console.log('removing Players')
+         //console.log('removing Players')
          players.forEach(function(item){
              G_canvas.remove(item);
              console.log(item);
          });
          players = [];
-         console.log('done removing')
+         //console.log('done removing')
      }
      function removeLines(){
-         console.log('removing lines')
+         //console.log('removing lines')
          allPaths.forEach(function(item){
              G_canvas.remove(item);
-             //console.log(item);
          });
          allPaths = [];
-         console.log('done removing')
+         //console.log('done removing')
      }
      function updatePlayerFromFields(){
          P = $("playerAttributes").rumms;
          console.log(P);
-         if(P){
-             updatePlayer(P,
-                          $("plr-func").value,
-                          $("plr-name").value,
-                          $('plr-color').value,
-                          $('txt-color').value,
-                          [$("plr-X").value*1.0, $("plr-Y").value*1.0]
-             );
-             console.log(P);
+         if(P && P._objects){
+             P._objects[0].fill = $('plr-color').value;
+             P._objects[1].fill = $('txt-color').value;
+             P._objects[1].text = $("plr-func").value;
+             P._objects[2].text = $("plr-name").value;
+             let D = P._objects[0];
+             let dCX = 0.25*(D.aCoords.bl.x+D.aCoords.br.x+D.aCoords.tl.x+D.aCoords.tr.x);
+             let dCY = 0.25*(D.aCoords.bl.y+D.aCoords.br.y+D.aCoords.tl.y+D.aCoords.tr.y);
+             let left = $('plr-X').value*cSize/9 + dCX +cEdge;
+             let top  = $('plr-Y').value*cSize/9 - dCY + cEdge
+             P.set({left: left, top: top});                 
+             P.dirty = true;
+             G_canvas.renderAll();
          }
      }
      function createTeam(){
          removePlayers();
+         /*
          P=createPlayer(2.0, 4.0, 'IV', '', '#C0FFC0', 2, '#000');
          playerEvents(P); G_canvas.add(P); players.push(P);
          P=createPlayer(4.5, 4.0, 'III', '', '#C0FFC0', 2, '#000');
@@ -281,9 +319,11 @@
          playerEvents(P); G_canvas.add(P); players.push(P);
          P=createPlayer(7.0, 7.0, 'I', '', '#FFC0C0', 2, '#000');
          playerEvents(P); G_canvas.add(P); players.push(P);
+         */
      }
      function createPlayers(plrs){
          removePlayers();
+         /*
          plrs.forEach(function(item, i){
              let X = 4.5; let Y = 4.5;
              if(item.loc){X = item.loc[0]; Y = item.loc[1]; }
@@ -297,6 +337,22 @@
              G_canvas.add(P);
              players.push(P);
          })
+         */
+         // new
+         let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
+         G_canvas.renderOnAddRemove = false;
+         fabric.util.enlivenObjects(plrs, function(objects) {
+             objects.forEach(function(o) {
+                 // Add to canvas
+                 G_canvas.add(o);
+                 // Add specific events
+                 o.on({'selected': playerOnSelected, 'modified': playerOnModified});
+                 // Add into array of players
+                 players.push(o);
+             });
+         });
+         G_canvas.renderOnAddRemove = origRenderOnAddRemove;
+         G_canvas.renderAll();
      }
      /**
       * Basic code taken from
@@ -308,9 +364,48 @@
          G_canvas.renderOnAddRemove = false;
          fabric.util.enlivenObjects(paths, function(objects) {
              objects.forEach(function(o) {
-                 o.set('selectable', false);
+                 // ONLY FOR PATH!
+                 // but also with arrow.
+                 console.log(o);
+                 if((o.type === 'path') ||(o._objects && (o._objects[0].type === 'path')))
+                     o.set('selectable', false);
                  G_canvas.add(o);
                  allPaths.push(o);
+             });
+         });
+         G_canvas.renderOnAddRemove = origRenderOnAddRemove;
+         G_canvas.renderAll();
+     }
+     /**
+      *
+     */
+     function createObjects(objs){
+         removeObjects();
+         console.log('Loading objects---')
+         let url = window.location.protocol+'//'+window.location.host+window.location.pathname;
+         console.log(window.location);
+         let filename = url.substring(url.lastIndexOf('/')+1);
+         let basename = url.substring(0,url.lastIndexOf('/')+1);
+         //console.log('Base: '+basename);
+         //console.log('File: '+filename);
+         //console.log(objs[0].src);
+         objs.forEach(function(e, i){
+             if(e.src){
+                 let base = e.src.substring(0,e.src.lastIndexOf('/')+1);
+                 let name = e.src.substring(e.src.lastIndexOf('/')+1);
+                 //console.log('e base:'+base);
+                 //console.log('e name:'+name+' new name:'+basename+name);
+                 objs[i].src = basename+name;
+                 
+             }
+         });
+         let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
+         G_canvas.renderOnAddRemove = false;
+         fabric.util.enlivenObjects(objs, function(objects) {
+             objects.forEach(function(o) {
+                 G_canvas.add(o);
+                 console.log(o.src);
+                 otherObjects.push(o);
              });
          });
          G_canvas.renderOnAddRemove = origRenderOnAddRemove;
@@ -322,7 +417,7 @@
          G_canvas.isDrawingMode = !G_canvas.isDrawingMode;
          if(G_canvas.isDrawingMode){
              $('addLines').innerHTML = '<center>Auswahl</center>';
-             $("drawing-mode-selector").onchange();             
+             $("drawing-mode-selector").onchange();
              $('drawing-line-width').onchange();
              $('drawing-color').onchange();
          }else{
@@ -343,22 +438,20 @@
       */
      function saveData(){
          let data = {};
-         // players
-         data['players'] = Array();;
-         players.forEach(function(e){
-             data['players'].push(e.UserData);
-         });
+         data['canvas'] = {
+             cSize: cSize
+         };
+         // New
+         data['players'] = players;
          // objects
-         data['objects'] = Array();
-         otherObjects.forEach(function(e){
-             data['objects'].push(e.UserData);
-         });
+         data['objects'] = otherObjects;
          // paths
          console.log(allPaths);
          data['paths'] = allPaths;
+         
+         //data['canvasObjects'] = canvasObjects;
 
-         console.log(data);
-         console.log(JSON.stringify(data));
+         
          // (A) CREATE BLOB OBJECT
          let myBlob = new Blob([JSON.stringify(data)], {type: "text/plain"});
 
@@ -377,7 +470,7 @@
      }
      /**
       * De-serialize JSON-Input from saved files
-     */
+      */
      function onLoadData() {
          let input = document.createElement('input');
          input.type = 'file';
@@ -387,13 +480,16 @@
              fr = new FileReader();
              fr.onload = receivedText;
              fr.readAsText(files[0]);
-             function receivedText(e) {
+             function receivedText(e){
                  let lines = e.target.result;
                  let myJSON = JSON.parse(lines);
-                 console.log(myJSON);
+                 //console.log(myJSON);
                  createPlayers(myJSON['players']);
+                 //console.log(myJSON['objects']);
+                 console.log('calling createObjects');
                  createObjects(myJSON['objects']);
-                 createPaths(myJSON['paths'])
+                 createPaths(myJSON['paths']);
+                 //createCanvasObjects(myJSON['canvasObjects']);
              }
          };
          input.click();

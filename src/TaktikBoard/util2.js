@@ -14,24 +14,26 @@ function createCourt2(posX, posY, size){
     pf.set('selectable', false);
     return pf;
 }
+/**
+ *
+ */
 function createImage(id, params){
+    // Fixme: Do we need UserData?
     let X = 4.0; let Y = 4.0;
-    if(params.loc){X = params.loc[0]; Y = params.loc[1]; }
-    
+    if(params.loc){X = params.loc[0]; Y = params.loc[1]; } 
     let I = new fabric.Image(document.getElementById(id));
     I.scale(1.0);
     if(params.scale){ I.scale(params.scale); }
-    I.UserData = {
-        dX : 0,
-        dY : 0
-    }
     I.hasControls = I.hasBorders = false;
     I.set({originX: 'center', originY:'center', 'lockScalingX': true, 'lockScalingY': true});
-    I.UserData.loc = [X, Y];
-    I.UserData.scale = I.scaleX;
-    I.UserData.src = id;
-    I.set({left: X/9*cSize+cEdge-I.UserData.dX, top: Y/9*cSize+cEdge-I.UserData.dY})
-    console.log(I);
+    /*
+    I.UserData = {
+        dX: 0, dY: 0,
+        loc: [X, Y],
+        scale: I.scaleX,
+        src: id
+    }*/
+    I.set({left: X/9*cSize+cEdge, top: Y/9*cSize+cEdge})
     return I;
 }
 function createBall(params){
@@ -57,7 +59,8 @@ function createPlayer(X, Y, func, name, pcolor, size=1, tcolor='#000'){
         r  = 24;
         fs =17;
     }
-    let C  = new fabric.Circle({radius: 16, originX:'center', originY:'center', fill: pcolor } );
+    let C  = new fabric.Circle({radius: 16, originX:'center', originY:'center', fill: pcolor,
+                                stroke:'#000', strokeWidth: 1  });
     let T1 = new fabric.Text(func,  {fontSize: fs, originX: 'center', originY: 'center', fill: tcolor });
     let T2 = new fabric.Text(name,  {fontSize: fs, originX: 'center', originY: 'center' , top : r});
     let P  = new fabric.Group([C, T1, T2]);
