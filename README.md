@@ -7,10 +7,7 @@ Dies ist ein unfertiges Rewrite der
 
 ## Taktikboard
 
-Versuch, ein Taktikboard in HTML und JavaScript zu
-implementieren. Bislang gibt es einzelne Spieler, die man auf dem Feld
-positionieren kann. Die Spieler besitzen zwei Textfelder und einen
-Namen sowie eine Farbe.
+Versuch, ein Taktikboard in HTML und JavaScript zu implementieren. In der momentanen Version sind die Spielerinnen als Dreiecke realisiert. Im Dreieck ist Platz für ein kurzes Tag (z.B. "VI"), unter dem Spieler Platz für eine Anmerkung (z.B. "MB1-Rudi"). Die Dreiecke sind drehbar, es lassen sich also auch Ausrichtungen oder Übungen darstellen. Mit den Farben lassen sich verschiedene Funktionen darstellen, wie Zuspielerin, Libera, Vorder- Hinterspielerin.
 
 ## misc
 
