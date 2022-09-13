@@ -1,9 +1,12 @@
 
-DSTROOT ?= $(realpath ../build)
+DSTROOT ?= $(realpath ..)/build
 SRC = index.html
 export DSTROOT
 
 DSTFILES= $(foreach name, $(SRC), $(DSTROOT)/$(name))
+
+test:
+	echo $(DSTROOT)
 
 all: $(DSTFILES)
 	echo $(DSTROOT)
@@ -17,9 +20,12 @@ install:
 	for name in $(SRC); do \
 		install -D -m644 $$name $(DSTROOT)/$(DSTDIR)/$$name; \
 	done
-	make -C tadaVolley DSTROOT=$(DSTROOT) install
-	make -C Spielsys   DSTROOT=$(DSTROOT) install
-	make -C misc       DSTROOT=$(DSTROOT) install
+#	make -C tadaVolley  DSTROOT=$(DSTROOT) install
+#	make -C Spielsys    DSTROOT=$(DSTROOT) install
+	make -C misc        DSTROOT=$(DSTROOT) install
+	make -C TaktikBoard DSTROOT=$(DSTROOT) install
+	make -C css         DSTROOT=$(DSTROOT) install
+	make -C extjs       DSTROOT=$(DSTROOT) install
 
 clean:
 	find . -iname \*~ -print0 | xargs -0 rm
