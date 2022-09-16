@@ -1,5 +1,5 @@
 
-DSTROOT ?= $(realpath ..)/build
+DSTROOT ?= $(realpath ..)/dist
 SRC = index.html
 export DSTROOT
 
@@ -18,7 +18,7 @@ all: $(DSTFILES)
 install:
 	test -d $(DSTROOT) || install -d $(DSTROOT)
 	for name in $(SRC); do \
-		install -D -m644 $$name $(DSTROOT)/$(DSTDIR)/$$name; \
+		install -C -D -m644 $$name $(DSTROOT)/$(DSTDIR)/$$name; \
 	done
 #	make -C tadaVolley  DSTROOT=$(DSTROOT) install
 #	make -C Spielsys    DSTROOT=$(DSTROOT) install
