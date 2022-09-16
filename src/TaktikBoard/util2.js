@@ -1,9 +1,40 @@
 var $=function(id){
     return document.getElementById(id)
 };
-var ZZ=function(id){
-    return document.getElementById(id)
-};
+/**
+ *
+ */
+function canvasToWorld(G){
+    if(G._objects){
+        let gCX = 0.25*(G.aCoords.bl.x+G.aCoords.br.x+G.aCoords.tl.x+G.aCoords.tr.x);
+        let gCY = 0.25*(G.aCoords.bl.y+G.aCoords.br.y+G.aCoords.tl.y+G.aCoords.tr.y);
+
+        let D = G._objects[0];
+        let dCX = 0.25*(D.aCoords.bl.x+D.aCoords.br.x+D.aCoords.tl.x+D.aCoords.tr.x);
+        let dCY = 0.25*(D.aCoords.bl.y+D.aCoords.br.y+D.aCoords.tl.y+D.aCoords.tr.y);
+        let rCX = (gCX - dCX-cEdge)/cSize*9.0;
+        let rCY = (gCY + dCY-cEdge)/cSize*9.0;
+        return {left: rCX, top: rCY};
+    }else{
+        let rCX = (G.left -cEdge)/cSize*9.0;
+        let rCY = (G.top  - cEdge)/cSize*9.0;
+        return {left: rCX, top: rCY};
+    }
+}
+/**
+ *
+ */
+function worldToCanvas(p){
+    if(Array.isArray(p)){
+        let left = p[0]*cSize/9+cEdge;
+        return {left: p[0]*cSize/9+cEdge, top: p[1]*cSize/9+cEdge}
+    }
+    else if(p.left && p.top){
+        return {left: p.left*cSize/9+cEdge, top: p.top*cSize/9+cEdge}
+    }
+    else return undefined
+}
+
 /**
 */
 function createCourt2(posX, posY, size){
@@ -18,21 +49,15 @@ function createCourt2(posX, posY, size){
  *
  */
 function createImage(id, params){
-    // Fixme: Do we need UserData?
+    const sizes = [1.0, 1.4, 1.7];
+    let idx= (params && params.idx) ? p.idx : 1;
+
     let X = 4.0; let Y = 4.0;
-    if(params.loc){X = params.loc[0]; Y = params.loc[1]; } 
+    if(p && params.loc){X = params.loc[0]; Y = params.loc[1]; }
     let I = new fabric.Image(document.getElementById(id));
-    I.scale(1.0);
-    if(params.scale){ I.scale(params.scale); }
+    I.scale( (params && params.scale) ? params.scale*sizes[idx] : sizes[idx]);
     I.hasControls = I.hasBorders = false;
     I.set({originX: 'center', originY:'center', 'lockScalingX': true, 'lockScalingY': true});
-    /*
-    I.UserData = {
-        dX: 0, dY: 0,
-        loc: [X, Y],
-        scale: I.scaleX,
-        src: id
-    }*/
     I.set({left: X/9*cSize+cEdge, top: Y/9*cSize+cEdge})
     return I;
 }
