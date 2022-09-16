@@ -116,6 +116,7 @@ function canvasOnObjectModified(e){
         console.log('    a Player');
         collection = players;
     }
+    let ePos= canvasToWorld(e.target);
 
     if(e.target._objects){
         console.log(e.target);
@@ -151,6 +152,7 @@ function playerOnSelected(e){
     console.log('playerOnSelected');
     $("playerAttributes").rumms = e.target;
     let G = e.target;
+    let ePos= canvasToWorld(e.target);
     // Identisch zu top und left??
     let gCX = 0.25*(G.aCoords.bl.x+G.aCoords.br.x+G.aCoords.tl.x+G.aCoords.tr.x);
     let gCY = 0.25*(G.aCoords.bl.y+G.aCoords.br.y+G.aCoords.tl.y+G.aCoords.tr.y);
@@ -182,6 +184,7 @@ function playerOnModified(e){
     /*
     console.log('playerOnModified');
     //console.log(e);
+    let ePos= canvasToWorld(e.target);
     if(e.target._objects){
         console.log(e.target);
         let G = e.target;
