@@ -46,11 +46,11 @@
                 <center>
                     <img width="28px" height="28px" src="marker_red.png" onclick="insertTriangle()"/>
                 </center><br>
-                <!-- center onclick="createTeam()">
+                <center onclick="createTeam()">
                     <img width="28px" height="28px" src="marker_red.png"/>
                     <img width="28px" height="28px" src="marker_red.png"/>
                     <img width="28px" height="28px" src="marker_red.png"/>
-                </center><br -->
+                </center><br>
                 <center>
                     <img width="28px" height="28px" src="ball_t.png"   onclick="insertObject('img-ball',{})"/>
                 </center><br>
@@ -58,6 +58,9 @@
                     <img width="28px" height="28px" src="cone_blue.png" onclick="insertObject('img-cone_blue',{scale:0.25})" />
                     <img width="28px" height="28px" src="cone_red.png" onclick="insertObject('img-cone_red',{scale:0.25})"   />
                     <img width="28px" height="28px" src="cone_yellow.png" onclick="insertObject('img-cone_yellow',{scale:0.25})"   />
+                </center><br>
+                <center onclick="texTest()">
+                    Dreieck
                 </center><br>
             </div>
             <article id="article">
@@ -85,6 +88,7 @@
                 <div id="drawing-mode-options">
                     <label for="drawing-mode-selector">Linie</label>
                     <select id="drawing-mode-selector">
+                        <!-- option value="foo>">Bla di blub</option> -->
                         <option>Solid</option>
                         <option>Dashed</option>
                         <option>Dotted</option>
@@ -108,6 +112,8 @@
         </div>
     </body>
     <script>
+     // https://dmitripavlutin.com/console-log-tips/
+     // Formatting tipps I should have known before...
      /**
       * Global variables for this module.
       * @var players[]: holds all player objects
@@ -128,9 +134,9 @@
       */
      function pageLoaded(){
          let a = $('article');
-         console.log(a);
          let myCanvasSize = Math.min(a.clientHeight, a.clientWidth) -30;
-         console.log(myCanvasSize);
+         console.log('myCanvas is %i', myCanvasSize);
+         //$('logText').value = ''
          let c = $('c');
          c.width = c.height = myCanvasSize;
          cSize= myCanvasSize - 2*cEdge;
@@ -158,6 +164,7 @@
          $('plr-func').value = '';
          $('plr-name').value = '';
          $("drawing-mode-selector").onchange = function(){
+             // console.log(JSON.parse(JSON.stringify(obj)));
              console.log(G_canvas.strokeDashArray);
              if     (this.value === 'Solid'){
                  vLinePatternBrush.strokeDashArray = [0,0];
@@ -204,22 +211,28 @@
      function removeObjects(){
          otherObjects.forEach(function(item){
              G_canvas.remove(item);
+             // console.log(JSON.parse(JSON.stringify(obj)))
              console.log(item);
          });
          otherObjects = [];
      }
      /**
       * this will become our new player creator
+      * Call sign to get to: insertTriangle(params)
       */
-     function insertTriangle(){
+     function insertTriangle(p){
          const sizes = [1.0, 1.4, 1.7];
-         let idx=0;
-         let baseDim = cSize/18;
+
+         let idx= (p && p.size) ? p.size : 1;
+         let baseDim = cSize/18*sizes[idx];
+
+         let pcolor = (p &&p.pcolor) ? p.pcolor : $("plr-color").value;
+         let tcolor = (p &&p.tcolor) ? p.tcolor : $("txt-color").value;
 
          let D = new fabric.Triangle({
              width: baseDim, height: baseDim,
              originX: 'center', originY: 'center',
-             fill: $("plr-color").value,
+             fill: pcolor,
              stroke: '#000',  strokeWidth : 1,
              lockScalingX: true, lockScalingY: true
          });
@@ -228,7 +241,7 @@
              {
                  fontSize: 0.4*baseDim, top: 0.14*baseDim,
                  originX: 'center', originY: 'center',
-                 fill: '#000',
+                 fill: tcolor,
                  lockScalingX: true, lockScalingY: true
          });
          let T2  = new fabric.Text(
@@ -236,7 +249,7 @@
              {
                  fontSize: 0.489*baseDim, top: 0.66*baseDim,
                  originX: 'center', originY: 'top',
-                 fill: '#000',
+                 fill: tcolor,
                  lockScalingX: true, lockScalingY: true
          });
          let G  = new fabric.Group([D, T1, T2]);
@@ -244,9 +257,10 @@
              originX: 'center', originY: 'center',
              left: 100, top: 100,
              lockScalingX: true, lockScalingY: true,
+             cornerStrokeColor: '#bbf', //'transparent',
              hasBoders: false
          });
-         G.on({'selected': playerOnSelected/*, 'modified': playerOnModified*/});
+         G.on({'selected': playerOnSelected });
          players.push(G);
          G_canvas.add(G);
      }
@@ -299,7 +313,7 @@
              let dCY = 0.25*(D.aCoords.bl.y+D.aCoords.br.y+D.aCoords.tl.y+D.aCoords.tr.y);
              let left = $('plr-X').value*cSize/9 + dCX +cEdge;
              let top  = $('plr-Y').value*cSize/9 - dCY + cEdge
-             P.set({left: left, top: top});                 
+             P.set({left: left, top: top});
              P.dirty = true;
              G_canvas.renderAll();
          }
@@ -307,52 +321,56 @@
      function createTeam(){
          removePlayers();
          /*
-         P=createPlayer(2.0, 4.0, 'IV', '', '#C0FFC0', 2, '#000');
-         playerEvents(P); G_canvas.add(P); players.push(P);
-         P=createPlayer(4.5, 4.0, 'III', '', '#C0FFC0', 2, '#000');
-         playerEvents(P); G_canvas.add(P); players.push(P);
-         P=createPlayer(7.0, 4.0, 'II', '', '#C0FFC0', 2, '#000');
-         playerEvents(P); G_canvas.add(P); players.push(P);
-         P=createPlayer(2.0, 7.0, 'V', '', '#FFC0C0', 2, '#000');
-         playerEvents(P); G_canvas.add(P); players.push(P);
-         P=createPlayer(4.5, 7.0, 'VI', '', '#FFC0C0', 2, '#000');
-         playerEvents(P); G_canvas.add(P); players.push(P);
-         P=createPlayer(7.0, 7.0, 'I', '', '#FFC0C0', 2, '#000');
-         playerEvents(P); G_canvas.add(P); players.push(P);
-         */
+            P=createPlayer(2.0, 4.0, 'IV', '', '#C0FFC0', 2, '#000');
+            playerEvents(P); G_canvas.add(P); players.push(P);
+            P=createPlayer(4.5, 4.0, 'III', '', '#C0FFC0', 2, '#000');
+            playerEvents(P); G_canvas.add(P); players.push(P);
+            P=createPlayer(7.0, 4.0, 'II', '', '#C0FFC0', 2, '#000');
+            playerEvents(P); G_canvas.add(P); players.push(P);
+            P=createPlayer(2.0, 7.0, 'V', '', '#FFC0C0', 2, '#000');
+            playerEvents(P); G_canvas.add(P); players.push(P);
+            P=createPlayer(4.5, 7.0, 'VI', '', '#FFC0C0', 2, '#000');
+            playerEvents(P); G_canvas.add(P); players.push(P);
+            P=createPlayer(7.0, 7.0, 'I', '', '#FFC0C0', 2, '#000');
+            playerEvents(P); G_canvas.add(P); players.push(P);
+          */
      }
-     function createPlayers(plrs){
+     function createPlayers(plrs, wPlrs){
          removePlayers();
          /*
-         plrs.forEach(function(item, i){
-             let X = 4.5; let Y = 4.5;
-             if(item.loc){X = item.loc[0]; Y = item.loc[1]; }
-             let func = (item.func) ? item.func : '';
-             let name = (item.name) ? item.name : '';
-             let pcolor = (item.pcolor)? item.pcolor : ((i &&i<4)?'#C0FFC0':'#FFC0C0');
-             let size   = (item.size)? item.size: 2;
-             let tcolor = (item.tcolor)? item.tcolor: '#000';
-             let P = createPlayer(X, Y, func, name, pcolor, size, tcolor);
-             playerEvents(P);
-             G_canvas.add(P);
-             players.push(P);
-         })
-         */
+            plrs.forEach(function(item, i){
+            let X = 4.5; let Y = 4.5;
+            if(item.loc){X = item.loc[0]; Y = item.loc[1]; }
+            let func = (item.func) ? item.func : '';
+            let name = (item.name) ? item.name : '';
+            let pcolor = (item.pcolor)? item.pcolor : ((i &&i<4)?'#C0FFC0':'#FFC0C0');
+            let size   = (item.size)? item.size: 2;
+            let tcolor = (item.tcolor)? item.tcolor: '#000';
+            let P = createPlayer(X, Y, func, name, pcolor, size, tcolor);
+            playerEvents(P);
+            G_canvas.add(P);
+            players.push(P);
+            })
+          */
          // new
-         let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
-         G_canvas.renderOnAddRemove = false;
          fabric.util.enlivenObjects(plrs, function(objects) {
-             objects.forEach(function(o) {
+             objects.forEach(function(o,i) {
                  // Add to canvas
-                 G_canvas.add(o);
                  // Add specific events
                  o.on({'selected': playerOnSelected, 'modified': playerOnModified});
                  // Add into array of players
+                 G_canvas.add(o);
                  players.push(o);
              });
          });
-         G_canvas.renderOnAddRemove = origRenderOnAddRemove;
-         G_canvas.renderAll();
+         //G_canvas.renderOnAddRemove = origRenderOnAddRemove;
+         //G_canvas.renderAll();
+         players.forEach(function(o,i) {
+             console.log(o);
+             o.set(worldToCanvas(wPlrs[i]));
+             o.dirty = true;
+             console.log(o);
+         });
      }
      /**
       * Basic code taken from
@@ -378,7 +396,7 @@
      }
      /**
       *
-     */
+      */
      function createObjects(objs){
          removeObjects();
          console.log('Loading objects---')
@@ -396,13 +414,15 @@
                  //console.log('e base:'+base);
                  //console.log('e name:'+name+' new name:'+basename+name);
                  objs[i].src = basename+name;
-                 
+
              }
          });
          let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
          G_canvas.renderOnAddRemove = false;
          fabric.util.enlivenObjects(objs, function(objects) {
              objects.forEach(function(o) {
+                 o.hasControls = o.hasBorders = false;
+                 o.set({originX: 'center', originY:'center', 'lockScalingX': true, 'lockScalingY': true});
                  G_canvas.add(o);
                  console.log(o.src);
                  otherObjects.push(o);
@@ -443,15 +463,23 @@
          };
          // New
          data['players'] = players;
+         data['wPlayers'] = [];
+         players.forEach(function(e){
+             data.wPlayers.push(canvasToWorld(e));
+         });
          // objects
          data['objects'] = otherObjects;
+         data['wObjects'] = [];
+         otherObjects.forEach(function(e){
+             data.wObjects.push(canvasToWorld(e));
+         });
          // paths
          console.log(allPaths);
          data['paths'] = allPaths;
-         
+
          //data['canvasObjects'] = canvasObjects;
 
-         
+
          // (A) CREATE BLOB OBJECT
          let myBlob = new Blob([JSON.stringify(data)], {type: "text/plain"});
 
@@ -484,18 +512,41 @@
                  let lines = e.target.result;
                  let myJSON = JSON.parse(lines);
                  //console.log(myJSON);
-                 createPlayers(myJSON['players']);
-                 //console.log(myJSON['objects']);
-                 console.log('calling createObjects');
-                 createObjects(myJSON['objects']);
-                 createPaths(myJSON['paths']);
-                 //createCanvasObjects(myJSON['canvasObjects']);
+                 let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
+                 G_canvas.renderOnAddRemove = false;
+                 createPlayers(myJSON['players'], myJSON.wPlayers);
+                 /*
+                    //console.log(myJSON['objects']);
+                    console.log('calling createObjects');
+                    createObjects(myJSON['objects']);
+                    createPaths(myJSON['paths']);
+                    //createCanvasObjects(myJSON['canvasObjects']);
+                  */
+                 G_canvas.renderOnAddRemove = origRenderOnAddRemove;
+                 G_canvas.renderAll();
              }
          };
          input.click();
      }
+     function texTest(){
+         let D = new fabric.Triangle({
+             width: 50, height: 50,
+             originX: 'center', originY: 'center',
+             fill: '#FFC0C0',
+             stroke: '#000',  strokeWidth : 1,
+             cornerStrokeColor: 'transparent',
+             lockScalingX: true, lockScalingY: true
+         });
+         G_canvas.add(D);
+     }
      // Experimental stuff
      function plonk(){
+         fetch("demo.json", { mode: 'no-cors'})
+             .then(response => {
+                 console.log(response);
+                 return response.json();
+             })
+             .then(jsondata => console.log(jsondata));   
      }
      function plink(){
      }
