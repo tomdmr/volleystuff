@@ -22,21 +22,37 @@ function canvasToWorld(G){
     }
 }
 /**
- *
+ * Convert world coordinates to canvas coordinates.
+ * p: array[2] or object {left:, top:} of world coordinates
+ * G: optional, if this is a group, position is corrected to reflect object[0]
+ * returns: object {left: x, top: y}
  */
-function worldToCanvas(p){
+function worldToCanvas(p, G){
+    let left = 0;
+    let top = 0;
     if(Array.isArray(p)){
-        let left = p[0]*cSize/9+cEdge;
-        return {left: p[0]*cSize/9+cEdge, top: p[1]*cSize/9+cEdge}
+        left = p[0];
+        top  = p[1];
     }
     else if(p.left && p.top){
-        return {left: p.left*cSize/9+cEdge, top: p.top*cSize/9+cEdge}
+        left = p.left;
+        top  = p.top;
     }
-    else return undefined
+    else return undefined;
+    if(G && G._objects){
+        let D = G._objects[0];
+        let dCX = 0.25*(D.aCoords.bl.x+D.aCoords.br.x+D.aCoords.tl.x+D.aCoords.tr.x);
+        let dCY = 0.25*(D.aCoords.bl.y+D.aCoords.br.y+D.aCoords.tl.y+D.aCoords.tr.y);
+        console.log('dCX: %f dCY: %f', dCX, dCY);
+        return {left: left*cSize/9+cEdge-dCX, top: top*cSize/9+cEdge-dCY}
+    }
+    else{
+        return {left: left*cSize/9+cEdge, top: top*cSize/9+cEdge}
+    }
 }
 
 /**
-*/
+ */
 function createCourt2(posX, posY, size){
     let m3 = size/3;
     let pf = new fabric.Path('M 0 0 L' + size + ' 0 L'+size+' '+size+'L 0 '+size+'L 0 0 z M 0 '+m3+' L'+size+' '+m3+' z');
@@ -73,10 +89,10 @@ function createBall(params){
         dX : -B.aCoords.bl.y/2,
         dY : -B.aCoords.br.x/2
     }
-    return B;                         
+    return B;
 }
 /**
-*/
+ */
 function createPlayer(X, Y, func, name, pcolor, size=1, tcolor='#000'){
     let r = 16;
     let fs=12;
@@ -112,19 +128,19 @@ function createPlayer(X, Y, func, name, pcolor, size=1, tcolor='#000'){
     P.set('lockScalingX', true);
     P.set('lockScalingY', true);
     P.hasControls = P.hasBorders = false;
-    return P;    
+    return P;
 }
 /*
-function createPlayer2(params){
-    let X = 4.5; let Y = 4.5;
-    if(params.loc){X = params.loc[0]; Y = params.loc[1]; }
-    let func = (params.func)     ? params.func : '';
-    let name = (params.name)     ? params.name : '';
-    let pcolor = (params.pcolor) ? params.pcolor : '#C0FFC0';
-    let size   = (params.size)   ? params.size: 2;
-    let tcolor = (params.tcolor) ? params.tcolor: '#000';
-}
-*/
+   function createPlayer2(params){
+   let X = 4.5; let Y = 4.5;
+   if(params.loc){X = params.loc[0]; Y = params.loc[1]; }
+   let func = (params.func)     ? params.func : '';
+   let name = (params.name)     ? params.name : '';
+   let pcolor = (params.pcolor) ? params.pcolor : '#C0FFC0';
+   let size   = (params.size)   ? params.size: 2;
+   let tcolor = (params.tcolor) ? params.tcolor: '#000';
+   }
+ */
 /**
  */
 function updatePlayer(P, func, name, pcolor, tcolor, loc){
@@ -199,7 +215,7 @@ function calcArrowAngle(x1, y1, x2, y2) {
 
     x = (x2 - x1);
     y = (y2 - y1);
-    
+
     if (x === 0) {
         angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
     } else if (y === 0) {
@@ -207,6 +223,6 @@ function calcArrowAngle(x1, y1, x2, y2) {
     } else {
         angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
     }
-    
+
     return (angle * 180 / Math.PI);
 }
