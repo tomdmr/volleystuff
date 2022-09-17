@@ -149,7 +149,7 @@ function canvasOnObjectModified(e){
  *
  */
 function playerOnSelected(e){
-    console.log('playerOnSelected');
+    //console.log('playerOnSelected');
     $("playerAttributes").rumms = e.target;
     let G = e.target;
     let ePos= canvasToWorld(e.target);
@@ -164,9 +164,9 @@ function playerOnSelected(e){
     let rCX = (gCX - dCX-cEdge)/cSize*9.0;
     let rCY = (gCY + dCY-cEdge)/cSize*9.0;
 
-    console.log(['gCX:', gCX, 'gCY', gCY].join(' '));
-    console.log(['dCX:', dCX, 'gCY', dCY].join(' '));
-    console.log(['rCX:', rCX, 'rCY', rCY].join(' '));
+    //console.log(['gCX:', gCX, 'gCY', gCY].join(' '));
+    //console.log(['dCX:', dCX, 'gCY', dCY].join(' '));
+    //console.log(['rCX:', rCX, 'rCY', rCY].join(' '));
 
     $('plr-func').value=G._objects[1].text;
     $('plr-name').value=G._objects[2].text;
