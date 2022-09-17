@@ -258,18 +258,22 @@
              left: 100, top: 100,
              lockScalingX: true, lockScalingY: true,
              cornerStrokeColor: '#bbf', //'transparent',
-             hasBoders: false
+             hasBorders: true
          });
          G.on({'selected': playerOnSelected });
          players.push(G);
          G_canvas.add(G);
+         console.log(JSON.parse(JSON.stringify(G)));
+         console.log(G.get('cornerStrokeColor'));
      }
-
      /**
       */
      function playerEvents(P){
          P.on({'selected': playerOnSelected, 'modified': playerOnModified});
      }
+     /**
+      * create a player with values from the dialog area
+      */
      function onCreatePlayer(){
          let P = createPlayer($('plr-X').value*1.0,
                               $('plr-Y').value*1.0,
@@ -337,26 +341,17 @@
      }
      function createPlayers(plrs, wPlrs){
          removePlayers();
-         /*
-            plrs.forEach(function(item, i){
-            let X = 4.5; let Y = 4.5;
-            if(item.loc){X = item.loc[0]; Y = item.loc[1]; }
-            let func = (item.func) ? item.func : '';
-            let name = (item.name) ? item.name : '';
-            let pcolor = (item.pcolor)? item.pcolor : ((i &&i<4)?'#C0FFC0':'#FFC0C0');
-            let size   = (item.size)? item.size: 2;
-            let tcolor = (item.tcolor)? item.tcolor: '#000';
-            let P = createPlayer(X, Y, func, name, pcolor, size, tcolor);
-            playerEvents(P);
-            G_canvas.add(P);
-            players.push(P);
-            })
-          */
          // new
          fabric.util.enlivenObjects(plrs, function(objects) {
              objects.forEach(function(o,i) {
                  // Add to canvas
                  // Add specific events
+                 o.set({
+                     originX: 'center', originY: 'center',
+                     lockScalingX: true, lockScalingY: true,
+                     cornerStrokeColor: '#bbf', //'transparent',
+                     hasBorders: true
+                 });
                  o.on({'selected': playerOnSelected, 'modified': playerOnModified});
                  // Add into array of players
                  G_canvas.add(o);
@@ -366,10 +361,15 @@
          //G_canvas.renderOnAddRemove = origRenderOnAddRemove;
          //G_canvas.renderAll();
          players.forEach(function(o,i) {
-             console.log(o);
-             o.set(worldToCanvas(wPlrs[i]));
-             o.dirty = true;
-             console.log(o);
+             console.log(wPlrs[i]);
+             console.log(worldToCanvas(wPlrs[i], o));
+             o.animate(worldToCanvas(wPlrs[i],o), { onChange: G_canvas.renderAll.bind(G_canvas) });
+             /*
+                console.log(o);
+                o.set(worldToCanvas(wPlrs[i]));
+                o.dirty = true;
+                console.log(o);
+              */
          });
      }
      /**
@@ -546,7 +546,7 @@
                  console.log(response);
                  return response.json();
              })
-             .then(jsondata => console.log(jsondata));   
+             .then(jsondata => console.log(jsondata));
      }
      function plink(){
      }
