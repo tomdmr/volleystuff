@@ -114,6 +114,7 @@
     <script>
      // https://dmitripavlutin.com/console-log-tips/
      // Formatting tipps I should have known before...
+     // https://tobiasahlin.com/blog/move-from-jquery-to-vanilla-javascript/
      /**
       * Global variables for this module.
       * @var players[]: holds all player objects
@@ -352,61 +353,28 @@
                      cornerStrokeColor: '#bbf', //'transparent',
                      hasBorders: true
                  });
+                 o.set(worldToCanvas(wPlrs[i], o));
+                 // TODO: Scale size to new canvas size
                  o.on({'selected': playerOnSelected, 'modified': playerOnModified});
                  // Add into array of players
                  G_canvas.add(o);
                  players.push(o);
              });
          });
-         //G_canvas.renderOnAddRemove = origRenderOnAddRemove;
-         //G_canvas.renderAll();
-         players.forEach(function(o,i) {
-             console.log(wPlrs[i]);
-             console.log(worldToCanvas(wPlrs[i], o));
-             o.animate(worldToCanvas(wPlrs[i],o), { onChange: G_canvas.renderAll.bind(G_canvas) });
-             /*
-                console.log(o);
-                o.set(worldToCanvas(wPlrs[i]));
-                o.dirty = true;
-                console.log(o);
-              */
-         });
      }
-     /**
-      * Basic code taken from
-      * https://stackoverflow.com/questions/19361971/deserialize-a-json-object-in-fabric-js
+     /** 
+      * Loading objects. This is a bit more complicated than the
+      * players case before. Images are encoded in an absolute path,
+      * so moving data files around breaks this. So we extract the basname of our
+      * script, the basename of each object and plug this in.
+      * The rest of the code is the same as with createPlayers()
       */
-     function createPaths(paths){
-         removeLines();
-         let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
-         G_canvas.renderOnAddRemove = false;
-         fabric.util.enlivenObjects(paths, function(objects) {
-             objects.forEach(function(o) {
-                 // ONLY FOR PATH!
-                 // but also with arrow.
-                 console.log(o);
-                 if((o.type === 'path') ||(o._objects && (o._objects[0].type === 'path')))
-                     o.set('selectable', false);
-                 G_canvas.add(o);
-                 allPaths.push(o);
-             });
-         });
-         G_canvas.renderOnAddRemove = origRenderOnAddRemove;
-         G_canvas.renderAll();
-     }
-     /**
-      *
-      */
-     function createObjects(objs){
-         removeObjects();
+     function createObjects(objs,wObjs){
          console.log('Loading objects---')
          let url = window.location.protocol+'//'+window.location.host+window.location.pathname;
-         console.log(window.location);
+         //console.log(window.location);
          let filename = url.substring(url.lastIndexOf('/')+1);
          let basename = url.substring(0,url.lastIndexOf('/')+1);
-         //console.log('Base: '+basename);
-         //console.log('File: '+filename);
-         //console.log(objs[0].src);
          objs.forEach(function(e, i){
              if(e.src){
                  let base = e.src.substring(0,e.src.lastIndexOf('/')+1);
@@ -417,19 +385,40 @@
 
              }
          });
-         let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
-         G_canvas.renderOnAddRemove = false;
+         // From here ist is the same
+         removeObjects();
          fabric.util.enlivenObjects(objs, function(objects) {
-             objects.forEach(function(o) {
+             objects.forEach(function(o,i) {
+                 console.log(i);
                  o.hasControls = o.hasBorders = false;
-                 o.set({originX: 'center', originY:'center', 'lockScalingX': true, 'lockScalingY': true});
+                 o.set({originX: 'center', originY:'center', 'lockScalingX': true, 'lockScalingY': true,
+                        cornerStrokeColor: '#bbf', hasBorders: false});
+                 o.set(worldToCanvas(wObjs[i],o));
                  G_canvas.add(o);
-                 console.log(o.src);
                  otherObjects.push(o);
              });
          });
-         G_canvas.renderOnAddRemove = origRenderOnAddRemove;
-         G_canvas.renderAll();
+     }
+
+
+     /**
+      * Basic code taken from
+      * https://stackoverflow.com/questions/19361971/deserialize-a-json-object-in-fabric-js
+      */
+     function createPaths(paths){
+         removeLines();
+         fabric.util.enlivenObjects(paths, function(objects) {
+             objects.forEach(function(o) {
+                 // ONLY FOR PATH!
+                 // but also with arrow.
+                 console.log(o);
+                 if((o.type === 'path') ||(o._objects && (o._objects[0].type === 'path')))
+                     o.set('selectable', false);
+                 // TODO: Scale points to new canvas size
+                 G_canvas.add(o);
+                 allPaths.push(o);
+             });
+         });
      }
      /**
       */
@@ -515,10 +504,10 @@
                  let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
                  G_canvas.renderOnAddRemove = false;
                  createPlayers(myJSON['players'], myJSON.wPlayers);
+                 //console.log(myJSON['objects']);
+                 console.log('calling createObjects');
+                 createObjects(myJSON['objects'], myJSON.wObjects);
                  /*
-                    //console.log(myJSON['objects']);
-                    console.log('calling createObjects');
-                    createObjects(myJSON['objects']);
                     createPaths(myJSON['paths']);
                     //createCanvasObjects(myJSON['canvasObjects']);
                   */
