@@ -1,6 +1,4 @@
-var $=function(id){
-    return document.getElementById(id)
-};
+var $=function(id){ return document.getElementById(id)};
 /**
  *
  */
@@ -69,7 +67,7 @@ function createImage(id, params){
     let idx= (params && params.idx) ? p.idx : 1;
 
     let X = 4.0; let Y = 4.0;
-    if(p && params.loc){X = params.loc[0]; Y = params.loc[1]; }
+    if(params && params.loc){X = params.loc[0]; Y = params.loc[1]; }
     let I = new fabric.Image(document.getElementById(id));
     I.scale( (params && params.scale) ? params.scale*sizes[idx] : sizes[idx]);
     I.hasControls = I.hasBorders = false;
@@ -92,6 +90,7 @@ function createBall(params){
     return B;
 }
 /**
+ * stuff
  */
 function createPlayer(X, Y, func, name, pcolor, size=1, tcolor='#000'){
     let r = 16;
