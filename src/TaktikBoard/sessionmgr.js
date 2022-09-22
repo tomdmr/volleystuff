@@ -11,12 +11,20 @@ function loadWorkspace(){
         fr.onload = receivedText;
         fr.readAsText(files[0]);
         function receivedText(e){
-            let lines = e.target.result;
-            //console.log(lines);
-            let myWS = JSON.parse(lines);
+            // Try to parse
+            let myWS = JSON.parse(e.target.result);
+            // if OK, go on, sort by keys
+            myWS.sort((a, b) => {
+                const nameA = a.key.toUpperCase(); // ignore upper and lowercase
+                const nameB = b.key.toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {return -1;}
+                if (nameA > nameB) {return 1;}
+                // names must be equal
+                return 0;
+            });
             localStorage.clear();
             // selector clear
-            let select=document.getElementById('session-select');
+            let select=$('session-select');
             for(let len=select.options.length-1, i=len; i>=0; i--){
                 select.remove(i);
             }
@@ -30,9 +38,9 @@ function loadWorkspace(){
             if(myWS.length > 0){
                 selectSituation();
             }
-            //console.log(localStorage);
         }
     }
+    // Trigger the whole story
     input.click();
 }
 /**
