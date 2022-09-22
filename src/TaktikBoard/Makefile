@@ -1,6 +1,6 @@
 DSTDIR := TaktikBoard
 
-SRC := $(wildcard *.png) taktikboard.html util2.js eventhandlers.js
+SRC := $(wildcard *.png) taktikboard.html util2.js eventhandlers.js sessionmgr.js
 
 all:
 
