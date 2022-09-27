@@ -1,4 +1,19 @@
 /**
+*
+ */
+function setDirty(){
+    if(!dirty){
+        dirty = true;
+        $('idSavSit').innerHTML = '<center>Übernehmen*</center>';
+    }
+}
+function undoDirty(){
+    if(dirty){
+        dirty = false;
+        $('idSavSit').innerHTML = '<center>Übernehmen</center>';
+    }
+}
+/**
  * Load a whole workspace from disk.
  */
 function loadWorkspace(){
@@ -37,6 +52,7 @@ function loadWorkspace(){
             });
             if(myWS.length > 0){
                 selectSituation();
+                undoDirty();
             }
         }
     }
@@ -101,11 +117,14 @@ function newSituation(){
 function savSituation(){
     // get key from select
     let key = $('session-select').value;
-    let data = JSON.stringify(doSerialize());
-    console.log(data);
-    // save data to key
-    localStorage.setItem(key, data);
-}
+    if( key !== ''){
+        let data = JSON.stringify(doSerialize());
+        console.log(data);
+        // save data to key
+        localStorage.setItem(key, data);
+        undoDirty();
+    }
+ }
 /**
  * Delete the current situation in localStorage. Keep canvas untouched, so it 
 * can be saved under a new name.
@@ -126,6 +145,7 @@ function delSituation(){
         option.text = localStorage.key(i);
         document.getElementById('session-select').add(option);
     }
+    undoDirty();
 }
 /**
  * Selector has changed, grab situation from storage and
@@ -149,5 +169,6 @@ function selectSituation(){
          */
         G_canvas.renderOnAddRemove = origRenderOnAddRemove;
         G_canvas.renderAll();
+        undoDirty();
     }
 }
