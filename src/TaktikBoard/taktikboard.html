@@ -20,7 +20,9 @@
                     <li id='idNewSit'   onclick="newSituation()"><center>Neu</center></li>
                     <li id='idSavSit'   onclick="savSituation()"><center>Übernehmen</center></li>
                     <li id='idTrashSit' onclick="delSituation()"><center>Verwerfen</center></li>
-                    <li><select id="session-select" onchange="selectSituation()"></select></li>
+                    <li>
+                        <div class="select>"><select id="session-select" onchange="selectSituation()"></select></div>
+                    </li>
 
                     <li id="load" onclick="loadWorkspace()"><center> <!-- onLoadData()  -->
                         <img src="open.png"  height="24px" >&nbsp;Workspace
@@ -137,6 +139,7 @@
 
      let vLinePatternBrush = null;
      let cSize = 480;
+     let dirty = false;
      /**
       *
       */
@@ -213,6 +216,7 @@
       * The object is added to the canvas, but not placed anywhere.
       */
      function insertObject(id, params){
+         setDirty();
          let I = createImage(id, params);
          // enable removal
          //I.on({'modified': objectOnModified});
@@ -224,6 +228,7 @@
       * Remove all objects (i.e.: images) from canvas
       */
      function removeObjects(){
+         setDirty();
          otherObjects.forEach(function(item){
              G_canvas.remove(item);
              // console.log(JSON.parse(JSON.stringify(obj)))
@@ -236,6 +241,7 @@
       * Call sign to get to: insertTriangle(params)
       */
      function insertTriangle(p){
+         setDirty();
          const sizes = [1.0, 1.4, 1.7];
 
          let idx= (p && p.size) ? p.size : 0;
@@ -243,6 +249,7 @@
 
          let pcolor = (p &&p.pcolor) ? p.pcolor : $("plr-color").value;
          let tcolor = (p &&p.tcolor) ? p.tcolor : $("txt-color").value;
+
 
          let D = new fabric.Triangle({
              width: baseDim, height: baseDim,
@@ -290,6 +297,7 @@
       * create a player with values from the dialog area
       */
      function onCreatePlayer(){
+         setDirty();
          let P = createPlayer($('plr-X').value*1.0,
                               $('plr-Y').value*1.0,
                               $('plr-func').value,
@@ -303,6 +311,7 @@
          G_canvas.add(P);
      }
      function removePlayers(){
+         setDirty();
          //console.log('removing Players')
          players.forEach(function(item){
              G_canvas.remove(item);
@@ -312,6 +321,7 @@
          //console.log('done removing')
      }
      function removeLines(){
+         setDirty();
          //console.log('removing lines')
          allPaths.forEach(function(item){
              G_canvas.remove(item);
@@ -320,6 +330,7 @@
          //console.log('done removing')
      }
      function updatePlayerFromFields(){
+         setDirty();
          P = $("playerAttributes").rumms;
          console.log(P);
          if(P && P._objects){
@@ -338,6 +349,7 @@
          }
      }
      function createTeam(){
+         setDirty();
          removePlayers();
          /*
             P=createPlayer(2.0, 4.0, 'IV', '', '#C0FFC0', 2, '#000');
