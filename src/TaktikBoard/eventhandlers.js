@@ -7,6 +7,7 @@
  * This works for ALL objects so far, nothing special for players.
  */
 function canvasOnObjectMoving(e){
+    setDirty();
     if(e.target && e.target._objects){
         // Some kind of group. First object determines the real center
         let G = e.target;
@@ -104,6 +105,7 @@ let removeAnyFromList = function(any, list){
  */
 function canvasOnObjectModified(e){
     console.log('canvasOnObjectModified');
+    setDirty();
     let rCX=0;
     let rCY=0;
     let collection = null;
@@ -181,6 +183,7 @@ function playerOnSelected(e){
  *
  */
 function playerOnModified(e){
+    setDirty();
     /*
     console.log('playerOnModified');
     //console.log(e);
