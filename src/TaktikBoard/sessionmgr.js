@@ -1,5 +1,5 @@
 /**
-*
+ *
  */
 function setDirty(){
     if(!dirty){
@@ -124,10 +124,10 @@ function savSituation(){
         localStorage.setItem(key, data);
         undoDirty();
     }
- }
+}
 /**
- * Delete the current situation in localStorage. Keep canvas untouched, so it 
-* can be saved under a new name.
+ * Delete the current situation in localStorage. Keep canvas untouched, so it
+ * can be saved under a new name.
  */
 function delSituation(){
     // get Key from select
@@ -152,23 +152,12 @@ function delSituation(){
  * build it on canvas
  */
 function selectSituation(){
-    let key = document.getElementById('session-select').value;
-    console.log('Setting situation %s', key);
-    let myJSON = JSON.parse(localStorage.getItem(key));
-    console.log(myJSON);
-    if(myJSON){
-        let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
-        G_canvas.renderOnAddRemove = false;
-        createPlayers(myJSON['players'], myJSON.wPlayers);
-        //console.log(myJSON['objects']);
-        console.log('calling createObjects');
-        createObjects(myJSON['objects'], myJSON.wObjects);
-        /*
-           createPaths(myJSON['paths']);
-           //createCanvasObjects(myJSON['canvasObjects']);
-         */
-        G_canvas.renderOnAddRemove = origRenderOnAddRemove;
-        G_canvas.renderAll();
-        undoDirty();
+    let key = $('session-select').value;
+    if( key !== ''){
+        console.log('Setting situation %s', key);
+        let myJSON = JSON.parse(localStorage.getItem(key));
+        console.log(myJSON);
+        if( myJSON )
+            doDeSerialize(myJSON);
     }
 }
