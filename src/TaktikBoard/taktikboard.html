@@ -153,11 +153,12 @@
 
          let a = $('article');
          let myCanvasSize = Math.min(a.clientHeight, a.clientWidth) -30;
-         console.log('myCanvas is %i', myCanvasSize);
          //$('logText').value = ''
          let c = $('c');
          c.width = c.height = myCanvasSize;
+         cEdge = myCanvasSize/725*50;
          cSize= myCanvasSize - 2*cEdge;
+         console.log('myCanvas is %i, cEdge is %f, cSize is %f', myCanvasSize, cEdge, cSize);
          G_canvas = new fabric.Canvas('c');
          vLinePatternBrush = new fabric.PencilBrush(G_canvas);
 
@@ -368,9 +369,9 @@
      }
      function createPlayers(plrs, wPlrs){
          removePlayers();
-         // new
          fabric.util.enlivenObjects(plrs, function(objects) {
              objects.forEach(function(o,i) {
+                 //console.log(o);
                  // Add to canvas
                  // Add specific events
                  o.set({
@@ -388,7 +389,7 @@
              });
          });
      }
-     /** 
+     /**
       * Loading objects. This is a bit more complicated than the
       * players case before. Images are encoded in an absolute path,
       * so moving data files around breaks this. So we extract the basname of our
@@ -431,8 +432,31 @@
       * Basic code taken from
       * https://stackoverflow.com/questions/19361971/deserialize-a-json-object-in-fabric-js
       */
-     function createPaths(paths){
+     function createPaths(paths, oldInfo){
          removeLines();
+         let oldSize = oldInfo.cSize ? oldInfo.cSize : 625;
+         let oldEdge = oldInfo.cEdge ? oldInfo.cEdge :  50;;
+         let cFak = (cSize+2*cEdge)/(oldSize+2*oldEdge);
+         console.log(cFak);
+         function scaleObject(s){
+             if( s.type === 'group'){
+                 //s._objects.forEach( e => scaleObject(e));
+                 s.scaleX = s.scaleX*cFak;
+                 s.scaleY = s.scaleY*cFak;
+                 s.left = s.left*cFak;
+                 s.top  = s.top *cFak;
+             }
+             else if (s.type === 'triangle'){
+                 // no need here.
+                 console.log(s);
+             }
+             else if (s.type === 'path'){
+                 s.scaleX = s.scaleX*cFak;
+                 s.scaleY = s.scaleY*cFak;
+                 s.left = s.left*cFak;
+                 s.top  = s.top *cFak;
+             }
+         }
          fabric.util.enlivenObjects(paths, function(objects) {
              objects.forEach(function(o) {
                  // ONLY FOR PATH!
@@ -441,6 +465,9 @@
                  if((o.type === 'path') ||(o._objects && (o._objects[0].type === 'path')))
                      o.set('selectable', false);
                  // TODO: Scale points to new canvas size
+                 if( oldSize != cSize){
+                     scaleObject(o);
+                 }
                  G_canvas.add(o);
                  allPaths.push(o);
              });
@@ -468,7 +495,8 @@
      function doSerialize(){
          let data = {};
          data['canvas'] = {
-             cSize: cSize
+             cSize: cSize,
+             cEdge: cEdge
          };
          // New
          data['players'] = players;
@@ -489,18 +517,17 @@
          //data['canvasObjects'] = canvasObjects;
          return data;
      }
-     function doDeserialize(stringData){
-         let myJSON=JSON.parse(stringData);
+     // TODO: Fix calling structure
+     function doDeSerialize(myJSON){
+         //let myJSON=JSON.parse(stringData);
          let origRenderOnAddRemove = G_canvas.renderOnAddRemove;
          G_canvas.renderOnAddRemove = false;
          createPlayers(myJSON['players'], myJSON.wPlayers);
          //console.log(myJSON['objects']);
          console.log('calling createObjects');
          createObjects(myJSON['objects'], myJSON.wObjects);
-         /*
-            createPaths(myJSON['paths']);
-            //createCanvasObjects(myJSON['canvasObjects']);
-          */
+         createPaths(myJSON['paths'], myJSON['canvas']);
+         //createCanvasObjects(myJSON['canvasObjects']);
          G_canvas.renderOnAddRemove = origRenderOnAddRemove;
          G_canvas.renderAll();
      }
@@ -521,12 +548,6 @@
          localStorage.setItem('current-session', JSON.stringify(data));
      }
      function plink(){
-         // Iterate over all keys:
-         for(let i=0, len=localStorage.length; i<len; i++){
-             console.log(localStorage.key(i));
-         }
-         let lines = localStorage.getItem('current-session');
-         doDeserialize(lines);
      }
     </script>
 </html>
