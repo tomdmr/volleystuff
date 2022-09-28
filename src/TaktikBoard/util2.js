@@ -32,11 +32,14 @@ function worldToCanvas(p, G){
         left = p[0];
         top  = p[1];
     }
-    else if(p.left && p.top){
+    else if(p.left !== undefined){
         left = p.left;
         top  = p.top;
+        //console.log('worldToCanvas: isLeftTop: %f %f', left, top);
     }
-    else return undefined;
+    else{
+        return undefined;
+    }
     if(G && G._objects){
         let D = G._objects[0];
         let dCX = 0.25*(D.aCoords.bl.x+D.aCoords.br.x+D.aCoords.tl.x+D.aCoords.tr.x);
@@ -55,7 +58,7 @@ function createCourt2(posX, posY, size){
     let m3 = size/3;
     let pf = new fabric.Path('M 0 0 L' + size + ' 0 L'+size+' '+size+'L 0 '+size+'L 0 0 z M 0 '+m3+' L'+size+' '+m3+' z');
     //pf.set({left: posX, top: posY, strokeWidth: 3, stroke: 'blue', fill: 'rgba(224, 224, 255,1.0)' });
-    pf.set({left: 50, top: 50, strokeWidth: 3, stroke: 'blue', fill: '#E0E0FF' });
+    pf.set({left: posX, top: posY, strokeWidth: 3, stroke: 'blue', fill: '#E0E0FF' });
     pf.set('selectable', false);
     return pf;
 }
