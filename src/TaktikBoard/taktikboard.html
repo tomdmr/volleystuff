@@ -459,12 +459,9 @@
          }
          fabric.util.enlivenObjects(paths, function(objects) {
              objects.forEach(function(o) {
-                 // ONLY FOR PATH!
-                 // but also with arrow.
                  console.log(o);
                  if((o.type === 'path') ||(o._objects && (o._objects[0].type === 'path')))
                      o.set('selectable', false);
-                 // TODO: Scale points to new canvas size
                  if( oldSize != cSize){
                      scaleObject(o);
                  }

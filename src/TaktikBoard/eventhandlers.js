@@ -80,6 +80,7 @@ function canvasOnPathCreated(e){
         e.path.set('selectable', false);
         allPaths.push(e.path);
     }
+    setDirty();
 }
 /******************************************************************************/
 /*

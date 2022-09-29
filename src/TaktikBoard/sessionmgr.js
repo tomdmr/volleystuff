@@ -38,7 +38,6 @@ function loadWorkspace(){
                 return 0;
             });
             localStorage.clear();
-            // selector clear
             let select=$('session-select');
             for(let len=select.options.length-1, i=len; i>=0; i--){
                 select.remove(i);
@@ -78,6 +77,7 @@ function saveWorkspace(){
     let url = window.URL.createObjectURL(myBlob);
     let anchor = document.createElement("a");
     anchor.href = url;
+    // TODO: Test on mobiles what happens if this is unset
     anchor.download = "demo.json";
 
     // (C) "FORCE DOWNLOAD"
@@ -107,6 +107,7 @@ function newSituation(){
         $('session-select').add(option);
         $('session-select').value = wtf;
         selectSituation();
+        setDirty();
     }
     else{}
 }
@@ -117,13 +118,15 @@ function newSituation(){
 function savSituation(){
     // get key from select
     let key = $('session-select').value;
-    if( key !== ''){
-        let data = JSON.stringify(doSerialize());
-        console.log(data);
-        // save data to key
-        localStorage.setItem(key, data);
-        undoDirty();
+    if( key === ''){
+        newSituation();
+        key = $('session-select').value;
     }
+    let data = JSON.stringify(doSerialize());
+    console.log(data);
+    // save data to key
+    localStorage.setItem(key, data);
+    undoDirty();
 }
 /**
  * Delete the current situation in localStorage. Keep canvas untouched, so it
