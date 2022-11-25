@@ -22,6 +22,7 @@ let chndSkill = '';
 let lastSpeed = '';
 let setEnd    = 25;
 let timeRalleyStart = ''
+let ddState = [];
 function initDentry(){
     plrBt = [
         [ document.getElementById('bt00'), document.getElementById('bt01'), document.getElementById('bt02'),
@@ -55,16 +56,16 @@ function initDentry(){
         document.getElementById('bt46'),
     ];
     evalsBt.forEach(function(item){item.triState=0;});
-    //disableSkills();
-    //disableTypes();
-    //disableEvals();
     sctBox  = document.getElementById('sctBox');
     sctHist = document.getElementById('sctHist');
     sctBox.value = sctHist.value = '';
     plrBt[0][0].classList.add('border-red')
     plrBt.forEach(function(team){
         team.forEach(function(bt){
-            bt.addEventListener('dragover', function(ev){console.log('in dragover'); ev.preventDefault(); });
+            bt.addEventListener('dragover', function(ev){
+                console.log('in dragover');
+                ev.preventDefault();
+            });
             bt.addEventListener('drop', function(ev){
                 console.log('in drop');
                 ev.preventDefault();
@@ -73,6 +74,24 @@ function initDentry(){
                 document.getElementById('btnStart').disabled = !checkCanStart();
             });
         });
+    });
+    document.getElementsByName('spTag0').forEach(function(item){
+        item.addEventListener('dragstart', function(ev){
+            drag(ev);
+            ddState = pushDragDrop(1-left)
+        });
+        item.addEventListener('dragend', function(ev){
+            popDragDrop(1-left, ddState);
+        })
+    });
+    document.getElementsByName('spTag1').forEach(function(item){
+        item.addEventListener('dragstart', function(ev){
+            drag(ev);
+            ddState = pushDragDrop(left)
+        });
+        item.addEventListener('dragend', function(ev){
+            popDragDrop(left, ddState);
+        })
     });
     //document.getElementById('divSet').style.display = 'none';
     //document.getElementById('divTeam').style.display = 'none';
@@ -111,7 +130,7 @@ function initDentry(){
     disableSkills();
     disableTypes();
     disableEvals();
-    toggleVisibility('divTeam')
+    //toggleVisibility('divTeam')
     disablePlrXch();
     console.log('done initDentry');
 }
@@ -498,6 +517,10 @@ function clearHistory(){
 }
 function drag(ev){
     let data = ev.target.id.substring(1,100);
+    let team = data.substring(4,5);
+    // enable buttons of team and allow drop
+    console.log(data);
+    console.log(team);
     data = document.getElementById(data).value;
     let s = data.indexOf('=');
     if(s>0){
@@ -508,13 +531,16 @@ function drag(ev){
     }
     console.log(data);
 }
+/*
 function allowDrop(ev){
     console.log('allowDrop');
     ev.preventDefault();
 }
+*/
 function drop(ev){
     console.log('drop');
     ev.preventDefault();
     let data = ev.dataTransfer.getData('text');
     ev.target.value = data;
+    // disable drop on all player Buttons
 }
