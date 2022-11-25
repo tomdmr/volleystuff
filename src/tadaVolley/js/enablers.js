@@ -26,7 +26,7 @@ function setButtonState(item, newState, stem){
         item.disabled = disabled;
     }
 }
-/** 
+/**
  * Players
  */
 function enablePlayers(side){
@@ -39,11 +39,24 @@ function enablePlayers(side){
     }
 }
 function disablePlayers(side){
-    for(i=0;i<6;i++){
+    for(let i=0;i<6;i++){
         plrBt[side][i].classList.remove('Player-on');
         plrBt[side][i].classList.remove('Player-off');
         plrBt[side][i].classList.add('Player-dis');
         plrBt[side][i].disabled = true;
+    }
+}
+function pushDragDrop(side){
+    let state=[];
+    for(let i=0;i<6;i++){
+        state[i] = plrBt[side][i].disabled;
+        plrBt[side][i].disabled = false;
+    }
+    return state;
+}
+function popDragDrop(side, state){
+    for(let i=0;i<6;i++){
+        plrBt[side][i].disabled = state[i];
     }
 }
 /**
@@ -126,14 +139,6 @@ function enableType(idx){
  */
 function disableEvals(){
     setButtonsState(evalsBt, 0, 'Eval');
-    /*
-    evalsBt.forEach(function(item){
-        item.classList.remove('Eval-off');
-        item.classList.remove('Eval-on');
-        item.classList.add('Eval-dis');
-        item.disabled = true;
-    } );
-    */
 }
 function disableEval(idx){
     setButtonState(evalsBt[idx], 0, 'Eval');
