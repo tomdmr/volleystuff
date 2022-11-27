@@ -63,25 +63,6 @@ function initDentry(){
     sctHist = document.getElementById('sctHist');
     sctBox.value = sctHist.value = '';
     plrBt[0][0].classList.add('border-red')
-    // this one remains in init
-    document.getElementsByName('spTag0').forEach(function(item){
-        item.addEventListener('dragstart', function(ev){
-            drag(ev);
-            ddState = pushDragDrop(1-left)
-        });
-        item.addEventListener('dragend', function(ev){
-            popDragDrop(1-left, ddState);
-        })
-    });
-    document.getElementsByName('spTag1').forEach(function(item){
-        item.addEventListener('dragstart', function(ev){
-            drag(ev);
-            ddState = pushDragDrop(left)
-        });
-        item.addEventListener('dragend', function(ev){
-            popDragDrop(left, ddState);
-        })
-    });
     //document.getElementById('divSet').style.display = 'none';
     //document.getElementById('divTeam').style.display = 'none';
     /*
@@ -149,19 +130,21 @@ function transferOnePlayer(team, key){
     lTag.disabled  = true;
     if(team==0){
         pTag.addEventListener('dragstart', function(ev){
-            console.log('dragstart');
             drag(ev);
             ddState = pushDragDrop(1-left)
         });
+        pTag.addEventListener('dragend', function(ev){
+            popDragDrop(1-left, ddState);
+        })
     }else{
         pTag.addEventListener('dragstart', function(ev){
             drag(ev);
             ddState = pushDragDrop(left)
         });
+        pTag.addEventListener('dragend', function(ev){
+            popDragDrop(left, ddState);
+        })
     }
-    pTag.addEventListener('dragend', function(ev){
-        popDragDrop(left, ddState);
-    })
 }
 /**
  * @transferTeams: Get team list into variable teamList.
@@ -176,15 +159,19 @@ function transferTeams(){
             bt.addEventListener('drop', function(ev){
                 ev.preventDefault();
                 let data = ev.dataTransfer.getData('text/plain');
-                console.log(data);
                 let team = parseInt(data[0]);
                 let player = teamList[team][data[1]];
+                console.log('drop data: '+data);
+                console.log('dropping on '+ev.target.id);
+                console.log('in game phase '+gamePhase);
+                console.log(plr[team]);
                 if( gamePhase == 1){
                     // Line up, accept all but libero
                     if( !player.isLibero ){
+                        console.log('drop OK')
                         ev.target.player = player;
                         ev.target.value  = player.tag;
-                        plr[ev.target.team][ev.target.pos] = player;
+                        plr[team][ev.target.pos] = player;
                     }
                     document.getElementById('btnStart').disabled = !checkCanStart();
                 }
@@ -194,12 +181,15 @@ function transferTeams(){
                         console.log(ev.target.player);
                         libSubst[team]   = ev.target.player;                        
                         ev.target.player = player;
-                        plr[ev.target.team][ev.target.pos] = player;
+                        plr[team][ev.target.pos] = player;
                     }
                     else{
                         console.log('regular subst');
                         ev.target.player = player;
-                        plr[ev.target.team][ev.target.pos] = player;
+                        // This one is fucked up: this must be
+                        // [team][???]
+                        //plr[ev.target.team][ev.target.pos] = player;
+                        plr[team][ev.target.pos] = player;
                     }
                     startRalley();
                 }
@@ -244,13 +234,7 @@ function checkCanStart(){
  * Collect teams from plr buffer
  */
 function collectTeams(){
-    console.log('collectTeams');
-    console.log(plr);
     displayTeams();
-    /*
-    plrBt[0].forEach(function(item, idx){ plr[0][idx]=item.value;});
-    plrBt[1].forEach(function(item, idx){ plr[1][idx]=item.value;});
-    */
 }
 function displayTeams(){
     plrBt[0].forEach(function(item, idx){ item.player = plr[1-left][idx]; item.value = item.player.tag; });
@@ -264,19 +248,17 @@ function setSide(){
     displayTeams();
 }
 
-function rotateTeam(team){
+function rotateTeam(side){
+    let team = side == left ? 1:0;
     rotT[team] = (rotT[team]+1) % 6;
-    console.log(plr[team]);
     let x = plr[team].shift();
     plr[team].push(x);
     x = plr[team][3];
-    console.log(x);
     if(x.isLibero){
         plr[team][3]=libSubst[team];
     }
     displayTeams();
 }
-
 
 function decPoints(side){
     if(points[side]!=0) --points[side];
@@ -285,9 +267,9 @@ function decPoints(side){
 
 function onPoint(side){
     lastPlr = null;
-    sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'|' + timeRalleyStart + '\n';
-    sctBox.value = '';
     points[side] += 1;
+    sctHist.value += sctBox.value + '|' + (side==left?'a':'*')+'|' + timeRalleyStart + '|'+ points[0] +':' +points[1]+'\n';
+    sctBox.value = '';
     document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
     // Satzende?
     if( points[side] >= setEnd && points[side] - points[1-side] > 1){
@@ -599,3 +581,5 @@ function drag(ev){
     let listPos = data[dLen-1];
     ev.dataTransfer.setData('text/plain', team+listPos)
 }
+// ?T0=LEB;CAB;EMD;PID;PAE;ANH;MAH;FAJ;REZ&T1=1;2;3;4;5;6;7;8;9;10;11;12;16,L
+// ?T0=LEB;CAB?5;EMD?4;PID?1;PAE?6;ANH;MAH?3;FAJ?2;REZ&T1=1;2;3;4?3;5?6;6?4;7?5;8?2;9;10;11;12?1;16,L
