@@ -1,12 +1,13 @@
 let sctBox    = null;
 let sctHist   = null;
 let clickHist = [];
-let teamList  = [];
-let plrBt     = [];
-let skillsBt  = [];
+let teamList  = [{}, {} ];    // Array of objects, describing players
+let plrBt     = [];           // Array of button inputs
+let skillsBt  = [];           //
 let typesBt   = [];
 let evalsBt   = [];
-let plr       = [[],[]];
+let plr       = [[null, null, null, null, null, null],[null, null, null, null, null, null]];
+let libSubst  = [null, null];
 let rotT      = [0,0];
 let left      = 1;
 let firstServe= 0;
@@ -23,6 +24,7 @@ let lastSpeed = '';
 let setEnd    = 25;
 let timeRalleyStart = ''
 let ddState = [];
+let gamePhase = 0;  // 0: Enter team list. finalize => 1, enter line-up, start => 2, play set
 function initDentry(){
     plrBt = [
         [ document.getElementById('bt00'), document.getElementById('bt01'), document.getElementById('bt02'),
@@ -32,7 +34,8 @@ function initDentry(){
           document.getElementById('bt13'), document.getElementById('bt14'), document.getElementById('bt15'),
         ]
     ];
-    plrBt.forEach(function(item){item.triState=0;});
+    plrBt[0].forEach(function(item,idx){item.triState=0; item.player = null, item.pos = idx, item.team = 0});
+    plrBt[1].forEach(function(item,idx){item.triState=0; item.player = null, item.pos = idx, item.team = 1});
     skillsBt = [
         document.getElementById('bt20'), document.getElementById('bt21'), document.getElementById('bt22'), document.getElementById('bt23'),
         document.getElementById('bt24'), document.getElementById('bt25'), document.getElementById('bt26'),
@@ -60,21 +63,7 @@ function initDentry(){
     sctHist = document.getElementById('sctHist');
     sctBox.value = sctHist.value = '';
     plrBt[0][0].classList.add('border-red')
-    plrBt.forEach(function(team){
-        team.forEach(function(bt){
-            bt.addEventListener('dragover', function(ev){
-                console.log('in dragover');
-                ev.preventDefault();
-            });
-            bt.addEventListener('drop', function(ev){
-                console.log('in drop');
-                ev.preventDefault();
-                let data = ev.dataTransfer.getData('text');
-                ev.target.value = data;
-                document.getElementById('btnStart').disabled = !checkCanStart();
-            });
-        });
-    });
+    // this one remains in init
     document.getElementsByName('spTag0').forEach(function(item){
         item.addEventListener('dragstart', function(ev){
             drag(ev);
@@ -104,25 +93,30 @@ function initDentry(){
     const urlParams = new URLSearchParams(queryString);
     for(j=0; j<2; j++){
         let inpPlr = document.getElementsByName('pTag'+j)
-        //let inpPos = document.getElementsByName('pPos'+j)
+        let inpLib = document.getElementsByName('lTag'+j)
         if(urlParams.has('T'+j)){
             let T1 = urlParams.get('T'+j);
-            T1.split(';').forEach(function(plr,idx){
-                // Run through all player from cmd-line
-                plrPos = plr.split('?');
-                inpPlr[idx].value = plrPos[0];
-                if(plrPos.length > 1){
-                    let ofs = plrPos[0].indexOf('=');
-                    if(ofs > 0)
-                        plrBt[j][plrPos[1]-1].value = plrPos[0].substring(0, plrPos[0].indexOf('='));
-                    else
-                        plrBt[j][plrPos[1]-1].value = plrPos[0];
+            T1.split(';').forEach(function(player,idx){
+                plrPos = player.split('?');
+                if(plrPos[0].endsWith(',L')){
+                    inpPlr[idx].value = plrPos[0].slice(0,-2);
+                    inpLib[idx].checked = true;
+                }else{
+                    inpPlr[idx].value=plrPos[0];
+                    inpLib[idx].checked = false;
+                }
+                let tg = inpPlr[idx].id.slice(-1);
+                transferOnePlayer(j,tg);
+                if(plrPos.length>1){
+                    let pPos = plrPos[1]-1;
+                    plrBt[j][pPos].player = teamList[j][tg];
+                    plrBt[j][plrPos[1]-1].value  = teamList[j][tg].tag;
+                    plr[j][pPos] = teamList[j][tg];
                 }
             });
         }
     }
-    collectTeams();
-    document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
+    //document.getElementsByName('btnHead').forEach(function(item){item.disabled=true;});
     document.getElementById('btnStart').disabled= !checkCanStart();
     disablePlayers(0);
     disablePlayers(1);
@@ -132,67 +126,154 @@ function initDentry(){
     disableEvals();
     //toggleVisibility('divTeam')
     disablePlrXch();
+    console.log(plr);
     console.log('done initDentry');
+    gamePhase = 0;
+}
+function transferOnePlayer(team, key){
+    // if exists, return
+    if( key in teamList[team] )
+        return;
+    // build player, add to team list, ro entries
+    let pTag = document.getElementById('pTag'+team+key);
+    let lTag = document.getElementById('lTag'+team+key);
+    let player = {};
+    player.tag = pTag.value.trim();
+    if(player.tag.length==0)
+        return;
+    player.isLibero = lTag.checked;
+    teamList[team][key] = player;
+    // Enable dragging items
+    pTag.readOnly  = true;
+    pTag.draggable = true;
+    lTag.disabled  = true;
+    if(team==0){
+        pTag.addEventListener('dragstart', function(ev){
+            console.log('dragstart');
+            drag(ev);
+            ddState = pushDragDrop(1-left)
+        });
+    }else{
+        pTag.addEventListener('dragstart', function(ev){
+            drag(ev);
+            ddState = pushDragDrop(left)
+        });
+    }
+    pTag.addEventListener('dragend', function(ev){
+        popDragDrop(left, ddState);
+    })
 }
 /**
  * @transferTeams: Get team list into variable teamList.
  */
 function transferTeams(){
+    // Enable drag and drop 
+    plrBt.forEach(function(team){
+        team.forEach(function(bt){
+            bt.addEventListener('dragover', function(ev){
+                ev.preventDefault();
+            });
+            bt.addEventListener('drop', function(ev){
+                ev.preventDefault();
+                let data = ev.dataTransfer.getData('text/plain');
+                console.log(data);
+                let team = parseInt(data[0]);
+                let player = teamList[team][data[1]];
+                if( gamePhase == 1){
+                    // Line up, accept all but libero
+                    if( !player.isLibero ){
+                        ev.target.player = player;
+                        ev.target.value  = player.tag;
+                        plr[ev.target.team][ev.target.pos] = player;
+                    }
+                    document.getElementById('btnStart').disabled = !checkCanStart();
+                }
+                else if(gamePhase == 2){
+                    if( player.isLibero ){
+                        console.log('libero subst');
+                        console.log(ev.target.player);
+                        libSubst[team]   = ev.target.player;                        
+                        ev.target.player = player;
+                        plr[ev.target.team][ev.target.pos] = player;
+                    }
+                    else{
+                        console.log('regular subst');
+                        ev.target.player = player;
+                        plr[ev.target.team][ev.target.pos] = player;
+                    }
+                    startRalley();
+                }
+                else{
+                }
+            });
+        });
+    });
     /* Build team list for header */
-    teamList[0] = '@Home:';
-    teamList[1] = '@Away:';
-    for(j=0; j<2; j++){
+    //teamList[0] = '@Home:';
+    //teamList[1] = '@Away:';
+    for(let j=0; j<2; j++){
         let inpPlr = document.getElementsByName('pTag'+j);
         inpPlr.forEach(function(item, idx){
-            let t = item.value.trim()
-            if(t !== '')
-                teamList[j] += t+ ';';
-            let s = t.indexOf('=');
-            if(s>0){
-                t= t.substring(0,s);
-            }
+            let listPos = item.id.substring(5);
+            transferOnePlayer(j,listPos);
         });
     }
-    teamList[0] = teamList[0].slice(0,-1);
-    teamList[1] = teamList[1].slice(0,-1);
+    sctHist.value = '';
+    for(let j=0; j<2; j++){
+        let x= j ? "@Away:" : "@Home:";
+        for(const [key, value] of Object.entries(teamList[j])){
+            x += value.tag + (value.isLibero ? "=L": "") +";";
+        }
+        sctHist.value += (x+'\n');
+    }
+    gamePhase = 1;
 }
 
 function checkCanStart(){
     let OK = true;
     plrBt.forEach(function(t,idxT){
         t.forEach(function(item, idxP){
-            plr[idxT][idxP] = item.value;
             OK = OK && (item.value !== '' )
         })
     });
     document.getElementsByName('btnHead').forEach(function(item){item.disabled=!OK;});
+    if(OK)collectTeams();
     return OK;
 }
 /**
  * Collect teams from plr buffer
  */
 function collectTeams(){
+    console.log('collectTeams');
+    console.log(plr);
+    displayTeams();
+    /*
     plrBt[0].forEach(function(item, idx){ plr[0][idx]=item.value;});
     plrBt[1].forEach(function(item, idx){ plr[1][idx]=item.value;});
+    */
 }
 function displayTeams(){
-    plrBt[0].forEach(function(item, idx){ item.value = plr[0][idx]; });
-    plrBt[1].forEach(function(item, idx){ item.value = plr[1][idx]; });
+    plrBt[0].forEach(function(item, idx){ item.player = plr[1-left][idx]; item.value = item.player.tag; });
+    plrBt[1].forEach(function(item, idx){ item.player = plr[  left][idx]; item.value = item.player.tag; });
 }
 /**
  * Handlers for top line buttons
  */
 function setSide(){
-    plrBt[0].forEach(function(item, idx){ plr[1][idx] = item.value;});
-    plrBt[1].forEach(function(item, idx){ plr[0][idx] = item.value;});
     left = 1-left;
     displayTeams();
 }
 
 function rotateTeam(team){
     rotT[team] = (rotT[team]+1) % 6;
-    x = plr[team].shift();
+    console.log(plr[team]);
+    let x = plr[team].shift();
     plr[team].push(x);
+    x = plr[team][3];
+    console.log(x);
+    if(x.isLibero){
+        plr[team][3]=libSubst[team];
+    }
     displayTeams();
 }
 
@@ -456,13 +537,6 @@ function toggleFirstService(){
     firstServe = 1- firstServe;
     setService(firstServe);
 }
-function setSide(){
-    plrBt[0].forEach(function(item, idx){ plr[1][idx] = item.value;});
-    plrBt[1].forEach(function(item, idx){ plr[0][idx] = item.value;});
-    left = 1-left;
-    console.log(left);
-    displayTeams();
-}
 function setService(team){
     plrBt[  team][0].classList.add('border-red')
     plrBt[1-team][0].classList.remove('border-red')
@@ -470,12 +544,9 @@ function setService(team){
     sctBox.value = '';
 }
 function startRalley(){
+    displayTeams();
     enablePlrXch();
     console.log('startRalley, left='+left+' serve='+serve);
-    if(sctHist.value===''){
-        transferTeams();
-        sctHist.value += teamList[0]+'\n'+teamList[1]+'\n';;
-    }
     // Disable teams
     disablePlayers(0);
     disablePlayers(1);
@@ -495,6 +566,7 @@ function startRalley(){
     // show partial field
     enableFieldBR(serve);
     ballSide = serve;
+    gamePhase = 2;
 }
 
 function zapAll(){
@@ -516,31 +588,14 @@ function clearHistory(){
     document.getElementById("sctHist").value='';
 }
 function drag(ev){
+    /*
     let data = ev.target.id.substring(1,100);
     let team = data.substring(4,5);
-    // enable buttons of team and allow drop
-    console.log(data);
-    console.log(team);
-    data = document.getElementById(data).value;
-    let s = data.indexOf('=');
-    if(s>0){
-        ev.dataTransfer.setData('text', data.substring(0,s));
-    }
-    else{
-        ev.dataTransfer.setData('text', data);
-    }
-    console.log(data);
-}
-/*
-function allowDrop(ev){
-    console.log('allowDrop');
-    ev.preventDefault();
-}
-*/
-function drop(ev){
-    console.log('drop');
-    ev.preventDefault();
-    let data = ev.dataTransfer.getData('text');
-    ev.target.value = data;
-    // disable drop on all player Buttons
+    let listPos = data.substring(5,6);
+    */
+    let data = ev.target.id;
+    let dLen = data.length;
+    let team = data[dLen-2];
+    let listPos = data[dLen-1];
+    ev.dataTransfer.setData('text/plain', team+listPos)
 }
