@@ -1,6 +1,6 @@
 let sctBox    = null;
 let sctHist   = null;
-let clickHist = [];
+let clickHist = [];           // never used
 let teamList  = [{}, {} ];    // Array of objects, describing players
 let plrBt     = [];           // Array of button inputs
 let skillsBt  = [];           //
@@ -8,22 +8,21 @@ let typesBt   = [];
 let evalsBt   = [];
 let plr       = [[null, null, null, null, null, null],[null, null, null, null, null, null]];
 let libSubst  = [null, null];
-let rotT      = [0,0];
 let left      = 1;
 let firstServe= 0;
 let serve     = firstServe;
 let ballSide  = serve;
 let points    = [0,0];
 let lastPlr   = null;
-let lastPlayer= '';    // Set by onPlayer
+let lastPlayer= '';           // Set by onPlayer
 let lastSide = -1;
-let lastField = '';    // set by onField
+let lastField = '';           // set by onField
 let lastSkill = '';
 let chndSkill = '';
 let lastSpeed = '';
-let setEnd    = 25;
-let timeRalleyStart = ''
-let ddState = [];
+let setEnd    = 25;           //
+let timeRalleyStart = ''      //
+let ddState = [];             // Enable state before Drag&Drop 
 let gamePhase = 0;  // 0: Enter team list. finalize => 1, enter line-up, start => 2, play set
 function initDentry(){
     plrBt = [
@@ -186,21 +185,14 @@ function transferTeams(){
                     else{
                         console.log('regular subst');
                         ev.target.player = player;
-                        // This one is fucked up: this must be
-                        // [team][???]
-                        //plr[ev.target.team][ev.target.pos] = player;
                         plr[team][ev.target.pos] = player;
                     }
                     startRalley();
-                }
-                else{
                 }
             });
         });
     });
     /* Build team list for header */
-    //teamList[0] = '@Home:';
-    //teamList[1] = '@Away:';
     for(let j=0; j<2; j++){
         let inpPlr = document.getElementsByName('pTag'+j);
         inpPlr.forEach(function(item, idx){
@@ -250,7 +242,6 @@ function setSide(){
 
 function rotateTeam(side){
     let team = side == left ? 1:0;
-    rotT[team] = (rotT[team]+1) % 6;
     let x = plr[team].shift();
     plr[team].push(x);
     x = plr[team][3];
@@ -420,12 +411,14 @@ function onEval(btn, eval){
                +' lastType: '+ lastType
     );
     let rsp = lastPlayer + lastSkill + lastType + lastField + eval;
+    if(rsp ===''){ alert('rsp is empty!'); }
     sctBox.value += rsp;
     if(eval === '='){
         onPoint(1-lastSide);
         return 0;
     }
-    else if( eval === '#' ){
+    // only valid if not receive, maybe others...
+    else if( (eval === '#') &&  (lastSkill !== 'r') ){
         onPoint(lastSide);
         return 0;
     }
@@ -528,7 +521,7 @@ function setService(team){
 function startRalley(){
     displayTeams();
     enablePlrXch();
-    console.log('startRalley, left='+left+' serve='+serve);
+    //console.log('startRalley, left='+left+' serve='+serve);
     // Disable teams
     disablePlayers(0);
     disablePlayers(1);
@@ -556,12 +549,10 @@ function zapAll(){
     disablePlayers(0);
     disablePlayers(1);
     document.getElementById('Spielstand').innerHTML = points[0] + ':' + points[1];
-    rotT[0] = rotT[1] = 0;
     transferTeams();
     startRalley();
 }
 function copyHistory(){
-    console.log('Try to copy');
     var copyText = document.getElementById("sctHist");
     copyText.select();
     document.execCommand("copy");
