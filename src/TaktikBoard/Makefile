@@ -11,14 +11,14 @@ ISCRIPTS = $(SCRIPTS:%.js=$(DSTROOT)/$(DSTDIR)/%.js)
 
 all:
 
-install: $(ISCRIPTS) $(IHTML)
+install: $(DSTROOT)/$(DSTDIR) $(ISCRIPTS) $(IHTML)
 	echo $(DSTROOT)/$(DSTDIR)
-	test -d $(DSTROOT)/$(DSTDIR) || install -d $(DSTROOT)/$(DSTDIR)
 	for name in $(IMG); do \
 		install -C -D -m644 $$name $(DSTROOT)/$(DSTDIR)/$$name; \
 	done
 
-
+$(DSTROOT)/$(DSTDIR):
+	install -d $(DSTROOT)/$(DSTDIR)
 $(DSTROOT)/$(DSTDIR)/%.js: %.js
 	echo $@ $<
 	curl -X POST -s --data-urlencode "input@$<" https://www.toptal.com/developers/javascript-minifier/api/raw > $@
