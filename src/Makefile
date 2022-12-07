@@ -20,7 +20,7 @@ install:
 	for name in $(SRC); do \
 		install -C -D -m644 $$name $(DSTROOT)/$(DSTDIR)/$$name; \
 	done
-#	make -C tadaVolley  DSTROOT=$(DSTROOT) install
+	make -C tadaVolley  DSTROOT=$(DSTROOT) install
 #	make -C Spielsys    DSTROOT=$(DSTROOT) install
 	make -C misc        DSTROOT=$(DSTROOT) install
 	make -C TaktikBoard DSTROOT=$(DSTROOT) install
