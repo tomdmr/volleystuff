@@ -4,5 +4,6 @@
 .#*
 *#
 dist
+install
 *.old
 deploy
