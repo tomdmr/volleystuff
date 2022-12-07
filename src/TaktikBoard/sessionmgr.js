@@ -1,6 +1,7 @@
 /**
  *
  */
+"use strict";
 function setDirty(){
     if(!dirty){
         dirty = true;
