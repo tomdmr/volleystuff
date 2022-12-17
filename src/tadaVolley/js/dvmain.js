@@ -175,15 +175,28 @@ function transferTeams(){
                     document.getElementById('btnStart').disabled = !checkCanStart();
                 }
                 else if(gamePhase == 2){
-                    if( player.isLibero ){
-                        console.log('libero subst');
-                        console.log(ev.target.player);
-                        libSubst[team]   = ev.target.player;                        
-                        ev.target.player = player;
-                        plr[team][ev.target.pos] = player;
+                    console.log('drop in phase 2');
+                    if(player.isLibero){
+                        console.log('Try to get libero in');
+                        if( libSubst[team]){
+                            // We already have a libero, refuse
+                            console.log('Already libero on field, refused');
+                            return;
+                        }
+                        else{
+                            console.log('libero subst: Libero for ');
+                            console.log(ev.target.player);
+                            libSubst[team]   = ev.target.player;
+                            ev.target.player = player;
+                            plr[team][ev.target.pos] = player;
+                        }
                     }
                     else{
-                        console.log('regular subst');
+                        console.log('Try to get regular in');
+                        if(ev.target.player.isLibero){
+                            console.log('Kicking out libero');
+                            libSubst[team]=null
+                        }
                         ev.target.player = player;
                         plr[team][ev.target.pos] = player;
                     }
@@ -244,9 +257,12 @@ function rotateTeam(side){
     let team = side == left ? 1:0;
     let x = plr[team].shift();
     plr[team].push(x);
+    // x = plr[team][1], check if we have a lib,and
+    // if x wants a lib. Then grab lib
     x = plr[team][3];
     if(x.isLibero){
         plr[team][3]=libSubst[team];
+        libSubst[team]=null;
     }
     displayTeams();
 }
@@ -335,7 +351,7 @@ function onField(btn){
 }
 /*******************************************/
 function onSkill(btn, skill){
-    console.log('>>> onSkill '+skill);
+    // console.log('>>> onSkill '+skill);
     lastSkill = skill;
     document.getElementById('lastSkill').value = skill;
     skillsBt.forEach(function(item){
@@ -376,7 +392,7 @@ function onSkill(btn, skill){
     else{
         disableTypes();
     }
-    console.log('<<< onSkill');
+    // console.log('<<< onSkill');
     return 0;
 }
 /*******************************************/
