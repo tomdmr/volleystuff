@@ -1,3 +1,4 @@
+"use strict";
 var $=function(id){ return document.getElementById(id)};
 /**
  *
@@ -67,12 +68,12 @@ function createCourt2(posX, posY, size){
  */
 function createImage(id, params){
     const sizes = [1.0, 1.4, 1.7];
-    let idx= (params && params.idx) ? p.idx : 1;
+    let idx=  p.idx ?? 1;
 
     let X = 4.0; let Y = 4.0;
     if(params && params.loc){X = params.loc[0]; Y = params.loc[1]; }
     let I = new fabric.Image(document.getElementById(id));
-    I.scale( (params && params.scale) ? params.scale*sizes[idx] : sizes[idx]);
+    I.scale( (params.scale ?? 1)*sizes[idx] );
     I.hasControls = I.hasBorders = false;
     I.set({originX: 'center', originY:'center', 'lockScalingX': true, 'lockScalingY': true});
     I.set({left: X/9*cSize+cEdge, top: Y/9*cSize+cEdge})
