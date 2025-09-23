@@ -68,7 +68,8 @@ function createCourt2(posX, posY, size){
  */
 function createImage(id, params){
     const sizes = [1.0, 1.4, 1.7];
-    let idx=  p.idx ?? 1;
+    //let idx=  p.idx ?? 1;
+    let idx=1;
 
     let X = 4.0; let Y = 4.0;
     if(params && params.loc){X = params.loc[0]; Y = params.loc[1]; }
