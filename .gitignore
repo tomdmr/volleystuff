@@ -7,3 +7,5 @@ dist
 install
 *.old
 deploy
+build
+
