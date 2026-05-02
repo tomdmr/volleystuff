@@ -67,10 +67,10 @@
                     <img width="28px" height="28px" src="cone_blue.png" onclick="insertObject('img-cone_blue',{scale:0.25})" />
                     <img width="28px" height="28px" src="cone_red.png" onclick="insertObject('img-cone_red',{scale:0.25})"   />
                     <img width="28px" height="28px" src="cone_yellow.png" onclick="insertObject('img-cone_yellow',{scale:0.25})"   />
-                </center><br><!-- 
-                <center onclick="texTest()">
-                    Dreieck
-                </center><br>  -->
+                </center><br><!--
+                                  <center onclick="texTest()">
+                                  Dreieck
+                                  </center><br>  -->
             </div>
             <article id="article">
                 <center>
@@ -88,10 +88,17 @@
                 <div id="playerAttributes" rumms="">
                     <input type="text" id="plr-func" style="width: 80%" /><br>
                     <input type="text" id="plr-name" style="width: 80%"/><br>
-                    <input type="number" id="plr-X" style="width: 38%"/>
-                    <input type="number" id="plr-Y" style="width: 38%"/><br>
+                    <input type="number" id="plr-X" style="width: 18%"/>
+                    <input type="number" id="plr-Y" style="width: 18%"/>
+                    <br>
                     <input type="color" id="plr-color" style="border:none" value="#C0FFC0">
-                    <input type="color" id="txt-color" style="border:none"><br>
+                    <input type="color" id="txt-color" style="border:none">
+                    <select id="plr-size">
+                        <option value="0">Default</option>
+                        <option value="1">Large</option>
+                        <option value="2">Huge</option>
+                    </select>
+                    <br>
                     <input type="button" value="Update" onclick="updatePlayerFromFields()" /><br>
                 </div>
                 <div id="drawing-mode-options">
@@ -110,6 +117,7 @@
                     <label for="drawing-arrow">Pfeil</label>
                     <input type="checkbox" id="drawing-arrow"><br>
                     <br>
+                    <input type="number" id="plr-R" style="width: 18%"/>
                 </div>
             </aside>
             <footer id="footer">
@@ -244,8 +252,8 @@
      function insertTriangle(p){
          setDirty();
          const sizes = [1.0, 1.4, 1.7];
-
-         let idx= (p && p.size) ? p.size : 0;
+         console.log('insertTriangle ', {p})
+         let idx= (p && p.size) ? p.size : document.getElementById('plr-size').value;
          let baseDim = cSize/18*sizes[idx];
 
          let pcolor = (p &&p.pcolor) ? p.pcolor : $("plr-color").value;
@@ -262,7 +270,7 @@
          let T1  = new fabric.Text(
              $('plr-func').value,
              {
-                 fontSize: 0.4*baseDim, top: 0.14*baseDim,
+                 fontSize: 0.3*baseDim, top: 0.14*baseDim,
                  originX: 'center', originY: 'center',
                  fill: tcolor,
                  lockScalingX: true, lockScalingY: true
@@ -270,7 +278,7 @@
          let T2  = new fabric.Text(
              $('plr-name').value,
              {
-                 fontSize: 0.489*baseDim, top: 0.66*baseDim,
+                 fontSize: 0.389*baseDim, top: 0.46*baseDim,
                  originX: 'center', originY: 'top',
                  fill: tcolor,
                  lockScalingX: true, lockScalingY: true
