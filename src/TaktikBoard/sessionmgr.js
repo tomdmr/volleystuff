@@ -23,7 +23,8 @@ function loadWorkspace(){
     input.onchange = _ => {
         // you can use this method to get file and perform respective operations
         let files =   Array.from(input.files);
-        fr = new FileReader();
+        console.log(files);
+        let fr = new FileReader();
         fr.onload = receivedText;
         fr.readAsText(files[0]);
         function receivedText(e){
@@ -66,7 +67,7 @@ function saveWorkspace(){
     let myWS=[];
     console.log('Saving %d items', localStorage.length);
     for(let i=0, len=localStorage.length; i<len; i++){
-        key = localStorage.key(i);
+        let key = localStorage.key(i);
         let data = localStorage.getItem(key)
         myWS.push({key: key, data:JSON.parse(data)});
     }
@@ -78,6 +79,7 @@ function saveWorkspace(){
     let url = window.URL.createObjectURL(myBlob);
     let anchor = document.createElement("a");
     anchor.href = url;
+    console.log(url);
     // TODO: Test on mobiles what happens if this is unset
     anchor.download = "demo.json";
 
@@ -85,8 +87,8 @@ function saveWorkspace(){
     // NOTE: MAY NOT ALWAYS WORK DUE TO BROWSER SECURITY
     // BETTER TO LET USERS CLICK ON THEIR OWN
     anchor.click();
-    window.URL.revokeObjectURL(url);
-    document.removeChild(anchor);
+    //window.URL.revokeObjectURL(url);
+    //document.removeChild(anchor);
 }
 /**
  * Create a new situation
