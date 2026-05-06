@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Taktikboard</title>
+        <meta charset="utf-8" />
+        <link href="/css/bootstrap-5.3/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+	    <script src="/css/bootstrap-5.3/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/fabric/index.min.js"></script>
+        <script src="/js/DragDropTouch.js"></script>
+        <script src="tbdutil.js"></script>
+    </head>
+    <body onload="pageLoaded()">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-1">
+                    <div class="row">
+                        <button class="btn btn-info" id='idCreateSit' onclick="createSituation()">Neu</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info disabled" id='idDeleteSit' onclick="deleteSituation()">Löschen</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info disabled" id='idUpdateSit' onclick="updateSituation()">Übernehmen</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info disabled" id='idResetSit' onclick="retrieveSituation()">Zurücksetzen</button>
+                    </div>
+                    <div class="row">
+                        <select disabled class="form-select bg-info" aria-label="Default select example" id="session-select" onchange="retrieveSituation()">
+                            <option hidden value="">Situations</option>
+                        </select>
+                    </div>
+
+                    <!doctype html>
+                    <html>
+                        <head>
+                            <title></title>
+                            <meta charset="utf-8" />
+                        </head>
+                        <body>
+
+                        </body>
+                    </html>               <div class="row">
+                        <button class="btn btn-info"  onclick="loadWorkspace()"><i class="bi bi-download"></i> Load</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info" onclick="saveWorkspace()"><i class="bi bi-upload"></i> Save</button>
+                    </div>
+                    <div class="row">
+                        <button id="addLines" onclick="onAddLines()" class="btn btn-info">Auswahl</button>
+                    </div>
+                    <div class="row">
+                        <button id="clrAll" onclick="removePlayers()" class="btn btn-info"><i class="bi bi-trash"></i> Spieler</button>
+                    </div>
+                    <div class="row">
+                        <button id="clrAll" onclick="removeObjects()" class="btn btn-info"><i class="bi bi-trash"></i> Objekte</button>
+                    </div>
+                    <div class="row">
+                        <button id="clrAll" onclick="removeLines()" class="btn btn-info"><i class="bi bi-trash"></i> Linien</button>
+                    </div>
+                    <div class="row">
+                        <button id="clrAll" onclick="removeLines()" class="btn btn-info"><i class="bi bi-trash"></i> Alles</button>
+                    </div>
+
+                </div>
+                <div class="col-md-1">
+                    <div class="row">
+                        <button class="btn btn-primary" onclick="insertTriangle()"><img width="28px" height="28px" src="marker_red.png"></button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info"><img width="28px" height="28px" src="marker_red.png">
+                            <img width="28px" height="28px" src="marker_red.png"><img width="28px" height="28px" src="marker_red.png"></button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info" onclick="insertObject('img-ball',{})"><img width="28px" height="28px" src="ball_t.png"></button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-info" onclick="insertObject('img-cone_blue',{scale:0.25})"><img width="28px" height="28px" src="cone_blue.png"/>
+                        </button>
+                        <button class="btn btn-info" onclick="insertObject('img-cone_red',{scale:0.25})"><img width="28px" height="28px" src="cone_red.png"/>
+                        </button>
+                        <button class="btn btn-info" onclick="insertObject('img-cone_yellow',{scale:0.25})"><img width="28px" height="28px" src="cone_yellow.png"/>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <span id="width"></span>
+                        <span id="height"></span>
+                    </div>
+                </div>
+                <div id="idCenterCol" class="col-md-8">
+                    <div id="ratioClass" class="ratio ratio-1x1">
+                        <div class="object-fit-none border">
+                            <center>
+                                <canvas id="c" style="border: 3px solid black;" width="400px" height="400px">
+                                    <img id="img-ball" src="ball_t.png">
+                                    <img src="trash.png" id="img-trash">
+                                    <img src="cone_blue.png" id="img-cone_blue">
+                                    <img src="cone_red.png" id="img-cone_red">
+                                    <img src="cone_yellow.png" id="img-cone_yellow">
+                                    This text is displayed if your browser does not support HTML5 Canvas.
+                                </canvas>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">@</span>
+                        <input id="plr-func" type="text" class="form-control" placeholder="Function" rumms="">
+                    </div>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">@</span>
+                        <input id="plr-name" type="text" class="form-control" placeholder="Name">
+                    </div>
+
+
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">X</span>
+                        <input id="plr-X" type="number" class="form-control">
+                        <span class="input-group-text">Y</span>
+                        <input id="plr-Y" type="number" class="form-control">
+                    </div>
+
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">α</span>
+                        <input id="plr-a" type="number" class="form-control" onchange="pAngleChange()">
+                        <span class="input-group-text invisible">Y</span>
+                        <input type="number" class="form-control invisible">
+                    </div>
+
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">Fill</span>
+                        <input id="plr-color" type="color" class="form-control form-control-color" value="#C0FFC0" title="Choose fill color" onchange="pColorChange()">
+                        <span class="input-group-text">Line</span>
+                        <input id="txt-color" type="color" class="form-control form-control-color" value="#000000" title="Choose line color">
+                    </div>
+                    <div class="input-group mb-2">
+                        <button class="btn btn-outline-secondary"  onclick="updatePlayerFromFields()">Update player</button>
+                    </div>
+                    <div class="input-group mb-2">
+                        <select id="plr-size" class="form-select" aria-label="Default select example">
+                            <option value="1">Default</option>
+                            <option value="2">Large</option>
+                            <option value="3">Huge</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">Linie</span>
+                        <select id="drawing-mode-selector" class="form-select" aria-label="Default select example">
+                            <option>Solid</option>
+                            <option>Dashed</option>
+                            <option>Dotted</option>
+                        </select>
+                        <span class="input-group-text">Line</span>
+                        <input id="drawing-color" type="color" class="form-control form-control-color" value="#000000" title="Choose line color">
+                    </div>
+
+                    <div class="input-group mb-2">
+                        <span>Dicke</span><input type="range" class="form-control" value="2" min="0" max="10" id="drawing-line-width">
+                    </div>
+                    <div class="input-group mb-2">
+                        <input type="checkbox" class="form-check-input"  id="drawing-arrow">
+                        <label class="form-check-label" for="cbArrow"> Pfeil </label>
+                    </div>
+                </div>
+            </div>
+	    </div>
+        <script>
+
+         function pageLoaded(){
+             let select = $('session-select');
+             select.disabled = true;
+             rc = document.getElementById("ratioClass");
+             cSize = Math.min(window.innerHeight, window.innerWidth, rc.clientWidth, rc.clientHeight)-10;
+             c = document.getElementById('c');
+             fabric.Triangle.customProperties = ['leftW', 'topW', 'customType' ]
+             fabric.FabricObject.customProperties = ['leftW', 'topW', 'customType',]
+             //G_canvas = new fabric.Canvas('c', {width: cSize, height: cSize});
+             G_canvas = new fabric.Canvas('c', {width: 1100, height: 1100});
+             vLinePatternBrush = new fabric.PencilBrush(G_canvas);
+
+             fSize = cSize * 9/11.0;
+             //cnSize   = cSize;
+             cnSize   = 1100;
+             //cnMargin = cSize/11;
+             cnMargin = 100;
+             reportWindowSize();
+             G_canvas.on({
+                 'object:moving':   canvasOnObjectMoving,
+                 'object:modified': canvasOnObjectModified,
+                 'path:created'   : canvasOnPathCreated
+             });
+
+             //G_canvas.add(createCourt2(cSize/11.0, cSize/11.0, fSize));
+             G_canvas.add(createCourt2(100.0, 100, 900.0));
+             G_msg = new fabric.Text('Hello/World', {
+                 fontFamily: 'Arial',
+                 fontSize: 22, // 12
+                 fill: 'black',
+                 fontWeight: 'bold',
+                 left: 550,
+                 top: 24,     // 14
+                 selectable: false
+             });
+             G_canvas.add(G_msg);
+             situations = {};
+             $("drawing-mode-selector").onchange = function(){
+                 // console.log(JSON.parse(JSON.stringify(obj)));
+                 console.log('mode-selector', this);
+                 console.log(vLinePatternBrush.strokeDashArray);
+                 if     (this.value === 'Solid'){
+                     vLinePatternBrush.strokeDashArray = [0,0];
+                 }
+                 else if(this.value === 'Dashed'){
+                     vLinePatternBrush.strokeDashArray = [8,18];
+                 }
+                 else if(this.value === 'Dotted'){
+                     vLinePatternBrush.strokeDashArray = [2,8];
+                 }
+                 G_canvas.freeDrawingBrush = vLinePatternBrush;
+                 console.log(vLinePatternBrush.strokeDashArray);
+             };
+             $("drawing-mode-selector").value = 'Solid';
+
+             $('drawing-line-width').onchange = function(){
+                 G_canvas.freeDrawingBrush.width = parseInt(this.value, 10) || 1;
+                 this.previousSibling.innerHTML = this.value;
+             }
+             $('drawing-line-width').value = 2;
+
+             $("drawing-color").onchange = function() {
+                 var brush = G_canvas.freeDrawingBrush;
+                 brush.color = this.value;
+                 if (brush.getPatternSrc) {
+                     brush.source = brush.getPatternSrc.call(brush);
+                 }
+             };
+             $("drawing-color").value='#005e7a';
+         }
+        </script>
+    </body>
+</html>
