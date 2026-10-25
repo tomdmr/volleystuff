@@ -167,3 +167,47 @@ function selectSituation(){
             doDeSerialize(myJSON);
     }
 }
+
+async function serverSelect(){
+    let key = $('srv-session-select').value;
+    if( key !== ''){
+        console.log('Retrieve situation %s', key);
+        const url= key;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            let myWS = await response.json();
+            console.log(myWS);
+            //let myWS = JSON.parse(e.target.result);
+            // if OK, go on, sort by keys
+            myWS.sort((a, b) => {
+                const nameA = a.key.toUpperCase(); // ignore upper and lowercase
+                const nameB = b.key.toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {return -1;}
+                if (nameA > nameB) {return 1;}
+                // names must be equal
+                return 0;
+            });
+            localStorage.clear();
+            let select=$('session-select');
+            for(let len=select.options.length-1, i=len; i>=0; i--){
+                select.remove(i);
+            }
+            myWS.forEach(function(e){
+                localStorage.setItem(e.key, JSON.stringify(e.data));
+                // select Append e.key
+                let option = document.createElement('option');
+                option.text = e.key;
+                document.getElementById('session-select').add(option);
+            });
+            if(myWS.length > 0){
+                selectSituation();
+                undoDirty();
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+}

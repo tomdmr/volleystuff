@@ -49,6 +49,13 @@
                     <li id="plink" onclick="plink()">
                         <center>Really Don't press</center>
                     </li>
+                    <li>
+                        <div class="select>">
+                            <select id="srv-session-select" onchange="serverSelect()">
+                                
+                            </select>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <div class="menu2">
@@ -219,6 +226,17 @@
              }
          };
          $("drawing-color").value='#005e7a';
+
+         [
+             ['',''],
+             ['Annahme', 'annahme.json'],
+             ['Blocksicherung', 'blocksicherung.json'],
+         ].forEach(function(opt){
+             let option = document.createElement('option');
+             option.text  = opt[0]
+             option.value = opt[1]
+             document.getElementById('srv-session-select').add(option);
+         });
      }
      /**
       * Add an image into the canvas. @var id is the id of a graphic that is used to create the image
