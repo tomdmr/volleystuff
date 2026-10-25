@@ -1,6 +1,6 @@
 DSTDIR := TaktikBoard
 
-IMG := $(wildcard *.png)
+IMG := $(wildcard *.png) $(wildcard *.json)
 
 HTML  = taktikboard.html
 IHTML = $(HTML:%.html=$(DSTROOT)/$(DSTDIR)/%.html)
