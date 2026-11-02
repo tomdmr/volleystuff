@@ -52,7 +52,7 @@
                     <li>
                         <div class="select>">
                             <select id="srv-session-select" onchange="serverSelect()">
-                                
+
                             </select>
                         </div>
                     </li>
@@ -97,6 +97,7 @@
                     <input type="text" id="plr-name" style="width: 80%"/><br>
                     <input type="number" id="plr-X" style="width: 18%"/>
                     <input type="number" id="plr-Y" style="width: 18%"/>
+                    <input type="number" id="plr-Angle" style="width: 18%"/>
                     <br>
                     <input type="color" id="plr-color" style="border:none" value="#C0FFC0">
                     <input type="color" id="txt-color" style="border:none">
@@ -231,6 +232,7 @@
              ['',''],
              ['Annahme', 'annahme.json'],
              ['Blocksicherung', 'blocksicherung.json'],
+             ['Angriffssicherung', 'angriffssicherung.json'],
          ].forEach(function(opt){
              let option = document.createElement('option');
              option.text  = opt[0]
@@ -370,7 +372,8 @@
              let dCY = 0.25*(D.aCoords.bl.y+D.aCoords.br.y+D.aCoords.tl.y+D.aCoords.tr.y);
              let left = $('plr-X').value*cSize/9 + dCX +cEdge;
              let top  = $('plr-Y').value*cSize/9 - dCY + cEdge
-             P.set({left: left, top: top});
+             let angle= $('plr-Angle').value
+             P.set({left: left, top: top, angle: angle});
              P.dirty = true;
              G_canvas.renderAll();
          }
