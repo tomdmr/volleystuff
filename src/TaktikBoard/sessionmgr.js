@@ -20,6 +20,7 @@ function undoDirty(){
 function loadWorkspace(){
     let input = document.createElement('input');
     input.type = 'file';
+    input.accept = 'application/json'
     input.onchange = _ => {
         // you can use this method to get file and perform respective operations
         let files =   Array.from(input.files);
