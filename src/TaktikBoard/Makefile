@@ -2,10 +2,10 @@ DSTDIR := TaktikBoard
 
 IMG := $(wildcard *.png) $(wildcard *.json)
 
-HTML  = taktikboard.html
+HTML  = taktikboard.html index.html
 IHTML = $(HTML:%.html=$(DSTROOT)/$(DSTDIR)/%.html)
 
-SCRIPTS  = sessionmgr.js util2.js eventhandlers.js
+SCRIPTS  = sessionmgr.js util2.js eventhandlers.js tbdutil.js
 ISCRIPTS = $(SCRIPTS:%.js=$(DSTROOT)/$(DSTDIR)/%.js)
 
 
