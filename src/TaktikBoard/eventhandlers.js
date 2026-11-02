@@ -140,11 +140,12 @@ function canvasOnObjectModified(e){
         rCY = (gCY -cEdge)/cSize*9.0;
     }
     if( (rCX < -1) || (rCX > 11) || (rCY<-1) || (rCY>11) ){
-        console.log('removeing object');
+        console.log('removing object');
         return removeAnyFromList(e.target, collection);
     }else if( collection == players){
         $('plr-X').value = rCX.toFixed(2);
         $('plr-Y').value = rCY.toFixed(2);
+        $('plr-Angle').value = G.angle.toFixed(2);
     }
     return 1;
 }
@@ -175,8 +176,11 @@ function playerOnSelected(e){
     $('plr-name').value=G._objects[2].text;
     $('plr-X').value = rCX.toFixed(2);
     $('plr-Y').value = rCY.toFixed(2);
+    $('plr-Angle').value = G.angle.toFixed(2);
+    //$('plr-Angle').value = G.angle;
     $('plr-color').value = G._objects[0].fill;
     $('txt-color').value = G._objects[1].fill;
+    console.log(G);
 }
 /**
  * Player has been modified and properties will now be reflected back into
