@@ -17,6 +17,9 @@ let list;
 
 
 var $=function(id){return document.getElementById(id)};
+/**
+ *
+*/
 function basePath(segment){
     let indexOfSegment
     // get the segments
@@ -29,16 +32,18 @@ function basePath(segment){
     // make base_url be the origin plus the path to the segment
     return window.location.origin + pathArray.slice(0,indexOfSegment).join('/') + '/'
 }
+
 /* **************************************************************************************** */
 /* *** C O O R D I N A T E S   A N D   W O R L D ****************************************** */
 /* **************************************************************************************** */
 const rwMargin =  1.0;   //
 const rwSize   = 11.0;   //
-let cnMargin;
-let cnSize;
+let cnMargin;            //
+let cnSize;              //
 window.onresize = reportWindowSize;
 /**
  * Trigger canvas resize on window resize
+ * Yes, "report" is a misnomer
  */
 function reportWindowSize() {
     let heightOutput = document.querySelector("#height");
@@ -54,7 +59,6 @@ function reportWindowSize() {
 /**
  *  xReal = (xCanvas-cnMargin)*rwSize/cnSize
  *  xCanvas = xReal*cnSize/rwSize+cnMargin
- *
  */
 function canvasToWorld(G){
     let rCX = (G.left-cnMargin)/cnSize*rwSize;
@@ -94,7 +98,9 @@ function worldToCanvas(p, G){
         return {left: left*cnSize/rwSize+cnMargin, top: top*cnSize/rwSize+cnMargin}
     }
 }
-
+/**
+*
+*/
 function resizeCanvas(c, xDim, yDim) {
     const ratio = c.getWidth()/c.getHeight();
     const scale = xDim / c.getWidth();
@@ -103,7 +109,9 @@ function resizeCanvas(c, xDim, yDim) {
     c.setViewportTransform([zoom,0,0,zoom, 0,0]);
 }
 
-
+/**
+ *
+ */
 function createCourt2(posX, posY, size){
     let m3 = size/3;
     let pf = new fabric.Path(`M 0 0 L 0 ${size} L ${size} ${size} L ${size} 0 L 0 0 z M0 ${m3} ${size} ${m3}`);
@@ -197,7 +205,9 @@ function insertTriangle(p){
     players.push(G);
     G_canvas.add(G);
 }
-
+/**
+ *
+ */
 function removePlayers(){
     setDirty();
     //console.log('removing Players')
@@ -208,8 +218,9 @@ function removePlayers(){
     players = [];
     //console.log('done removing')
 }
-
-
+/**
+ *
+ */
 function createPlayers(plrs, wPlrs){
     console.log(">>> createPlayers, ", plrs.length);
     removePlayers();
@@ -222,6 +233,9 @@ function createPlayers(plrs, wPlrs){
     })
     console.log("<<< createPlayers");
 }
+/**
+ *
+ */
 function createBall(params){
     let B = new fabric.Image(document.getElementById('my-ball'));
     B.set('lockScalingX', true);
@@ -229,13 +243,16 @@ function createBall(params){
     B.scale(1.0);
     if(params.size && params.size==1) B.scale(0.5);
     B.hasControls = B.hasBorders = false;
-    console.log(B);
+    console.log('createBall', B);
     B.UserData = {
         dX : -B.aCoords.bl.y/2,
         dY : -B.aCoords.br.x/2
     }
     return B;
 }
+/**
+ *
+ */
 function updatePlayerFromFields(){
     setDirty();
     let P = $("plr-func").rumms;
@@ -257,7 +274,9 @@ function updatePlayerFromFields(){
         G_canvas.requestRenderAll();
     }
 }
-
+/**
+ *
+ */
 /* **************************************************************************************** */
 /* *** W O R K S P A C E   H A N D L I N G ************************************************ */
 /* **************************************************************************************** */
@@ -277,6 +296,9 @@ function setDirty(){
         $('idResetSit').classList.remove('disabled');
     }
 }
+/**
+ *
+ */
 function unsetDirty(){
     let btn=document.getElementById('idUpdateSit');
     if(dirty){
@@ -286,7 +308,6 @@ function unsetDirty(){
         $('idResetSit').classList.add('disabled');
     }
 }
-
 /**
  * Create situation
  *  - create a new option in session_select
@@ -297,7 +318,6 @@ function unsetDirty(){
  */
 function createSituation(){
     let wtf = prompt("Name", '01-L4-01');
-    console.log(wtf);
     if(wtf && !(wtf in situations)){
         let select = $('session-select');
         select.disabled = false;
@@ -410,6 +430,9 @@ function deleteSituation(){
         document.getElementById('idDeleteSit').classList.add('disabled');;
     }
 }
+/**
+ *
+ */
 function saveWorkspace(){
     // Clean up objects in situations that have a src,
     // and remove the http.../-part of the path.
@@ -430,7 +453,7 @@ function saveWorkspace(){
             vptCoords: G_canvas.vptCoords,
         },
         situations: situations,
-    })], {type: "text/plain"});
+    })], {type: "application/json"});
     // (B) CREATE DOWNLOAD LINK
     let url = window.URL.createObjectURL(myBlob);
     let anchor = document.createElement("a");
@@ -446,10 +469,14 @@ function saveWorkspace(){
     //window.URL.revokeObjectURL(url);
     //document.removeChild(anchor);
 }
+/**
+ *
+ */
 function loadWorkspace(){
     reportWindowSize();
     let input = document.createElement('input');
     input.type = 'file';
+    input.accept = 'application/json';
     input.onchange = _ => {
         // you can use this method to get file and perform respective operations
         let files =   Array.from(input.files);
@@ -486,6 +513,49 @@ function loadWorkspace(){
     // Trigger the whole story
     input.click();
 }
+/**
+ * Function to retrieve a json workspace from the server
+*/
+async function serverSelect(){
+    let key = $('srv-session-select').value;
+    if( key !== ''){
+        console.log('Retrieve situation %s', key);
+        const url= key;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            let data = await response.json();
+            console.log(data);
+            let cData = data.canvas;
+            console.log(cData);
+            situations = data.situations;
+            let select = $('session-select');
+            select.disabled = false;
+            // Remove all existing situations, keep only hidden
+            select.innerHTML='<option hidden value="">Situations</option>';
+            // iterate over keys and add option
+            Object.keys(situations).sort().forEach(function(k){
+                //console.log(k)
+                let option = document.createElement('option');
+                option.text = k;
+                select.add(option);
+            });
+            // Select the first visible option
+            // and trigger redraw
+            if(select.options.length > 1){
+                select.selectedIndex=1;
+                select.disabled=false;
+                retrieveSituation();
+                document.getElementById('idDeleteSit').classList.remove('disabled');;
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+}
+
 /* **************************************************************************************** */
 /* *** E V E N T H A N D L E R S ********************************************************** */
 /* **************************************************************************************** */
@@ -568,7 +638,6 @@ function canvasOnObjectModified(e){
     }
     return 1;
 }
-
 /**
  * When a player is selected, copy its properties to the
  * GUI controls
@@ -588,11 +657,16 @@ function playerOnSelected(e){
     $('txt-color').value = G._objects[1].fill;
     //console.log('<<<playerOnSelected');
 }
+/**
+ *
+ */
 function playerOnDeselected(e){
-    console.log('Deselected');
+    console.log('playerOnDeselected');
     $("plr-func").rumms = null;
 }
-
+/**
+ *
+ */
 function pColorChange(){
     let G=$("plr-func").rumms;
     if(G){
@@ -600,6 +674,9 @@ function pColorChange(){
         G_canvas.requestRenderAll();
     }
 }
+/**
+ *
+ */
 function pAngleChange(){
     /*
        let G=$("plr-func").rumms;
@@ -659,9 +736,12 @@ function canvasOnPathCreated(e){
     }
     setDirty();
 }
+/**
+ *
+ */
 function onAddLines(){
     G_canvas.isDrawingMode = !G_canvas.isDrawingMode;
-    console.log(G_canvas.isDrawingMode)
+    console.log('onAddLines, isDrawingMode', G_canvas.isDrawingMode)
     if(G_canvas.isDrawingMode){
         $('addLines').innerHTML= 'Linie'
         $("drawing-mode-selector").onchange();
@@ -672,6 +752,9 @@ function onAddLines(){
         $('addLines').innerHTML= 'Auswahl'
     }
 }
+/**
+ *
+ */
 function removeLines(){
     setDirty();
     //console.log('removing lines')
